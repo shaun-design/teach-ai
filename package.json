@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/functions": "^3.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0"
+  }
+}

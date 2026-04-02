@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>TeachAI · Start a session</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&amp;display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #eef3f2;
+      --surface: #ffffff;
+      --surface2: #f4f8f7;
+      --border: #dce8e6;
+      --brand: #007890;
+      --brand-deep: #005f72;
+      --brand-soft: rgba(0, 120, 144, 0.1);
+      --brand-line: rgba(0, 120, 144, 0.25);
+      --text: #3d524f;
+      --text-hi: #1a2c2a;
+      --muted: #6b7f7c;
+      --radius: 12px;
+      --shadow-sm: 0 1px 2px rgba(0, 90, 108, 0.07);
+      --shadow-card: 0 2px 10px rgba(0, 90, 108, 0.08), 0 1px 3px rgba(0, 90, 108, 0.06);
+    }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    .welcome-app {
+      display: flex;
+      min-height: 100vh;
+      min-height: 100dvh;
+      width: 100%;
+      align-items: stretch;
+    }
+    .welcome-main {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .welcome-shell {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 40px;
+    }
+    /* ── Left sidebar (sessions rail, matches teacher-ai-chat) ── */
+    .sidebar {
+      width: 260px;
+      min-width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      flex-shrink: 0;
+      transition: width 0.22s ease, min-width 0.22s ease, opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .sidebar.sidebar--collapsed {
+      flex: 0 0 0;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      border-right: none;
+      box-shadow: none;
+    }
+    .sidebar-header {
+      padding: 20px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sidebar-header-brand-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      min-width: 0;
+    }
+    .sidebar-header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+    .sidebar-back-case {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 6px;
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brand-deep);
+      text-decoration: none;
+      flex-shrink: 0;
+      background: var(--surface2);
+      transition: color 0.15s, background 0.15s;
+    }
+    .sidebar-back-case:hover {
+      color: var(--brand);
+      background: var(--brand-soft);
+    }
+    .sidebar-back-case .sidebar-back-icon { font-size: 16px; flex-shrink: 0; }
+    .sidebar .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(155deg, #004a56 0%, var(--brand-deep) 48%, #003844 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(0, 30, 40, 0.45);
+    }
+    .sidebar .logo-icon svg { width: 18px; height: 18px; display: block; }
+    .sidebar .logo-text { font-weight: 700; font-size: 16px; letter-spacing: -0.3px; color: var(--brand); }
+    .sidebar .logo-sub { font-size: 10px; color: var(--muted); }
+    .panel-collapse-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--brand);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: inherit;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    .panel-collapse-btn:hover {
+      background: var(--brand-soft);
+      border-color: var(--brand-line);
+      color: var(--brand-deep);
+    }
+    .panel-collapse-btn svg { width: 18px; height: 18px; }
+    .new-chat-btn {
+      margin: 12px 12px 0;
+      padding: 9px 12px;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: calc(100% - 24px);
+      box-shadow: 0 1px 2px rgba(0, 120, 144, 0.25);
+      transition: background 0.15s ease;
+      font-family: inherit;
+    }
+    .new-chat-btn:hover { background: var(--brand-deep); }
+    .new-chat-btn .icon-svg { color: #fff; font-size: 17px; }
+    .section-label {
+      padding: 14px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+    .sidebar-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding-bottom: 8px;
+    }
+    .chat-item {
+      padding: 8px 14px;
+      border-radius: 8px;
+      margin: 1px 8px;
+      cursor: default;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+    .chat-item.active { background: var(--brand-soft); }
+    .chat-item:hover:not(.active) { background: rgba(0, 120, 144, 0.07); }
+    .chat-item-icon { margin-top: 1px; flex-shrink: 0; }
+    .chat-item-icon.icon-svg { font-size: 18px; }
+    .chat-item.active .chat-item-icon.icon-svg { color: var(--brand); }
+    .chat-item-content { overflow: hidden; min-width: 0; }
+    .chat-item-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-hi); }
+    .chat-item-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .sidebar-footer {
+      flex-shrink: 0;
+      margin-top: auto;
+      padding: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-footer .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid rgba(0, 120, 144, 0.2);
+    }
+    .sidebar-footer .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 32%;
+      display: block;
+    }
+    .user-info { flex: 1; min-width: 0; }
+    .user-info .name { font-size: 13px; font-weight: 600; color: var(--text-hi); }
+    .user-info .role { font-size: 11px; color: var(--muted); }
+    .settings-icon.icon-svg {
+      margin-left: auto;
+      font-size: 18px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    /* Collapsed: tab on left edge (welcome has no topbar) */
+    .welcome-sidebar-fab {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 120;
+      width: 36px;
+      height: 48px;
+      padding: 0;
+      border-radius: 0 10px 10px 0;
+      border-left: none;
+      box-shadow: 2px 2px 12px rgba(0, 90, 108, 0.12);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .welcome-sidebar-fab.is-visible { display: flex; }
+    .welcome-sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.36);
+      z-index: 119;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+    .welcome-sidebar-backdrop.is-on {
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .sidebar, .welcome-sidebar-backdrop { transition: none; }
+    }
+    @media (max-width: 900px) {
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100dvh;
+        z-index: 300;
+        width: 288px !important;
+        min-width: 288px !important;
+        max-width: 288px;
+        opacity: 1;
+        transform: translateX(0);
+        transition: transform 0.26s ease, box-shadow 0.26s ease;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+      }
+      .sidebar.sidebar--collapsed {
+        transform: translateX(-100%);
+        pointer-events: none;
+        opacity: 1;
+        width: 288px !important;
+        min-width: 288px !important;
+        max-width: 288px;
+        border-right: 1px solid var(--border);
+        box-shadow: none;
+      }
+      .welcome-sidebar-fab {
+        top: auto;
+        bottom: 100px;
+        transform: none;
+      }
+    }
+    @media (max-width: 480px) {
+      .sidebar:not(.sidebar--collapsed),
+      .sidebar.sidebar--collapsed {
+        width: calc(100vw - 48px) !important;
+        min-width: 0 !important;
+        max-width: calc(100vw - 48px) !important;
+      }
+    }
+    .welcome-card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 26px 24px;
+      box-shadow: var(--shadow-card);
+    }
+    .welcome-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .welcome-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(155deg, #004a56 0%, var(--brand-deep) 48%, #003844 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 4px rgba(0, 30, 40, 0.45);
+    }
+    .logo-icon svg { width: 22px; height: 22px; display: block; }
+    .logo-text { font-weight: 700; font-size: 17px; letter-spacing: -0.3px; color: var(--brand); }
+    .logo-sub { font-size: 11px; color: var(--muted); }
+    .welcome-skip {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .welcome-skip:hover {
+      background: var(--brand-soft);
+      border-color: var(--brand-line);
+      color: var(--brand-deep);
+    }
+    .welcome-card h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-hi);
+      line-height: 1.25;
+      margin: 0 0 8px;
+    }
+    .welcome-lede {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0 0 18px;
+    }
+    .welcome-section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 0 0 8px;
+    }
+    .starter-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 20px;
+    }
+    .starter-chip {
+      padding: 9px 15px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--brand);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: background 0.15s, border-color 0.15s;
+      box-shadow: var(--shadow-sm);
+    }
+    .starter-chip:hover { border-color: var(--brand-line); background: var(--brand-soft); }
+    .icon-svg {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--muted);
+    }
+    .icon-svg svg { width: 1em; height: 1em; }
+    .upload-chips {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .upload-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px dashed var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .upload-chip:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+    .upload-chip.has-file {
+      border-style: solid;
+      border-color: var(--brand-line);
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+    .upload-chip .icon-svg { font-size: 15px; }
+    .upload-chip:hover .icon-svg,
+    .upload-chip.has-file .icon-svg { color: var(--brand); }
+    .upload-chip-count { font-weight: 700; opacity: 0.85; }
+    .welcome-composer {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .input-box {
+      flex: 1;
+      background: #eaf5e9;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: var(--text-hi);
+      resize: none;
+      min-height: 88px;
+      max-height: 200px;
+      line-height: 1.5;
+      font-family: inherit;
+      box-shadow: inset 0 1px 2px rgba(0, 90, 108, 0.04);
+    }
+    .input-box::placeholder { color: var(--muted); }
+    .input-box:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: inset 0 1px 2px rgba(0, 90, 108, 0.04), 0 0 0 3px var(--brand-soft);
+    }
+    .send-btn {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      background: var(--brand);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0, 120, 144, 0.3);
+      transition: background 0.15s ease;
+    }
+    .send-btn:hover { background: var(--brand-deep); }
+    .send-btn svg { width: 20px; height: 20px; }
+    .input-hint {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--text-hi);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 99px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      max-width: calc(100vw - 32px);
+      text-align: center;
+      white-space: normal;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="welcome-sidebar-backdrop" id="welcome-sidebar-backdrop" aria-hidden="true"></div>
+  <button type="button" class="welcome-sidebar-fab panel-collapse-btn is-visible" id="welcome-sidebar-fab" title="Show sessions panel" aria-expanded="false" aria-controls="welcome-sidebar">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+  </button>
+  <div class="welcome-app">
+  <aside class="sidebar sidebar--collapsed" id="welcome-sidebar" aria-hidden="true">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-back-case" title="Back to Case Study">
+        <svg class="sidebar-back-icon" aria-hidden="true" width="1em" height="1em" fill="currentColor" viewBox="0 -960 960 960"><path d="M270-80q-45 0-77.5-29.64Q160-139.27 160-183v-564q0-36.57 22.12-65.43Q204.24-841.3 240-849l380-79v620l-360 77q-17.14 3.69-28.57 17.54Q220-199.62 220-183q0 19 15 31t35 12h470v-660h60v720H270Zm70-228 220-47v-499l-220 45v501Zm-60 12.81V-796l-20 4q-17 4-28.5 15.83Q220-764.35 220-747v471q9.06-5.2 19.03-9.1Q249-289 260-291l20-4.19ZM220-787v511-511Z"/></svg>
+        <span class="sidebar-back-label">Back to Case Study</span>
+      </a>
+      <div class="sidebar-header-brand-row">
+        <div class="sidebar-header-brand">
+          <div class="logo-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path fill="#ffffff" d="M3.2 19.8L8 15l2.1 2.1-4.8 4.8-1.4-1.4-.7-.7z"/>
+              <path fill="#ffffff" d="M8.2 15L11 4.5l1.3 1.3L9.5 14.2 8.2 15z" opacity=".92"/>
+              <path fill="#ffffff" d="M17.5 3.5l1.1 3.2L22 7.5l-3.4 1.2-1.1 3.4-1.1-3.4-3.4-1.2 3.4-1.2 1.1-3.2z"/>
+              <path fill="#ffffff" d="M6 8.5l.7 2L8.8 11 6.7 11.5 6 13.5l-.7-2-2-1.5 2-1 .7-2z" opacity=".88"/>
+              <circle cx="19" cy="16" r="1.1" fill="#ffffff"/>
+              <circle cx="14" cy="19" r="0.75" fill="#ffffff"/>
+              <circle cx="4.5" cy="12" r="0.65" fill="#ffffff"/>
+            </svg>
+          </div>
+          <div>
+            <div class="logo-text">TeachAI</div>
+            <div class="logo-sub">Classroom Intelligence</div>
+          </div>
+        </div>
+        <button type="button" class="panel-collapse-btn" id="welcome-sidebar-collapse" title="Hide sessions panel" aria-expanded="true" aria-controls="welcome-sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <button class="new-chat-btn" type="button" id="welcome-new-session" title="Starts a new session in the workspace">
+      <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg></span>
+      <span class="new-chat-btn-label">New Analysis Session</span>
+    </button>
+    <div class="sidebar-scroll">
+      <div class="section-label">Recent Sessions</div>
+      <div class="chat-item active">
+        <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.875-3.375c.621-.427 1.5-.075 1.5.675v8.4c0 .75-.879 1.102-1.5.675L15.75 13.5V6.75a.75.75 0 00-.75-.75h-9a.75.75 0 00-.75.75v10.5a.75.75 0 00.75.75h9a.75.75 0 00.75-.75v-7.5z"/></svg></div>
+        <div class="chat-item-content">
+          <div class="chat-item-title">Algebra · Nov 14 Lesson</div>
+          <div class="chat-item-meta">Video · Lesson plan · prototype</div>
+        </div>
+      </div>
+      <div class="chat-item">
+        <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9z"/></svg></div>
+        <div class="chat-item-content">
+          <div class="chat-item-title">Differentiated Instruction Review</div>
+          <div class="chat-item-meta">Rubric · Standards map</div>
+        </div>
+      </div>
+      <div class="chat-item">
+        <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.875-3.375c.621-.427 1.5-.075 1.5.675v8.4c0 .75-.879 1.102-1.5.675L15.75 13.5V6.75a.75.75 0 00-.75-.75h-9a.75.75 0 00-.75.75v10.5a.75.75 0 00.75.75h9a.75.75 0 00.75-.75v-7.5z"/></svg></div>
+        <div class="chat-item-content">
+          <div class="chat-item-title">Science Discussion · Oct 30</div>
+          <div class="chat-item-meta">Video · Student work</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="avatar">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&amp;h=400&amp;fit=crop&amp;crop=faces&amp;auto=format&amp;q=85" width="36" height="36" alt="" />
+      </div>
+      <div class="user-info">
+        <div class="name">Sarah Rivera</div>
+        <div class="role">8th Grade Math · Lincoln MS</div>
+      </div>
+      <div class="icon-svg settings-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.65.87.05.027.096.058.14.092l1.106.852a.75.75 0 01.302.595v.005a.75.75 0 01-.302.595l-1.106.852a.75.75 0 00-.14.092c-.337.184-.587.496-.65.87l-.213 1.281c-.09.542-.56.94-1.11.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.281a.75.75 0 00-.65-.87l-.14-.092-1.106-.852a.75.75 0 01-.302-.595v-.005a.75.75 0 01.302-.595l1.106-.852a.75.75 0 00.14-.092c.337-.184.587-.496.65-.87l.213-1.281z"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+    </div>
+  </aside>
+  <div class="welcome-main">
+  <div class="welcome-shell">
+    <div class="welcome-card">
+      <div class="welcome-top">
+        <div class="welcome-brand">
+          <div class="logo-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path fill="#ffffff" d="M3.2 19.8L8 15l2.1 2.1-4.8 4.8-1.4-1.4-.7-.7z"/>
+              <path fill="#ffffff" d="M8.2 15L11 4.5l1.3 1.3L9.5 14.2 8.2 15z" opacity=".92"/>
+              <path fill="#ffffff" d="M17.5 3.5l1.1 3.2L22 7.5l-3.4 1.2-1.1 3.4-1.1-3.4-3.4-1.2 3.4-1.2 1.1-3.2z"/>
+              <path fill="#ffffff" d="M6 8.5l.7 2L8.8 11 6.7 11.5 6 13.5l-.7-2-2-1.5 2-1 .7-2z" opacity=".88"/>
+              <circle cx="19" cy="16" r="1.1" fill="#ffffff"/>
+              <circle cx="14" cy="19" r="0.75" fill="#ffffff"/>
+              <circle cx="4.5" cy="12" r="0.65" fill="#ffffff"/>
+            </svg>
+          </div>
+          <div>
+            <div class="logo-text">TeachAI</div>
+            <div class="logo-sub">Classroom Intelligence</div>
+          </div>
+        </div>
+        <a class="welcome-skip" href="teacher-ai-chat.html">Skip to workspace</a>
+      </div>
+
+      <h1>What would you like feedback on?</h1>
+      <p class="welcome-lede">Attach evidence from your lesson and tell us your focus. We will open your coach-ready workspace when processing finishes.</p>
+
+      <p class="welcome-section-label" id="ideas-label">Try an idea</p>
+      <div class="starter-chips" role="group" aria-labelledby="ideas-label">
+        <button type="button" class="starter-chip" data-prompt="Can you analyze my lesson for student engagement and wait time?">Analyze engagement &amp; wait time</button>
+        <button type="button" class="starter-chip" data-prompt="Check how well my lesson plan aligns to my learning objectives">Check lesson plan alignment</button>
+        <button type="button" class="starter-chip" data-prompt="Give me an equity check on student participation">Equity check · student participation</button>
+        <button type="button" class="starter-chip" data-prompt="What are the best strategies to improve my questioning technique?">Improve my questioning technique</button>
+      </div>
+
+      <p class="welcome-section-label" id="uploads-label">Add materials (optional)</p>
+      <div class="upload-chips" role="group" aria-labelledby="uploads-label">
+        <div class="upload-chip" data-artifact="video" role="button" tabindex="0" aria-pressed="false">
+          <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.875-3.375c.621-.427 1.5-.075 1.5.675v8.4c0 .75-.879 1.102-1.5.675L15.75 13.5V6.75a.75.75 0 00-.75-.75h-9a.75.75 0 00-.75.75v10.5a.75.75 0 00.75.75h9a.75.75 0 00.75-.75v-7.5z"/></svg></span><span class="chip-label">Add video</span> <span class="upload-chip-count">(0)</span>
+        </div>
+        <div class="upload-chip" data-artifact="lessonPlan" role="button" tabindex="0" aria-pressed="false">
+          <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9z"/></svg></span><span class="chip-label">Add lesson plan</span> <span class="upload-chip-count">(0)</span>
+        </div>
+        <div class="upload-chip" data-artifact="exitTickets" role="button" tabindex="0" aria-pressed="false">
+          <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg></span><span class="chip-label">Exit tickets</span> <span class="upload-chip-count">(0)</span>
+        </div>
+        <div class="upload-chip" data-artifact="notes" role="button" tabindex="0" aria-pressed="false">
+          <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9z"/></svg></span><span class="chip-label">Notes / standards</span> <span class="upload-chip-count">(0)</span>
+        </div>
+        <div class="upload-chip" data-artifact="studentWork" role="button" tabindex="0" aria-pressed="false">
+          <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.06-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 0-1.06-.44z"/></svg></span><span class="chip-label">Student work</span> <span class="upload-chip-count">(0)</span>
+        </div>
+      </div>
+
+      <div class="welcome-composer">
+        <label class="sr-only" for="welcome-input">Your message</label>
+        <textarea id="welcome-input" class="input-box" rows="3" placeholder="Or write your own question for the AI…"></textarea>
+        <button type="button" class="send-btn" id="welcome-send" title="Continue" aria-label="Continue to workspace">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+        </button>
+      </div>
+      <p class="input-hint">You need a written message or at least one attachment to continue.</p>
+    </div>
+  </div>
+  </div><!-- /.welcome-main -->
+  </div><!-- /.welcome-app -->
+
+  <div class="toast" id="toast" aria-live="polite"></div>
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+  <script>
+    (function () {
+      var WELCOME_STORAGE_KEY = 'teachai_welcome_payload';
+      var DEFAULT_WELCOME_PROMPT = 'Can you analyze my lesson for student engagement, wait time, and alignment to my learning objectives?';
+      var WELCOME_KEYS = ['video', 'lessonPlan', 'exitTickets', 'notes', 'studentWork'];
+      var PROTOTYPE_ARTIFACT_ACCEPT = [
+        'text/*', 'text/plain',
+        'image/*', 'video/*', 'audio/*',
+        '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.csv', '.ods', '.odt',
+        '.txt', '.text', '.md', '.markdown', '.rtf', '.log', '.html', '.htm', '.json', '.xml',
+        '.zip', '.heic', '.heif', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg',
+        '.pages', '.key', '.numbers'
+      ].join(',');
+      var CHIP_CFG = {
+        video:       { accept: PROTOTYPE_ARTIFACT_ACCEPT, label: 'Add video',         ready: 'Video ready' },
+        lessonPlan:  { accept: PROTOTYPE_ARTIFACT_ACCEPT, label: 'Add lesson plan',   ready: 'Plan attached' },
+        exitTickets: { accept: PROTOTYPE_ARTIFACT_ACCEPT, label: 'Exit tickets',      ready: 'Exit tickets added' },
+        notes:       { accept: PROTOTYPE_ARTIFACT_ACCEPT, label: 'Notes / standards', ready: 'Notes attached' },
+        studentWork: { accept: PROTOTYPE_ARTIFACT_ACCEPT, label: 'Student work',      ready: 'Work attached' }
+      };
+
+      var welcomeInput = document.getElementById('welcome-input');
+      var welcomeSend = document.getElementById('welcome-send');
+      var toastEl = document.getElementById('toast');
+
+      function showHint(msg) {
+        if (!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        window.clearTimeout(showHint._tid);
+        showHint._tid = window.setTimeout(function () { toastEl.classList.remove('show'); }, 3200);
+      }
+
+      function readSelections() {
+        var sel = {};
+        var names = {};
+        WELCOME_KEYS.forEach(function (k) { sel[k] = false; });
+        document.querySelectorAll('.upload-chip[data-artifact]').forEach(function (chip) {
+          var key = chip.getAttribute('data-artifact');
+          if (WELCOME_KEYS.indexOf(key) === -1) return;
+          if (chip.classList.contains('has-file')) {
+            sel[key] = true;
+            var fn = chip.getAttribute('data-upload-name');
+            if (fn) names[key] = fn;
+          }
+        });
+        return { sel: sel, names: names };
+      }
+
+      function hasArtifact(sel) {
+        return WELCOME_KEYS.some(function (k) { return sel[k]; });
+      }
+
+      function runSubmit() {
+        var raw = welcomeInput ? welcomeInput.value.trim() : '';
+        var picked = readSelections();
+        var sel = picked.sel;
+        var names = picked.names;
+        if (!raw && !hasArtifact(sel)) {
+          showHint('Add a message or attach at least one file to continue.');
+          if (welcomeInput) welcomeInput.focus();
+          return;
+        }
+        var promptText = raw || DEFAULT_WELCOME_PROMPT;
+        try {
+          sessionStorage.setItem(WELCOME_STORAGE_KEY, JSON.stringify({
+            sel: sel,
+            prompt: promptText,
+            names: names
+          }));
+        } catch (e) {
+          showHint('Could not save your session. Check storage settings and try again.');
+          return;
+        }
+        window.location.href = 'teacher-ai-chat.html';
+      }
+
+      document.querySelectorAll('.starter-chip').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var p = btn.getAttribute('data-prompt') || '';
+          if (welcomeInput) welcomeInput.value = p;
+          welcomeInput && welcomeInput.focus();
+        });
+      });
+
+      function bindChip(chip) {
+        var key = chip.getAttribute('data-artifact');
+        var cfg = CHIP_CFG[key];
+        if (!cfg) return;
+        function activate() {
+          var inp = document.createElement('input');
+          inp.type = 'file';
+          inp.accept = cfg.accept;
+          inp.style.cssText = 'position:absolute;left:-9999px;';
+          document.body.appendChild(inp);
+          inp.click();
+          inp.addEventListener('change', function () {
+            var file = inp.files && inp.files[0];
+            if (inp.parentNode) document.body.removeChild(inp);
+            if (!file) return;
+            chip.classList.add('has-file');
+            chip.setAttribute('aria-pressed', 'true');
+            chip.setAttribute('data-upload-name', file.name);
+            var countEl = chip.querySelector('.upload-chip-count');
+            var labelEl = chip.querySelector('.chip-label');
+            if (countEl) countEl.textContent = '(1)';
+            if (labelEl) labelEl.textContent = cfg.ready;
+          });
+        }
+        chip.addEventListener('click', activate);
+        chip.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activate();
+          }
+        });
+      }
+      document.querySelectorAll('.upload-chip[data-artifact]').forEach(bindChip);
+
+      if (welcomeSend) welcomeSend.addEventListener('click', function (e) { e.preventDefault(); runSubmit(); });
+      if (welcomeInput) {
+        welcomeInput.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter' || e.shiftKey) return;
+          e.preventDefault();
+          runSubmit();
+        });
+      }
+    })();
+
+    (function () {
+      var side = document.getElementById('welcome-sidebar');
+      var fab = document.getElementById('welcome-sidebar-fab');
+      var collapseBtn = document.getElementById('welcome-sidebar-collapse');
+      var backdrop = document.getElementById('welcome-sidebar-backdrop');
+      var newSession = document.getElementById('welcome-new-session');
+      if (!side || !fab || !collapseBtn) return;
+
+      var svgChevLeft = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>';
+      var svgChevRight = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>';
+
+      function isDrawerMode() {
+        return window.matchMedia('(max-width: 900px)').matches;
+      }
+
+      function sync() {
+        var collapsed = side.classList.contains('sidebar--collapsed');
+        fab.classList.toggle('is-visible', collapsed);
+        fab.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        fab.innerHTML = svgChevRight;
+        collapseBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        collapseBtn.innerHTML = svgChevLeft;
+        collapseBtn.title = 'Hide sessions panel';
+        side.setAttribute('aria-hidden', collapsed ? 'true' : 'false');
+        if (backdrop) {
+          var showBackdrop = !collapsed && isDrawerMode();
+          backdrop.classList.toggle('is-on', showBackdrop);
+          backdrop.setAttribute('aria-hidden', showBackdrop ? 'false' : 'true');
+        }
+      }
+
+      function toggle() {
+        side.classList.toggle('sidebar--collapsed');
+        sync();
+      }
+
+      fab.addEventListener('click', toggle);
+      collapseBtn.addEventListener('click', toggle);
+      if (backdrop) backdrop.addEventListener('click', function () {
+        if (!side.classList.contains('sidebar--collapsed')) {
+          side.classList.add('sidebar--collapsed');
+          sync();
+        }
+      });
+
+      if (newSession) {
+        newSession.addEventListener('click', function () {
+          window.location.href = 'teacher-ai-chat.html';
+        });
+      }
+
+      window.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        if (side.classList.contains('sidebar--collapsed')) return;
+        side.classList.add('sidebar--collapsed');
+        sync();
+      });
+
+      var mq = window.matchMedia('(max-width: 900px)');
+      function onMq() { sync(); }
+      if (mq.addEventListener) mq.addEventListener('change', onMq);
+      else if (mq.addListener) mq.addListener(onMq);
+
+      sync();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TeachAI: Design case study | Shaun Herron</title>
+  <meta name="description" content="Product design case study: TeachAI, AI-assisted coaching for teachers and instructional coaches. Research, flows, design system, and interactive prototypes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #eef3f2; --surface: #ffffff; --surface2: #f4f8f7; --border: #dce8e6;
+      --brand: #007890; --brand-deep: #005f72; --brand-soft: rgba(0, 120, 144, 0.10);
+      --brand-line: rgba(0, 120, 144, 0.25); --green: #2f8f6e; --text: #3d524f;
+      --text-hi: #1a2c2a; --muted: #6b7f7c; --radius: 12px;
+      --shadow-card: 0 2px 12px rgba(0,90,108,0.09), 0 1px 3px rgba(0,90,108,0.06);
+      --nav-h: 64px;
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+    .nav .container {
+      max-width: none; width: 100%; margin: 0;
+      padding-left: max(12px, env(safe-area-inset-left, 0px));
+      padding-right: max(24px, env(safe-area-inset-right, 0px));
+    }
+
+    /* ── NAV (matches landing-page) ─────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 100; height: var(--nav-h);
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    .nav-inner {
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      width: 100%; gap: 12px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0; text-decoration: none;
+      justify-self: start;
+    }
+    .nav-credit { display: flex; align-items: baseline; gap: 6px; flex-shrink: 1; min-width: 0; justify-content: flex-end; }
+    .nav-author {
+      font-size: 14px; font-weight: 700; color: var(--text-hi); text-decoration: none;
+      white-space: nowrap; letter-spacing: -0.02em; flex-shrink: 0;
+    }
+    .nav-author:hover, .nav-author:focus { color: var(--brand); text-decoration: underline; outline: none; }
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(155deg, #004a56 0%, var(--brand-deep) 48%, #003844 100%);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      box-shadow: 0 1px 4px rgba(0, 30, 40, 0.45);
+    }
+    .nav-logo-icon svg { display: block; width: 18px; height: 18px; }
+    .nav-logo-text { font-weight: 700; font-size: 16px; letter-spacing: -0.3px; color: var(--brand); }
+    .nav-links {
+      display: flex; align-items: center; gap: 2px; list-style: none; flex-shrink: 0;
+      justify-self: center; margin: 0;
+    }
+    .nav-links > li { position: relative; }
+    .nav-links > li:has(.nav-dropdown)::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      height: 14px;
+      z-index: 150;
+    }
+    .nav-link {
+      display: flex; align-items: center; gap: 4px; padding: 8px 14px; border-radius: 8px;
+      font-size: 14px; font-weight: 700; color: var(--text); background: none;
+      transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .nav-link:hover, .nav-link:focus { background: var(--brand-soft); color: var(--brand); outline: none; }
+    .nav-link.is-active { color: var(--brand-deep); background: var(--brand-soft); }
+    .nav-link .material-symbols-outlined { font-size: 14px; }
+    .nav-dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card);
+      padding: 6px; min-width: 220px; opacity: 0; pointer-events: none;
+      transform: translateY(-6px); transition: opacity 0.15s, transform 0.15s; z-index: 200;
+    }
+    .nav-links > li:hover .nav-dropdown,
+    .nav-links > li:focus-within .nav-dropdown { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .nav-dropdown-item {
+      display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px;
+      font-size: 13px; color: var(--text); transition: background 0.12s;
+    }
+    .nav-dropdown-item:hover { background: var(--brand-soft); }
+    .nav-dropdown-item .dd-icon {
+      width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+      background: var(--brand-soft); border: 1px solid var(--brand-line);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-dropdown-item .dd-icon .material-symbols-outlined { font-size: 16px; color: var(--brand); }
+    .nav-dropdown-item .dd-label { font-weight: 700; color: var(--text-hi); margin-bottom: 1px; }
+    .nav-dropdown-item .dd-sub { font-size: 11px; color: var(--muted); line-height: 1.4; }
+    .nav-dropdown-sep { height: 1px; background: var(--border); margin: 4px 6px; }
+    .nav-right {
+      display: flex; align-items: center; justify-content: flex-end; gap: 12px; justify-self: end; flex-wrap: wrap;
+    }
+    .nav-linkedin {
+      display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
+      border-radius: 8px; color: #0a66c2; background: var(--surface2); border: 1px solid var(--border);
+      flex-shrink: 0; transition: background 0.15s, border-color 0.15s;
+    }
+    .nav-linkedin:hover { background: rgba(10, 102, 194, 0.09); border-color: rgba(10, 102, 194, 0.35); color: #004182; }
+    .nav-linkedin svg { width: 20px; height: 20px; display: block; }
+    .nav-mobile-toggle {
+      display: none; padding: 8px; border-radius: 8px; background: var(--surface2); color: var(--text);
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .nav-mobile-toggle .material-symbols-outlined { font-size: 22px; }
+    .nav-mobile-menu {
+      display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
+      background: var(--surface); padding: 16px; overflow-y: auto; z-index: 99;
+      flex-direction: column; gap: 4px;
+    }
+    .nav-mobile-menu.open { display: flex; }
+    .nav-mobile-item {
+      display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 10px;
+      font-size: 15px; font-weight: 700; color: var(--text);
+    }
+    .nav-mobile-item:hover { background: var(--brand-soft); color: var(--brand); }
+    .nav-mobile-item .material-symbols-outlined { font-size: 18px; color: var(--brand); }
+    .nav-mobile-sep { height: 1px; background: var(--border); margin: 8px 0; }
+    .nav-mobile-section { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 14px 4px; }
+
+    /* ── CASE STUDY ─────────────────────────────────── */
+    .cs-hero {
+      background: linear-gradient(160deg, #002e38 0%, #005f72 55%, #007890 100%);
+      padding: 72px 0 64px; position: relative; overflow: hidden;
+    }
+    .cs-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 75% 15%, rgba(102,189,207,0.14) 0%, transparent 45%);
+      pointer-events: none;
+    }
+    .cs-hero-inner { position: relative; max-width: 720px; margin: 0 auto; text-align: center; }
+    .cs-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px; margin-bottom: 16px;
+      padding: 4px 12px; border-radius: 99px; font-size: 11px; font-weight: 800;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.85);
+    }
+    .cs-h1 {
+      font-size: clamp(28px, 4.5vw, 44px); font-weight: 900; color: #fff; line-height: 1.15;
+      letter-spacing: -0.02em; margin-bottom: 12px;
+    }
+    .cs-h1 em { font-style: normal; color: #66bdcf; }
+    .cs-meta {
+      font-size: 15px; color: rgba(255,255,255,0.65); margin-bottom: 20px;
+    }
+    .cs-lead {
+      font-size: clamp(16px, 2vw, 18px); color: rgba(255,255,255,0.78); line-height: 1.65; max-width: 640px; margin: 0 auto 28px;
+    }
+    .cs-jump {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+    }
+    .cs-jump a {
+      font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 8px;
+      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.9);
+    }
+    .cs-jump a:hover { background: rgba(255,255,255,0.16); }
+    section.cs-section { padding: 56px 0; }
+    section.cs-section.cs-alt { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .cs-h2 {
+      font-size: clamp(22px, 3vw, 30px); font-weight: 900; color: var(--text-hi);
+      letter-spacing: -0.02em; margin-bottom: 16px;
+    }
+    .cs-h3 { font-size: 15px; font-weight: 800; color: var(--text-hi); margin-bottom: 8px; }
+    .cs-prose { font-size: 16px; color: var(--text); line-height: 1.7; max-width: 720px; }
+    .cs-prose p { margin-bottom: 14px; }
+    .cs-prose ul { margin: 12px 0 12px 1.2em; }
+    .cs-prose li { margin-bottom: 8px; }
+    .cs-snapshot {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px;
+    }
+    .cs-snap {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px; text-align: left;
+    }
+    .cs-snap-label { font-size: 11px; font-weight: 800; color: var(--brand); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .cs-snap p { font-size: 18px; font-weight: 800; color: var(--text-hi); line-height: 1.2; }
+    .cs-snap span { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+    .cs-steps { display: flex; flex-direction: column; gap: 22px; margin-top: 20px; max-width: 720px; }
+    .cs-step { display: flex; gap: 14px; align-items: flex-start; }
+    .cs-num {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: var(--brand); color: #fff; font-size: 14px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cs-artifacts {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 24px;
+    }
+    .cs-card {
+      display: block; padding: 22px; border-radius: 16px; border: 1px solid var(--border);
+      background: var(--surface2); box-shadow: var(--shadow-card);
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .cs-card:hover { border-color: var(--brand-line); transform: translateY(-2px); }
+    .cs-card .material-symbols-outlined { font-size: 28px; color: var(--brand); margin-bottom: 10px; }
+    .cs-card h3 { font-size: 16px; font-weight: 800; color: var(--text-hi); margin-bottom: 6px; }
+    .cs-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .cs-card .cs-card-cta { font-size: 13px; font-weight: 700; color: var(--brand); margin-top: 12px; display: inline-flex; align-items: center; gap: 4px; }
+    .cs-footer { background: #001e25; color: rgba(255,255,255,0.55); padding: 40px 0; font-size: 13px; }
+    .cs-footer a { color: rgba(255,255,255,0.75); text-decoration: underline; }
+    .cs-footer a:hover { color: #fff; }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .nav-inner { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+      .nav-mobile-toggle { display: flex; }
+      .cs-snapshot { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .nav-author { font-size: 13px; }
+    }
+  </style>
+</head>
+<body id="top">
+
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="TeachAI case study home">
+        <div class="nav-logo-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path fill="#ffffff" d="M3.2 19.8L8 15l2.1 2.1-4.8 4.8-1.4-1.4-.7-.7z"/>
+            <path fill="#ffffff" d="M8.2 15L11 4.5l1.3 1.3L9.5 14.2 8.2 15z" opacity=".92"/>
+            <path fill="#ffffff" d="M17.5 3.5l1.1 3.2L22 7.5l-3.4 1.2-1.1 3.4-1.1-3.4-3.4-1.2 3.4-1.2 1.1-3.2z"/>
+            <path fill="#ffffff" d="M6 8.5l.7 2L8.8 11 6.7 11.5 6 13.5l-.7-2-2-1.5 2-1 .7-2z" opacity=".88"/>
+            <circle cx="19" cy="16" r="1.1" fill="#ffffff"/>
+            <circle cx="14" cy="19" r="0.75" fill="#ffffff"/>
+            <circle cx="4.5" cy="12" r="0.65" fill="#ffffff"/>
+          </svg>
+        </div>
+        <span class="nav-logo-text">TeachAI</span>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="index.html" class="nav-link">Case Study</a></li>
+        <li><a href="landing-page.html#what-is-teachai" class="nav-link">What is TeachAI</a></li>
+        <li><a href="teacher-ai-chat.html" class="nav-link">Teacher Demo</a></li>
+        <li>
+          <button class="nav-link" aria-haspopup="true" aria-expanded="false" aria-label="Coach demo options">
+            Coach Demo
+            <span class="material-symbols-outlined">expand_more</span>
+          </button>
+          <div class="nav-dropdown" role="menu">
+            <a href="coach-dashboard-v2.html" class="nav-dropdown-item" role="menuitem">
+              <div class="dd-icon"><span class="material-symbols-outlined">auto_awesome</span></div>
+              <div>
+                <div class="dd-label">Streamlined coach demo</div>
+                <div class="dd-sub">Reduced cognitive load</div>
+              </div>
+            </a>
+            <div class="nav-dropdown-sep"></div>
+            <a href="coach-dashboard.html" class="nav-dropdown-item" role="menuitem">
+              <div class="dd-icon"><span class="material-symbols-outlined">dashboard</span></div>
+              <div>
+                <div class="dd-label">Classic coach demo</div>
+                <div class="dd-sub">Full-featured coaching workspace</div>
+              </div>
+            </a>
+          </div>
+        </li>
+      </ul>
+
+      <div class="nav-right">
+        <div class="nav-credit">
+          <a href="https://www.linkedin.com/in/shaunrherron/" class="nav-author" target="_blank" rel="noopener noreferrer" aria-label="Shaun Herron on LinkedIn">Shaun Herron</a>
+        </div>
+        <a href="https://www.linkedin.com/in/shaunrherron/" class="nav-linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" title="LinkedIn profile">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+        <button class="nav-mobile-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
+  <a href="index.html" class="nav-mobile-item"><span class="material-symbols-outlined">auto_stories</span>Case Study</a>
+  <a href="landing-page.html#what-is-teachai" class="nav-mobile-item"><span class="material-symbols-outlined">campaign</span>What is TeachAI</a>
+  <a href="teacher-ai-chat.html" class="nav-mobile-item"><span class="material-symbols-outlined">person</span>Teacher Demo</a>
+  <div class="nav-mobile-section">Coach Demo</div>
+  <a href="coach-dashboard-v2.html" class="nav-mobile-item"><span class="material-symbols-outlined">auto_awesome</span>Streamlined</a>
+  <a href="coach-dashboard.html" class="nav-mobile-item"><span class="material-symbols-outlined">dashboard</span>Classic</a>
+  <div class="nav-mobile-sep"></div>
+  <div class="nav-mobile-section">On this page</div>
+  <a href="#context" class="nav-mobile-item"><span class="material-symbols-outlined">flag</span>Context</a>
+  <a href="#process" class="nav-mobile-item"><span class="material-symbols-outlined">route</span>Process</a>
+  <a href="#artifacts" class="nav-mobile-item"><span class="material-symbols-outlined">widgets</span>Artifacts</a>
+</div>
+
+<header class="cs-hero">
+  <div class="container cs-hero-inner">
+    <div class="cs-eyebrow">Product design · Portfolio project</div>
+    <h1 class="cs-h1">Designing <em>TeachAI</em> for teachers and coaches</h1>
+    <p class="cs-meta">Shaun Herron · Senior Product Designer</p>
+    <p class="cs-lead">
+      TeachAI is a design concept for schools: help teachers get useful feedback sooner, and help coaches support more people without drowning in work. Two linked apps (one for teachers, one for coaches), built as clickable web demos.
+    </p>
+    <div class="cs-jump">
+      <a href="index.html">Unified case study (recommended)</a>
+      <a href="index-v2.html">Artifact edition</a>
+      <a href="#context">Context</a>
+      <a href="#role">My Role</a>
+      <a href="#process">Process</a>
+      <a href="#artifacts">Artifacts</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="cs-section" id="context">
+    <div class="container">
+      <h2 class="cs-h2">Context</h2>
+      <div class="cs-prose">
+        <p>
+          Teachers often wait too long for feedback, and when it comes, it may not match their next class. Coaches can’t be in every room. This project asks: can software help turn lesson videos and materials into useful notes fast, while coaches still approve what gets sent?
+        </p>
+        <p>
+          I worked with product leadership and a PM, and showed drafts to stakeholders and school-side contacts to keep the language clear and trustworthy.
+        </p>
+      </div>
+      <div class="cs-snapshot">
+        <div class="cs-snap">
+          <div class="cs-snap-label">The tension</div>
+          <p>Slow or vague feedback</p>
+          <span>Coaches are stretched thin; teachers need timely, specific help.</span>
+        </div>
+        <div class="cs-snap">
+          <div class="cs-snap-label">The idea</div>
+          <p>AI assists, people decide</p>
+          <span>Software drafts; coaches edit and send; teachers choose how to respond.</span>
+        </div>
+        <div class="cs-snap">
+          <div class="cs-snap-label">What we built</div>
+          <p>Two linked apps</p>
+          <span>Teacher experience + coach dashboard, same visual language.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section cs-alt" id="role">
+    <div class="container">
+      <h2 class="cs-h2">My Role</h2>
+      <div class="cs-prose">
+        <ul>
+          <li><strong>Research:</strong> Interviews and synthesis with product leadership and the PM to agree on problems and what “good” looks like.</li>
+          <li><strong>Existing tools:</strong> Looked at older products so the new design fits real habits.</li>
+          <li><strong>Design:</strong> Maps and screens for full teacher and coach journeys.</li>
+          <li><strong>Visual system:</strong> Shared look and components so both apps feel like one product.</li>
+          <li><strong>AI wording:</strong> Iterated with the PM so suggestions sound like a coach, not a chatbot.</li>
+          <li><strong>Feedback:</strong> Showed work to stakeholders and school contacts; fixed what confused them.</li>
+        </ul>
+        <p>
+          The demos are static HTML pages you can open in a browser (no server required), so anyone can click through the flow.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section" id="process">
+    <div class="container">
+      <h2 class="cs-h2">How I approached the work</h2>
+      <div class="cs-steps">
+        <div class="cs-step">
+          <div class="cs-num">1</div>
+          <div>
+            <h3 class="cs-h3">Agree on the problem with PM and leadership</h3>
+            <p class="cs-prose" style="margin:0">Got on the same page about coach workload, teacher needs, and what counts as useful feedback, before drawing screens.</p>
+          </div>
+        </div>
+        <div class="cs-step">
+          <div class="cs-num">2</div>
+          <div>
+            <h3 class="cs-h3">Map how people work today</h3>
+            <p class="cs-prose" style="margin:0">Reviewed older tools so we didn’t design something that ignores day-to-day habits.</p>
+          </div>
+        </div>
+        <div class="cs-step">
+          <div class="cs-num">3</div>
+          <div>
+            <h3 class="cs-h3">Sketch flows, then a shared look</h3>
+            <p class="cs-prose" style="margin:0">Rough screens first, then colors, type, and reusable pieces for both teacher and coach.</p>
+          </div>
+        </div>
+        <div class="cs-step">
+          <div class="cs-num">4</div>
+          <div>
+            <h3 class="cs-h3">Tune the AI text and review screens</h3>
+            <p class="cs-prose" style="margin:0">Adjusted wording and layout so suggestions feel professional and easy for coaches to edit before send.</p>
+          </div>
+        </div>
+        <div class="cs-step">
+          <div class="cs-num">5</div>
+          <div>
+            <h3 class="cs-h3">Test with stakeholders and school contacts</h3>
+            <p class="cs-prose" style="margin:0">Checked for clarity, trust, and “what do I do next?” for both teachers and coaches.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section cs-alt" id="artifacts">
+    <div class="container">
+      <h2 class="cs-h2">Artifacts &amp; demos</h2>
+      <p class="cs-prose" style="margin-bottom:8px">For the <strong>full plain-language story</strong>, use the <a href="index.html" style="color:var(--brand);font-weight:800;text-decoration:underline">unified case study</a>. For the same content with every diagram labeled “required” vs. “extra,” see the <a href="index-v2.html" style="color:var(--brand);font-weight:800;text-decoration:underline">artifact edition</a>. Below: product overview and clickable demos.</p>
+      <div class="cs-artifacts">
+        <a class="cs-card" href="index.html">
+          <span class="material-symbols-outlined" aria-hidden="true">auto_stories</span>
+          <h3>Case study (unified)</h3>
+          <p>Full walkthrough in everyday language: problem, users, plan, demos, and what we’d measure later.</p>
+          <span class="cs-card-cta">Open unified case study <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></span>
+        </a>
+        <a class="cs-card" href="index-v2.html">
+          <span class="material-symbols-outlined" aria-hidden="true">layers</span>
+          <h3>Case study (artifact edition)</h3>
+          <p>Same story with labels on each diagram; good if you want the “portfolio checklist” view.</p>
+          <span class="cs-card-cta">Open artifact edition <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></span>
+        </a>
+        <a class="cs-card" href="landing-page.html#what-is-teachai">
+          <span class="material-symbols-outlined" aria-hidden="true">campaign</span>
+          <h3>What is TeachAI</h3>
+          <p>Product narrative, value props, and feature overview written for a general audience.</p>
+          <span class="cs-card-cta">Open overview <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></span>
+        </a>
+        <a class="cs-card" href="teacher-ai-chat.html">
+          <span class="material-symbols-outlined" aria-hidden="true">school</span>
+          <h3>Teacher demo</h3>
+          <p>Chat, feedback, and artifacts in the teacher experience prototype.</p>
+          <span class="cs-card-cta">Open teacher demo <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></span>
+        </a>
+        <a class="cs-card" href="coach-dashboard-v2.html">
+          <span class="material-symbols-outlined" aria-hidden="true">manage_accounts</span>
+          <h3>Coach demo (streamlined)</h3>
+          <p>Recommended starting point: coach dashboard v2 with reduced cognitive load.</p>
+          <span class="cs-card-cta">Open coach demo <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></span>
+        </a>
+        <a class="cs-card" href="coach-dashboard.html">
+          <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+          <h3>Coach demo (classic)</h3>
+          <p>Full-featured coach workspace for comparison with the streamlined version.</p>
+          <span class="cs-card-cta">Open classic <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="cs-footer">
+  <div class="container">
+    <p style="margin-bottom:10px">
+      <strong style="color:rgba(255,255,255,0.9)">TeachAI</strong> · Design case study by
+      <a href="https://www.linkedin.com/in/shaunrherron/" target="_blank" rel="noopener noreferrer">Shaun Herron</a>.
+      See also <a href="landing-page.html#what-is-teachai">What is TeachAI</a> for the marketing overview.
+    </p>
+    <p style="opacity:0.75;font-size:12px">© 2026 · Prototype content for portfolio review.</p>
+  </div>
+</footer>
+
+<script>
+  const navToggle = document.getElementById('nav-toggle');
+  const mobileMenu = document.getElementById('nav-mobile-menu');
+  navToggle.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+    mobileMenu.setAttribute('aria-hidden', !isOpen);
+    navToggle.querySelector('.material-symbols-outlined').textContent = isOpen ? 'close' : 'menu';
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', false);
+      mobileMenu.setAttribute('aria-hidden', true);
+      navToggle.querySelector('.material-symbols-outlined').textContent = 'menu';
+      document.body.style.overflow = '';
+    });
+  });
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.style.boxShadow = window.scrollY > 8 ? '0 2px 16px rgba(0,90,108,0.10)' : 'none';
+  }, { passive: true });
+</script>
+</body>
+</html>

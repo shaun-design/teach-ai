@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>TeachAI – AI Assistant for Teachers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #eef3f2;
+      --surface:     #ffffff;
+      --surface2:    #f4f8f7;
+      --border:      #dce8e6;
+      /* Dark teal · primary buttons, branding, links, chrome */
+      --brand:       #007890;
+      --brand-deep:  #005f72;
+      --brand-soft:  rgba(0, 120, 144, 0.1);
+      --brand-line:  rgba(0, 120, 144, 0.25);
+      /* Light teal · user chat bubbles only */
+      --chat:        #66BDCF;
+      --chat-light:  #8dd4e0;
+      --chat-shadow: rgba(102, 189, 207, 0.35);
+      --on-chat:     #0a2a32;
+      /* User message fill · matches Figma attachment stack (node 15831:162559) */
+      --user-bubble: #cde9ef;
+      --user-attachment-surface: #cde9ef;
+      --green:       #2f8f6e;
+      --amber:       #b8860b;
+      --text:        #3d524f;
+      --text-hi:     #1a2c2a;
+      --muted:       #6b7f7c;
+      --radius:      12px;
+      /* Chat bubbles · soft pill + one “tail” corner toward avatar */
+      --bubble-r:    20px;
+      --bubble-r-in: 6px;
+      --shadow-sm:   0 1px 2px rgba(0, 90, 108, 0.07);
+      --shadow-card: 0 2px 10px rgba(0, 90, 108, 0.08), 0 1px 3px rgba(0, 90, 108, 0.06);
+      --shadow-bubble-ai:  0 2px 14px rgba(0, 90, 108, 0.09), 0 1px 3px rgba(0, 90, 108, 0.05);
+      --shadow-bubble-user: 0 3px 14px rgba(0, 120, 144, 0.14), 0 1px 2px rgba(0, 120, 144, 0.08);
+
+      /* Tag system · very light fills, readable ink (harmonized with #007890) */
+      --tag-teal-bg:    #e3f3f5;
+      --tag-teal-fg:    #0a5c6a;
+      --tag-cyan-bg:    #dff6f9;
+      --tag-cyan-fg:    #0b6d7a;
+      --tag-sky-bg:     #e8f2fb;
+      --tag-sky-fg:     #1a5d86;
+      --tag-sage-bg:    #ecf6f0;
+      --tag-sage-fg:    #2d6b4f;
+      --tag-honey-bg:   #fdf6ea;
+      --tag-honey-fg:   #8a6a24;
+      --tag-violet-bg:  #f1eff9;
+      --tag-violet-fg:  #5a4d8c;
+      --tag-blush-bg:   #fceef1;
+      --tag-blush-fg:   #8a4a58;
+      --tag-slate-bg:   #eef3f5;
+      --tag-slate-fg:   #4a6570;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      height: 100dvh;
+      max-width: 100vw;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── SIDEBAR ────────────────────────────────────────── */
+    .sidebar {
+      width: 260px;
+      min-width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      transition: width 0.22s ease, min-width 0.22s ease, opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .sidebar.sidebar--collapsed {
+      flex: 0 0 0;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      border-right: none;
+      box-shadow: none;
+    }
+
+    .sidebar-header {
+      padding: 20px 16px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(155deg, #004a56 0%, var(--brand-deep) 48%, #003844 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 1px 4px rgba(0, 30, 40, 0.45);
+    }
+    .logo-icon svg {
+      display: block;
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Inline SVG icons (Heroicons-style outline) */
+    .icon-svg {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--muted);
+    }
+    .icon-svg svg {
+      width: 1em;
+      height: 1em;
+    }
+    .chat-item-icon.icon-svg { font-size: 18px; margin-top: 1px; }
+    .chat-item.active .chat-item-icon.icon-svg { color: var(--brand); }
+    .settings-icon.icon-svg {
+      margin-left: auto;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .settings-icon.icon-svg:hover { color: var(--brand); }
+    .attachment-icon.icon-svg {
+      font-size: 17px;
+      color: var(--brand);
+      line-height: 0;
+      flex-shrink: 0;
+      align-self: center;
+    }
+    .attachment-icon.icon-svg svg {
+      display: block;
+    }
+    .artifact-icon.icon-svg { font-size: 20px; color: var(--brand); }
+    .topbar .icon-svg { font-size: 20px; color: var(--muted); }
+    .panel-header .icon-svg { font-size: 18px; color: var(--muted); }
+    .panel-header .mui-icon.panel-header-icon { font-size: 22px; color: var(--muted); }
+    .upload-chip-count {
+      font-weight: 700;
+      opacity: 0.85;
+    }
+    .upload-chip .icon-svg { font-size: 15px; color: var(--muted); }
+    .upload-chip:hover .icon-svg { color: var(--brand); }
+    .upload-chip.has-file .icon-svg { color: var(--brand); }
+    .action-chip .icon-svg { font-size: 14px; color: var(--brand); }
+    .send-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    .new-chat-btn .icon-svg { color: #fff; font-size: 17px; }
+    .new-chat-btn svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+    .icon-btn svg,
+    .panel-collapse-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    .analysis-title .icon-svg { font-size: 16px; margin-right: 6px; color: var(--brand); }
+
+    .logo-text { font-weight: 700; font-size: 16px; letter-spacing: -0.3px; color: var(--brand); }
+    .logo-sub  { font-size: 10px; color: var(--muted); }
+
+    .new-chat-btn {
+      margin: 12px 12px 0;
+      padding: 9px 12px;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: calc(100% - 24px);
+      box-shadow: 0 1px 2px rgba(0, 120, 144, 0.25);
+      transition: background 0.15s ease;
+    }
+    .new-chat-btn:hover { background: var(--brand-deep); }
+
+    .section-label {
+      padding: 14px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .chat-item {
+      padding: 8px 14px;
+      border-radius: 8px;
+      margin: 1px 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+    .chat-item.active { background: var(--brand-soft); }
+    .chat-item:hover:not(.active) { background: rgba(0, 120, 144, 0.07); }
+
+    .chat-item-icon { margin-top: 1px; flex-shrink: 0; }
+    .chat-item-content { overflow: hidden; }
+    .chat-item-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-hi); }
+    .chat-item-meta  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    .sidebar-footer {
+      flex-shrink: 0;
+      margin-top: auto;
+      padding: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding-bottom: 8px;
+    }
+
+    .sidebar-mini-card {
+      margin: 6px 10px;
+      padding: 10px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text);
+    }
+    .sidebar-mini-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .sidebar-goal-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .sidebar-goal-bar {
+      height: 4px;
+      background: rgba(0, 120, 144, 0.12);
+      border-radius: 99px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .sidebar-goal-bar > span {
+      display: block;
+      height: 100%;
+      background: var(--brand);
+      border-radius: 99px;
+    }
+
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .avatar img,
+    .msg-avatar.user img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* Headshot crop · keep focal point on face in circle */
+      object-position: 50% 32%;
+      transform: scale(1.08);
+      transform-origin: 50% 40%;
+      border-radius: 50%;
+      display: block;
+    }
+    .msg-avatar.user {
+      background: transparent;
+      border: 1px solid rgba(0, 120, 144, 0.2);
+      box-shadow: 0 1px 3px rgba(0, 90, 108, 0.12);
+      overflow: hidden;
+    }
+    .user-info .name  { font-size: 13px; font-weight: 600; }
+    .user-info .role  { font-size: 11px; color: var(--muted); }
+
+    /* ── MAIN ───────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+    }
+    .topbar-title { font-size: 15px; font-weight: 600; flex: 1; color: var(--text-hi); }
+    .badge {
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+    .topbar .badge {
+      background: rgba(76, 175, 80, 0.16);
+      color: #2e7d32;
+      border: 1px solid rgba(76, 175, 80, 0.35);
+    }
+    .icon-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+    }
+    .icon-btn:hover { color: var(--brand); border-color: var(--brand-line); background: var(--brand-soft); }
+
+    .panel-collapse-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--brand);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+      font-family: inherit;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    .panel-collapse-btn:hover {
+      background: var(--brand-soft);
+      border-color: var(--brand-line);
+      color: var(--brand-deep);
+    }
+
+    /* ── CHAT MESSAGES ──────────────────────────────────── */
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      /* Column flex defaults to align-items: stretch; that made each .msg-row full-width and visually separated bubble from avatar */
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--bg);
+    }
+
+    /* Flex row · avoid min()/%-based grid tracks (some engines drop them → single implicit column → avatar stacks above bubble) */
+    .msg-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-start;
+      gap: 10px;
+      box-sizing: border-box;
+      max-width: min(820px, 100%);
+    }
+    .msg-row > .msg-avatar {
+      flex: 0 0 36px;
+      width: 36px;
+      min-width: 36px;
+    }
+    .msg-row > div:last-child {
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: min(600px, 100%);
+    }
+    .msg-row.ai {
+      align-self: flex-start;
+    }
+    .msg-row.user {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+
+    .msg-avatar {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+    }
+    .msg-avatar.ai {
+      background: linear-gradient(145deg, #9adce6, #6ec4d2);
+      color: #0a3a42;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 0 1px 4px rgba(102, 189, 207, 0.35);
+    }
+
+    .msg-bubble {
+      padding: 14px 18px;
+      border-radius: var(--bubble-r);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 600px;
+    }
+    /* AI (incoming): avatar on left · tighter radius bottom-left toward avatar */
+    .msg-row.ai .msg-bubble {
+      background: var(--surface);
+      border: 1px solid rgba(0, 120, 144, 0.1);
+      border-radius: var(--bubble-r) var(--bubble-r) var(--bubble-r) var(--bubble-r-in);
+      box-shadow: var(--shadow-bubble-ai);
+      color: var(--text-hi);
+      padding: 24px;
+    }
+    /* User (outgoing): avatar on right · tighter radius bottom-right toward avatar */
+    .msg-row.user .msg-bubble {
+      background: var(--user-bubble);
+      color: var(--text-hi);
+      border: 1px solid rgba(0, 120, 144, 0.14);
+      border-radius: var(--bubble-r) var(--bubble-r) var(--bubble-r-in) var(--bubble-r);
+      box-shadow: var(--shadow-bubble-user);
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.55;
+    }
+    /* Attachment stack: soft “card stack” on tinted surface (Figma-inspired) */
+    .msg-row.user .msg-bubble:has(.attachment-card) {
+      background: var(--user-attachment-surface);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 20px rgba(0, 120, 144, 0.12), 0 1px 3px rgba(0, 120, 144, 0.06);
+      border-radius: calc(var(--bubble-r) + 2px);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: min(600px, 100%);
+    }
+    .msg-row.user .msg-bubble:not(:has(.attachment-card)) {
+      padding: 12px 16px;
+      border-radius: var(--bubble-r) var(--bubble-r) var(--bubble-r-in) var(--bubble-r);
+    }
+    .msg-row.user .msg-bubble:has(.attachment-card) .msg-bubble-follow {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .msg-row.user .msg-bubble strong { color: var(--text-hi); font-weight: 600; }
+
+    /* Copy / Edit below user (Sarah) bubbles */
+    .user-msg-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 2px;
+      margin-top: 6px;
+      padding-right: 2px;
+    }
+    .user-msg-tool {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 28px;
+      padding: 0;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .user-msg-tool:hover {
+      background: rgba(0, 120, 144, 0.08);
+      color: var(--brand);
+    }
+    .user-msg-tool .material-symbols-outlined {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .mui-icon.material-symbols-outlined {
+      font-size: 20px;
+      line-height: 1;
+      vertical-align: middle;
+      color: var(--muted);
+    }
+    .suggestion-label--with-icon {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .suggestion-label--with-icon .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--brand);
+      flex-shrink: 0;
+    }
+
+    /*
+     * User attachment file row · Figma node 15831:162557 (MUI 7.2 mock):
+     * white card, 10px radius & padding, 16px gap, 24px icon, title 16/700, meta 13/#5f5f5f
+     */
+    .msg-row.user .msg-bubble:has(.attachment-card) .attachment-card {
+      font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      margin-bottom: 0;
+      border-radius: 10px;
+      padding: 10px;
+      gap: 16px;
+      align-items: flex-start;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    .msg-row.user .msg-bubble:has(.attachment-card) .attachment-card > div:nth-child(2) {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .msg-row.user .msg-bubble:has(.attachment-card) .attachment-icon.icon-svg {
+      font-size: 24px;
+      align-self: flex-start;
+      margin-top: 2px;
+      color: var(--brand);
+    }
+    .msg-row.user .msg-bubble:has(.attachment-card) .attachment-name {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.66;
+      letter-spacing: 0.4px;
+      color: #000;
+    }
+    .msg-row.user .msg-bubble:has(.attachment-card) .attachment-meta {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.66;
+      color: #5f5f5f;
+      margin-top: 0;
+    }
+    .msg-row.user .msg-bubble:has(.attachment-card) .attachment-status {
+      align-self: center;
+    }
+    .msg-row.user .attachment-name { color: var(--text-hi); }
+    .msg-row.user .attachment-meta { color: var(--muted); }
+    .msg-row.user .status-done {
+      background: rgba(47, 143, 110, 0.14);
+      color: var(--green);
+    }
+    .msg-row.user .status-pending {
+      background: rgba(184, 134, 11, 0.12);
+      color: var(--amber);
+    }
+
+    .msg-bubble p { margin-bottom: 8px; }
+    .msg-bubble p:last-child { margin-bottom: 0; }
+
+    /* Uploaded attachment card */
+    .attachment-card {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 6px;
+      background: var(--brand-soft);
+      border: 1px solid var(--brand-line);
+      border-radius: 6px;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+    .attachment-card > div:nth-child(2) {
+      flex: 1;
+      min-width: 0;
+    }
+    .attachment-name {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+    .attachment-meta {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.25;
+      margin-top: 1px;
+    }
+    .attachment-status {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 99px;
+    }
+    .attachment-status .icon-svg { font-size: 11px; color: inherit; }
+    .status-done    { background: rgba(47, 143, 110, 0.12);  color: var(--green); }
+    .status-pending { background: rgba(184, 134, 11, 0.12); color: var(--amber); }
+
+    /* AI analysis card */
+    .analysis-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-top: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+    .analysis-title {
+      font-size: 13px; font-weight: 700;
+      color: var(--brand-deep);
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .metric-box {
+      padding: 12px;
+      background: var(--brand-soft);
+      border-radius: 8px;
+      border: 1px solid var(--brand-line);
+    }
+    .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .metric-value { font-size: 20px; font-weight: 700; }
+    .metric-value.green { color: var(--green); }
+    .metric-value.amber { color: var(--amber); }
+    .metric-value.accent { color: var(--brand); }
+
+    .progress-row { margin-bottom: 8px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+    .progress-bar   { height: 6px; background: rgba(0, 120, 144, 0.14); border-radius: 99px; overflow: hidden; }
+    .progress-fill  { height: 100%; border-radius: 99px; }
+    .fill-green  { background: var(--green); }
+    .fill-accent { background: var(--brand); }
+    .fill-amber  { background: var(--amber); }
+
+    .insight-list { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+    .insight-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; line-height: 1.5;
+    }
+    .insight-dot {
+      width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0;
+    }
+    .dot-green  { background: var(--green); }
+    .dot-amber  { background: var(--amber); }
+    .dot-accent { background: var(--brand); }
+
+    .msg-actions {
+      display: flex; gap: 6px; margin-top: 8px;
+    }
+    .action-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--surface);
+      border: 1px solid var(--brand);
+      color: var(--brand);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .action-chip:hover { background: var(--brand-soft); border-color: var(--brand-deep); color: var(--brand-deep); }
+
+    /* ── INPUT BAR ──────────────────────────────────────── */
+    .input-area {
+      padding: 16px 24px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .upload-chips {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .upload-chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px dashed var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .upload-chip:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+    .upload-chip.has-file {
+      border-style: solid;
+      border-color: var(--brand-line);
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .input-box {
+      flex: 1;
+      background: #eaf5e9;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--text-hi);
+      resize: none;
+      min-height: 46px;
+      max-height: 120px;
+      line-height: 1.5;
+      font-family: inherit;
+      box-shadow: inset 0 1px 2px rgba(0, 90, 108, 0.04);
+    }
+    .input-box::placeholder { color: var(--muted); }
+    .input-box:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: inset 0 1px 2px rgba(0, 90, 108, 0.04), 0 0 0 3px var(--brand-soft);
+    }
+
+    .send-btn {
+      width: 44px; height: 44px;
+      background: var(--brand);
+      border: none; border-radius: 10px;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0, 120, 144, 0.3);
+      transition: background 0.15s ease;
+    }
+    .send-btn:hover { background: var(--brand-deep); }
+
+    .input-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      gap: 16px;
+    }
+
+    /* ── CONTEXT PANEL ──────────────────────────────────── */
+    .context-panel {
+      width: 300px;
+      min-width: 300px;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: width 0.22s ease, min-width 0.22s ease, opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .context-panel.context-panel--collapsed {
+      flex: 0 0 0;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      border-left: none;
+      box-shadow: none;
+    }
+
+    .panel-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-title { font-size: 14px; font-weight: 700; flex: 1; }
+    .panel-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      font-family: inherit;
+    }
+    .panel-tab:hover { color: var(--text-hi); }
+    .panel-tab.active {
+      color: var(--brand-deep);
+      border-bottom-color: var(--brand);
+    }
+
+    .panel-body-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .context-subpanel {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 14px;
+    }
+    .context-subpanel.active { display: block; }
+
+    .panel-body { flex: 1; overflow-y: auto; padding: 14px; }
+
+    .artifact-card {
+      padding: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .artifact-card:hover { border-color: var(--brand-line); }
+    .artifact-card.selected { border-color: var(--brand); background: var(--brand-soft); box-shadow: var(--shadow-card); }
+
+    .artifact-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    }
+    .artifact-name  { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .artifact-meta  { font-size: 11px; color: var(--muted); }
+    .artifact-tags  { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+    .tag {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border: 1px solid transparent;
+      background: var(--tag-slate-bg);
+      color: var(--tag-slate-fg);
+    }
+    .tag.teal   { background: var(--tag-teal-bg);   color: var(--tag-teal-fg);   border-color: rgba(0, 120, 144, 0.14); }
+    .tag.cyan   { background: var(--tag-cyan-bg);   color: var(--tag-cyan-fg);   border-color: rgba(11, 140, 155, 0.16); }
+    .tag.sky    { background: var(--tag-sky-bg);    color: var(--tag-sky-fg);    border-color: rgba(26, 93, 134, 0.12); }
+    .tag.sage   { background: var(--tag-sage-bg);   color: var(--tag-sage-fg);   border-color: rgba(45, 107, 79, 0.14); }
+    .tag.honey  { background: var(--tag-honey-bg);  color: var(--tag-honey-fg);  border-color: rgba(184, 134, 11, 0.18); }
+    .tag.violet { background: var(--tag-violet-bg); color: var(--tag-violet-fg); border-color: rgba(90, 77, 140, 0.12); }
+    .tag.blush  { background: var(--tag-blush-bg);  color: var(--tag-blush-fg);  border-color: rgba(138, 74, 88, 0.12); }
+    .tag.slate  { background: var(--tag-slate-bg);  color: var(--tag-slate-fg);  border-color: rgba(74, 101, 112, 0.12); }
+    /* Aliases */
+    .tag.blue   { background: var(--tag-sky-bg);    color: var(--tag-sky-fg);    border-color: rgba(26, 93, 134, 0.12); }
+    .tag.green  { background: var(--tag-sage-bg);  color: var(--tag-sage-fg);   border-color: rgba(45, 107, 79, 0.14); }
+    .tag.purple { background: var(--tag-violet-bg); color: var(--tag-violet-fg); border-color: rgba(90, 77, 140, 0.12); }
+
+    .mini-analysis {
+      padding: 10px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-top: 6px;
+      font-size: 12px;
+    }
+    .mini-analysis-label { font-weight: 700; color: var(--brand-deep); margin-bottom: 4px; }
+
+    .suggestion-row {
+      padding: 12px;
+      background: var(--surface);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .suggestion-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .suggestion-text  { font-size: 12px; line-height: 1.5; color: var(--text); }
+    .suggestion-action {
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--brand-deep);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .suggestion-action .icon-svg { font-size: 12px; color: var(--brand-deep); }
+    .suggestion-action .suggestion-arrow { font-size: 11px; margin-left: 2px; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sidebar, .context-panel { transition: none; }
+    }
+
+    /* ── Responsive (RWD) ───────────────────────────────── */
+    @media (max-width: 1100px) {
+      .sidebar {
+        width: 240px;
+        min-width: 240px;
+      }
+      .context-panel {
+        width: 280px;
+        min-width: 280px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow-x: hidden;
+      }
+      .messages {
+        padding: 12px 14px 20px;
+        gap: 16px;
+      }
+      .topbar {
+        padding: 12px 14px;
+        flex-wrap: wrap;
+        row-gap: 8px;
+      }
+      .topbar-title {
+        font-size: 14px;
+        min-width: 0;
+        flex: 1 1 160px;
+      }
+      .msg-row {
+        max-width: 100%;
+      }
+      .msg-bubble {
+        max-width: 100%;
+      }
+      .msg-row.ai .msg-bubble,
+      .msg-row.user .msg-bubble:has(.attachment-card) {
+        padding: 16px;
+        gap: 16px;
+      }
+      .msg-row.user .msg-bubble:not(:has(.attachment-card)) {
+        padding: 10px 12px;
+      }
+      .msg-row.user .msg-bubble:has(.attachment-card) .attachment-card {
+        padding: 10px;
+        gap: 12px;
+      }
+      .msg-row.user .msg-bubble:has(.attachment-card) .attachment-name {
+        font-size: 14px;
+      }
+      .analysis-card {
+        padding: 14px;
+      }
+      .analysis-grid {
+        grid-template-columns: 1fr;
+      }
+      .input-area {
+        padding: 12px 14px 16px;
+      }
+      .input-hint {
+        flex-wrap: wrap;
+        row-gap: 4px;
+      }
+      .upload-chips {
+        gap: 6px;
+      }
+      .panel-header {
+        padding: 12px 14px;
+      }
+      .context-subpanel,
+      .panel-body {
+        padding: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .messages {
+        padding: 10px 12px 16px;
+      }
+      .msg-row.ai .msg-bubble,
+      .msg-row.user .msg-bubble:has(.attachment-card) {
+        padding: 14px;
+        gap: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Heroicons-style outline icons (sprite) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <symbol id="hi-video" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.875-3.375c.621-.427 1.5-.075 1.5.675v8.4c0 .75-.879 1.102-1.5.675L15.75 13.5V6.75a.75.75 0 00-.75-.75h-9a.75.75 0 00-.75.75v10.5a.75.75 0 00.75.75h9a.75.75 0 00.75-.75v-7.5z"/></symbol>
+    <symbol id="hi-document" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9z"/></symbol>
+    <symbol id="hi-sparkles" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></symbol>
+    <symbol id="hi-cog" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.65.87.05.027.096.058.14.092l1.106.852a.75.75 0 01.302.595v.005a.75.75 0 01-.302.595l-1.106.852a.75.75 0 00-.14.092c-.337.184-.587.496-.65.87l-.213 1.281c-.09.542-.56.94-1.11.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.281a.75.75 0 00-.65-.87l-.14-.092-1.106-.852a.75.75 0 01-.302-.595v-.005a.75.75 0 01.302-.595l1.106-.852a.75.75 0 00.14-.092c.337-.184.587-.496.65-.87l.213-1.281z"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></symbol>
+    <symbol id="hi-chevron-left" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></symbol>
+    <symbol id="hi-chevron-right" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></symbol>
+    <symbol id="hi-share" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M19.5 4.5l-10.5 10.5M18 5.25h-4.5v-4.5"/></symbol>
+    <symbol id="hi-ellipsis" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zM12 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zM17.25 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0z"/></symbol>
+    <symbol id="hi-check" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></symbol>
+    <symbol id="hi-chart" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v4.125c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 17.25v-4.125zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125v-8.25zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v12.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125z"/></symbol>
+    <symbol id="hi-search" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 1 0 10.607 10.607Z"/></symbol>
+    <symbol id="hi-chat" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.216 1.02 2.254 2.25 2.254h9.75a2.25 2.25 0 002.25-2.254V9.75a2.25 2.25 0 00-2.25-2.254H4.5a2.25 2.25 0 00-2.25 2.254v3.01z"/></symbol>
+    <symbol id="hi-calendar" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M4.5 9.75h15m-14.25 5.25h3m-3 3h3m-3-6h3m6 0h3m-3 3h3m-3-6h3m6 0V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v12a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25V9.75z"/></symbol>
+    <symbol id="hi-link" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 1 1-6.364-6.364l1.757-1.757m13.35-.622a4.5 4.5 0 0 0-1.242-7.244l-4.5-4.5a4.5 4.5 0 1 0-6.364 6.364l1.757 1.757"/></symbol>
+    <symbol id="hi-paperclip" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.75h-9.75a3.75 3.75 0 1 1 3.75-3.75v9.75a2.25 2.25 0 0 0 4.5 0v-9.75a5.25 5.25 0 1 0-10.5 0v9.75"/></symbol>
+    <symbol id="hi-folder" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.06-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 0-1.06-.44z"/></symbol>
+    <symbol id="hi-plus" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></symbol>
+    <symbol id="hi-arrow-up" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></symbol>
+    <symbol id="hi-arrow-right" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12l-7.5 7.5M21 12H3"/></symbol>
+    <symbol id="hi-table" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125V5.25m17.25 13.5a1.125 1.125 0 0 0 1.125-1.125V5.25m0 0a1.125 1.125 0 0 0-1.125-1.125h-17.25A1.125 1.125 0 0 0 3.375 5.25m0 0v12.75m0 0a1.125 1.125 0 0 0 1.125 1.125h6.75m-7.875-7.5h17.25"/></symbol>
+  </defs>
+</svg>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <!-- Magical: wand + star burst + sparkles -->
+        <path fill="#ffffff" d="M3.2 19.8L8 15l2.1 2.1-4.8 4.8-1.4-1.4-.7-.7z"/>
+        <path fill="#ffffff" d="M8.2 15L11 4.5l1.3 1.3L9.5 14.2 8.2 15z" opacity=".92"/>
+        <path fill="#ffffff" d="M17.5 3.5l1.1 3.2L22 7.5l-3.4 1.2-1.1 3.4-1.1-3.4-3.4-1.2 3.4-1.2 1.1-3.2z"/>
+        <path fill="#ffffff" d="M6 8.5l.7 2L8.8 11 6.7 11.5 6 13.5l-.7-2-2-1.5 2-1 .7-2z" opacity=".88"/>
+        <circle cx="19" cy="16" r="1.1" fill="#ffffff"/>
+        <circle cx="14" cy="19" r="0.75" fill="#ffffff"/>
+        <circle cx="4.5" cy="12" r="0.65" fill="#ffffff"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-text">TeachAI</div>
+      <div class="logo-sub">Classroom Intelligence</div>
+    </div>
+  </div>
+
+  <button class="new-chat-btn" type="button"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-plus"/></svg></span> New Analysis Session</button>
+
+  <div class="sidebar-scroll">
+
+  <div class="section-label">Projects</div>
+  <div class="chat-item">
+    <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-folder"/></svg></div>
+    <div class="chat-item-content">
+      <div class="chat-item-title">Lincoln MS · 8th Math</div>
+      <div class="chat-item-meta">Active project</div>
+    </div>
+  </div>
+
+  <div class="section-label">Recent Sessions</div>
+
+  <div class="chat-item active">
+    <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-video"/></svg></div>
+    <div class="chat-item-content">
+      <div class="chat-item-title">Algebra · Nov 14 Lesson</div>
+      <div class="chat-item-meta">Video · Lesson plan · 2h ago</div>
+    </div>
+  </div>
+
+  <div class="chat-item">
+    <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-document"/></svg></div>
+    <div class="chat-item-content">
+      <div class="chat-item-title">Differentiated Instruction Review</div>
+      <div class="chat-item-meta">Rubric · Standards map</div>
+    </div>
+  </div>
+
+  <div class="chat-item">
+    <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-video"/></svg></div>
+    <div class="chat-item-content">
+      <div class="chat-item-title">Science Discussion · Oct 30</div>
+      <div class="chat-item-meta">Video · Student work samples</div>
+    </div>
+  </div>
+
+  <div class="chat-item">
+    <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-document"/></svg></div>
+    <div class="chat-item-content">
+      <div class="chat-item-title">Unit 3 Lesson Plan Feedback</div>
+      <div class="chat-item-meta">Lesson plan</div>
+    </div>
+  </div>
+
+  <div class="chat-item">
+    <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-video"/></svg></div>
+    <div class="chat-item-content">
+      <div class="chat-item-title">Reading Groups · Oct 18</div>
+      <div class="chat-item-meta">Video · Notes</div>
+    </div>
+  </div>
+
+  <div class="section-label">Saved Prompts</div>
+  <div class="chat-item">
+    <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-sparkles"/></svg></div>
+    <div class="chat-item-content">
+      <div class="chat-item-title">Equity check · student talk time</div>
+    </div>
+  </div>
+  <div class="chat-item">
+    <div class="icon-svg chat-item-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-sparkles"/></svg></div>
+    <div class="chat-item-content">
+      <div class="chat-item-title">Bloom's taxonomy alignment</div>
+    </div>
+  </div>
+
+  </div><!-- /sidebar-scroll -->
+
+  <div class="sidebar-footer">
+    <div class="avatar">
+      <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&amp;h=400&amp;fit=crop&amp;crop=faces&amp;auto=format&amp;q=85" width="36" height="36" alt="Sarah Rivera" />
+    </div>
+    <div class="user-info">
+      <div class="name">Sarah Rivera</div>
+      <div class="role">8th Grade Math · Lincoln MS</div>
+    </div>
+    <div class="icon-svg settings-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-cog"/></svg></div>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN CHAT ══════════════ -->
+<main class="main">
+  <div class="topbar">
+    <button type="button" class="panel-collapse-btn" id="toggle-sidebar" title="Hide sessions panel" aria-expanded="true" aria-controls="sidebar"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><use href="#hi-chevron-left"/></svg></button>
+    <span class="icon-svg" style="font-size:18px;color:var(--muted);" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-video"/></svg></span>
+    <span class="topbar-title">Algebra · Nov 14 Lesson Analysis</span>
+    <span class="badge">In Progress</span>
+    <button type="button" class="panel-collapse-btn" id="toggle-context" title="Hide context panel" aria-expanded="true" aria-controls="context-panel"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><use href="#hi-chevron-right"/></svg></button>
+  </div>
+
+  <div class="messages" id="chat-messages" aria-live="polite" aria-relevant="additions">
+
+    <!-- USER: Upload -->
+    <div class="msg-row user">
+      <div class="msg-avatar user">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&amp;h=400&amp;fit=crop&amp;crop=faces&amp;auto=format&amp;q=85" width="36" height="36" alt="" />
+      </div>
+      <div>
+        <div class="msg-bubble">
+          <div class="attachment-card">
+            <div class="icon-svg attachment-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-video"/></svg></div>
+            <div>
+              <div class="attachment-name">algebra_nov14_period3.mp4</div>
+              <div class="attachment-meta">47 min · 1.2 GB · HD 1080p</div>
+            </div>
+            <div class="attachment-status status-done"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-check"/></svg></span>Processed</div>
+          </div>
+          <div class="attachment-card">
+            <div class="icon-svg attachment-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-document"/></svg></div>
+            <div>
+              <div class="attachment-name">Unit4_Lesson2_Plan.pdf</div>
+              <div class="attachment-meta">3 pages · Lesson plan</div>
+            </div>
+            <div class="attachment-status status-done"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-check"/></svg></span>Processed</div>
+          </div>
+          <p class="msg-bubble-follow">Can you analyze my lesson for student engagement, wait time, and alignment to my learning objectives?</p>
+        </div>
+        <div class="user-msg-toolbar" aria-label="Message actions">
+          <button type="button" class="user-msg-tool" data-action="copy" title="Copy"><span class="material-symbols-outlined" aria-hidden="true">content_copy</span></button>
+          <button type="button" class="user-msg-tool" data-action="edit" title="Edit"><span class="material-symbols-outlined" aria-hidden="true">edit</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI: Response -->
+    <div class="msg-row ai">
+      <div class="msg-avatar ai">AI</div>
+      <div>
+        <div class="msg-bubble">
+          <p>I've analyzed your <strong>47-minute algebra lesson</strong> alongside your lesson plan. Here's what I found:</p>
+
+          <div class="analysis-card">
+            <div class="analysis-title"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-chart"/></svg></span> Lesson Analysis · Algebra Nov 14</div>
+
+            <div class="analysis-grid">
+              <div class="metric-box">
+                <div class="metric-label">Student Talk Time</div>
+                <div class="metric-value accent">38%</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">Avg. Wait Time</div>
+                <div class="metric-value amber">2.1s</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">Obj. Alignment</div>
+                <div class="metric-value green">4 / 5</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">Questions Asked</div>
+                <div class="metric-value accent">24</div>
+              </div>
+            </div>
+
+            <div class="progress-row">
+              <div class="progress-label"><span>Higher-order questions</span><span style="color:var(--green)">58%</span></div>
+              <div class="progress-bar"><div class="progress-fill fill-green" style="width:58%"></div></div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label"><span>On-task student behavior</span><span style="color:var(--brand)">87%</span></div>
+              <div class="progress-bar"><div class="progress-fill fill-accent" style="width:87%"></div></div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label"><span>Cold-call equity (gender)</span><span style="color:var(--amber)">62% / 38%</span></div>
+              <div class="progress-bar"><div class="progress-fill fill-amber" style="width:62%"></div></div>
+            </div>
+
+            <div class="insight-list">
+              <div class="insight-item">
+                <div class="insight-dot dot-green"></div>
+                Strong use of think-pair-share at 14:22 · all groups engaged within 45 seconds.
+              </div>
+              <div class="insight-item">
+                <div class="insight-dot dot-amber"></div>
+                Wait time averaged 2.1s · research suggests 3–5s improves quality of responses.
+              </div>
+              <div class="insight-item">
+                <div class="insight-dot dot-amber"></div>
+                Male students were called on 62% of the time. Consider a randomization strategy.
+              </div>
+              <div class="insight-item">
+                <div class="insight-dot dot-accent"></div>
+                Objective 3 (applying slope formula) was not addressed · consider revisiting in next lesson.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="msg-actions">
+          <div class="action-chip"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-document"/></svg></span>Export report</div>
+          <div class="action-chip"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-search"/></svg></span>Show timestamps</div>
+          <div class="action-chip"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-chat"/></svg></span>Coaching tips</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER: Follow-up -->
+    <div class="msg-row user">
+      <div class="msg-avatar user">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&amp;h=400&amp;fit=crop&amp;crop=faces&amp;auto=format&amp;q=85" width="36" height="36" alt="" />
+      </div>
+      <div>
+        <div class="msg-bubble">
+          Give me 3 specific strategies to improve wait time and gender equity in questioning.
+        </div>
+        <div class="user-msg-toolbar" aria-label="Message actions">
+          <button type="button" class="user-msg-tool" data-action="copy" title="Copy"><span class="material-symbols-outlined" aria-hidden="true">content_copy</span></button>
+          <button type="button" class="user-msg-tool" data-action="edit" title="Edit"><span class="material-symbols-outlined" aria-hidden="true">edit</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI: Follow-up Response -->
+    <div class="msg-row ai">
+      <div class="msg-avatar ai">AI</div>
+      <div>
+        <div class="msg-bubble">
+          <p>Here are three targeted strategies based on your lesson:</p>
+          <p><strong>1. Countdown think time</strong> · After posing a question, hold up fingers and silently count to 5 before taking responses. This simple visual cue helped teachers in a 2023 TNTP study increase wait time from 1.8s → 4.2s within 2 weeks.</p>
+          <p><strong>2. Popsicle sticks or class randomizer</strong> · Use a random name selector (Wheel of Names, ClassDojo, or physical sticks) for cold calls. This removes unconscious bias and signals to all students that they're expected to participate.</p>
+          <p><strong>3. Whiteboard responses</strong> · Have all students write answers on mini whiteboards before any verbal sharing. This ensures every student formulates a response independently, and you can scan the room for equity before selecting who speaks aloud.</p>
+        </div>
+        <div class="msg-actions">
+          <div class="action-chip"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-calendar"/></svg></span>Add to growth plan</div>
+          <div class="action-chip"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-link"/></svg></span>Research links</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /messages -->
+
+  <!-- ── INPUT BAR ── -->
+  <div class="input-area">
+    <div class="upload-chips">
+      <div class="upload-chip">
+        <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-video"/></svg></span>Add video <span class="upload-chip-count">(1)</span>
+      </div>
+      <div class="upload-chip">
+        <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-document"/></svg></span>Add lesson plan <span class="upload-chip-count">(1)</span>
+      </div>
+      <div class="upload-chip has-file">
+        <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-table"/></svg></span>Rubric attached <span class="upload-chip-count">(1)</span>
+      </div>
+      <div class="upload-chip">
+        <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-folder"/></svg></span>Student work <span class="upload-chip-count">(0)</span>
+      </div>
+      <div class="upload-chip">
+        <span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-document"/></svg></span>Notes / standards <span class="upload-chip-count">(0)</span>
+      </div>
+    </div>
+    <div class="input-row">
+      <textarea class="input-box" id="chat-input" placeholder="Ask about your teaching, lesson, or student engagement…" rows="1" aria-label="Message"></textarea>
+      <button type="button" class="send-btn" id="chat-send" aria-label="Send message"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><use href="#hi-arrow-up"/></svg></button>
+    </div>
+    <div class="input-hint">
+      <span>Enter to send</span>
+      <span>Shift+Enter new line</span>
+      <span>@ to reference an artifact</span>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════════ CONTEXT PANEL ══════════════ -->
+<aside class="context-panel" id="context-panel">
+  <div class="panel-header">
+    <span class="mui-icon material-symbols-outlined panel-header-icon" aria-hidden="true">inventory_2</span>
+    <span class="panel-title">Session Context</span>
+    <button type="button" class="icon-btn" title="Add artifact" aria-label="Add artifact"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><use href="#hi-plus"/></svg></button>
+  </div>
+
+  <div class="panel-tabs" role="tablist" aria-label="Session context">
+    <button type="button" class="panel-tab active" role="tab" aria-selected="true" data-context-target="artifacts" id="ctx-tab-artifacts">Artifacts</button>
+    <button type="button" class="panel-tab" role="tab" aria-selected="false" data-context-target="insights" id="ctx-tab-insights">Insights</button>
+    <button type="button" class="panel-tab" role="tab" aria-selected="false" data-context-target="goals" id="ctx-tab-goals">Goals</button>
+  </div>
+
+  <div class="panel-body-wrap">
+  <div class="context-subpanel active" id="context-artifacts" role="tabpanel" aria-labelledby="ctx-tab-artifacts">
+
+    <div class="artifact-card selected">
+      <div class="artifact-row">
+        <div class="icon-svg artifact-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-video"/></svg></div>
+        <div>
+          <div class="artifact-name">algebra_nov14_period3.mp4</div>
+          <div class="artifact-meta">47 min · Nov 14, 2024</div>
+        </div>
+      </div>
+      <div class="artifact-tags">
+        <span class="tag cyan">Video</span>
+        <span class="tag sage">Analyzed</span>
+        <span class="tag teal">Period 3</span>
+      </div>
+      <div class="mini-analysis">
+        <div class="mini-analysis-label">AI Summary</div>
+        Quadratic equations intro. Strong group work at 14:22. Pacing slowed at 32:00 during board work.
+      </div>
+    </div>
+
+    <div class="artifact-card">
+      <div class="artifact-row">
+        <div class="icon-svg artifact-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-document"/></svg></div>
+        <div>
+          <div class="artifact-name">Unit4_Lesson2_Plan.pdf</div>
+          <div class="artifact-meta">3 pages · Uploaded today</div>
+        </div>
+      </div>
+      <div class="artifact-tags">
+        <span class="tag violet">Lesson Plan</span>
+        <span class="tag sage">Analyzed</span>
+      </div>
+    </div>
+
+    <div class="artifact-card">
+      <div class="artifact-row">
+        <div class="icon-svg artifact-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-table"/></svg></div>
+        <div>
+          <div class="artifact-name">Unit_4_Rubric.xlsx</div>
+          <div class="artifact-meta">Assessment rubric</div>
+        </div>
+      </div>
+      <div class="artifact-tags">
+        <span class="tag sky">Rubric</span>
+        <span class="tag honey">Active</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px;">
+      <div class="section-label" style="padding: 0 0 8px;">AI Suggestions</div>
+
+      <div class="suggestion-row">
+        <div class="suggestion-label suggestion-label--with-icon"><span class="material-symbols-outlined" aria-hidden="true">directions_alt</span> Next lesson</div>
+        <div class="suggestion-text">Revisit Objective 3 (slope formula application) · not covered in this lesson.</div>
+        <div class="suggestion-action"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-plus"/></svg></span> Add to plan<span class="icon-svg suggestion-arrow" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-arrow-right"/></svg></span></div>
+      </div>
+
+      <div class="suggestion-row">
+        <div class="suggestion-label suggestion-label--with-icon"><span class="material-symbols-outlined" aria-hidden="true">grass</span> Growth area</div>
+        <div class="suggestion-text">Practice extending wait time using a silent countdown strategy before taking responses.</div>
+        <div class="suggestion-action"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-plus"/></svg></span> Add to growth plan<span class="icon-svg suggestion-arrow" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-arrow-right"/></svg></span></div>
+      </div>
+
+      <div class="suggestion-row">
+        <div class="suggestion-label">Upload prompt</div>
+        <div class="suggestion-text">Add student exit tickets to get a complete picture of learning outcomes today.</div>
+        <div class="suggestion-action"><span class="icon-svg" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-plus"/></svg></span> Upload exit tickets<span class="icon-svg suggestion-arrow" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><use href="#hi-arrow-right"/></svg></span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="context-subpanel" id="context-insights" role="tabpanel" aria-labelledby="ctx-tab-insights">
+    <div class="section-label" style="padding: 0 0 8px;">Key findings</div>
+    <div class="suggestion-row">
+      <div class="suggestion-label">Engagement</div>
+      <div class="suggestion-text">Strong think-pair-share at 14:22; groups on task within 45 seconds.</div>
+    </div>
+    <div class="suggestion-row">
+      <div class="suggestion-label">Instructional</div>
+      <div class="suggestion-text">Wait time ~2.1s · stretch toward 3–5s on open-ended prompts.</div>
+    </div>
+    <div class="suggestion-row">
+      <div class="suggestion-label">Equity</div>
+      <div class="suggestion-text">Cold-call split 62% / 38%; consider a randomizer or turn-and-talk before hands.</div>
+    </div>
+    <div class="section-label" style="padding: 14px 0 8px;">Patterns</div>
+    <div class="suggestion-row">
+      <div class="suggestion-label">Across 4 lessons</div>
+      <div class="suggestion-text">Higher-order questions up 12% vs last month.</div>
+    </div>
+  </div>
+
+  <div class="context-subpanel" id="context-goals" role="tabpanel" aria-labelledby="ctx-tab-goals">
+    <div class="section-label" style="padding: 0 0 8px;">Linked to this session</div>
+    <div class="sidebar-mini-card">
+      <div class="sidebar-mini-head"><span>Active</span><span class="tag teal">Q2</span></div>
+      <strong style="font-weight:600;color:var(--text-hi);">Extend wait time to 4s+</strong>
+      <div class="sidebar-goal-meta">Countdown before taking hands</div>
+      <div class="sidebar-goal-bar"><span style="width:65%"></span></div>
+    </div>
+    <div class="sidebar-mini-card">
+      <div class="sidebar-mini-head"><span>Active</span><span class="tag violet">Ongoing</span></div>
+      <strong style="font-weight:600;color:var(--text-hi);">Balance cold-call participation</strong>
+      <div class="sidebar-goal-meta">Wheel + mini whiteboards</div>
+      <div class="sidebar-goal-bar"><span style="width:40%"></span></div>
+    </div>
+    <div class="section-label" style="padding: 14px 0 8px;">Completed</div>
+    <div class="sidebar-mini-card" style="opacity:0.9;">
+      <div class="sidebar-mini-head"><span>Done</span><span class="tag sage">Nov 1</span></div>
+      <strong style="font-weight:600;color:var(--muted);">Objective alignment check</strong>
+    </div>
+  </div>
+
+  </div><!-- /panel-body-wrap -->
+</aside>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  /* User bubble: copy / edit (delegation) */
+  (function () {
+    var messagesEl = document.getElementById('chat-messages');
+    var input = document.getElementById('chat-input');
+    if (!messagesEl || !input) return;
+    messagesEl.addEventListener('click', function (e) {
+      var btn = e.target.closest('.user-msg-tool[data-action]');
+      if (!btn || !messagesEl.contains(btn)) return;
+      var row = btn.closest('.msg-row.user');
+      if (!row) return;
+      var bubble = row.querySelector('.msg-bubble');
+      if (!bubble) return;
+      var action = btn.getAttribute('data-action');
+      if (action === 'copy') {
+        var text = bubble.innerText.trim();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).catch(function () {});
+        }
+      } else if (action === 'edit') {
+        input.value = bubble.innerText.trim();
+        input.focus();
+      }
+    });
+  })();
+
+  /* Collapse / expand side panels (focus on chat) */
+  (function () {
+    var side = document.getElementById('sidebar');
+    var ctx = document.getElementById('context-panel');
+    var btnL = document.getElementById('toggle-sidebar');
+    var btnR = document.getElementById('toggle-context');
+    if (!side || !ctx || !btnL || !btnR) return;
+
+    var svgChevL = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><use href="#hi-chevron-left"/></svg>';
+    var svgChevR = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><use href="#hi-chevron-right"/></svg>';
+    function syncLeft() {
+      var collapsed = side.classList.contains('sidebar--collapsed');
+      btnL.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      btnL.innerHTML = collapsed ? svgChevR : svgChevL;
+      btnL.title = collapsed ? 'Show sessions panel' : 'Hide sessions panel';
+      if (collapsed) side.setAttribute('aria-hidden', 'true');
+      else side.removeAttribute('aria-hidden');
+    }
+    function syncRight() {
+      var collapsed = ctx.classList.contains('context-panel--collapsed');
+      btnR.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      btnR.innerHTML = collapsed ? svgChevL : svgChevR;
+      btnR.title = collapsed ? 'Show context panel' : 'Hide context panel';
+      if (collapsed) ctx.setAttribute('aria-hidden', 'true');
+      else ctx.removeAttribute('aria-hidden');
+    }
+
+    btnL.addEventListener('click', function () {
+      side.classList.toggle('sidebar--collapsed');
+      syncLeft();
+    });
+    btnR.addEventListener('click', function () {
+      ctx.classList.toggle('context-panel--collapsed');
+      syncRight();
+    });
+
+    var mqNarrow = window.matchMedia('(max-width: 900px)');
+    function applyNarrowLayout() {
+      if (mqNarrow.matches) {
+        side.classList.add('sidebar--collapsed');
+        ctx.classList.add('context-panel--collapsed');
+      }
+      syncLeft();
+      syncRight();
+    }
+    if (mqNarrow.addEventListener) {
+      mqNarrow.addEventListener('change', applyNarrowLayout);
+    } else {
+      mqNarrow.addListener(applyNarrowLayout);
+    }
+    applyNarrowLayout();
+  })();
+
+  /* Right panel: Artifacts | Insights | Goals */
+  (function () {
+    var root = document.querySelector('.context-panel .panel-tabs');
+    if (!root) return;
+    root.addEventListener('click', function (e) {
+      var btn = e.target.closest('.panel-tab');
+      if (!btn || !root.contains(btn)) return;
+      e.preventDefault();
+      var target = btn.getAttribute('data-context-target');
+      if (!target) return;
+      document.querySelectorAll('.context-panel .panel-tab').forEach(function (t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.context-panel .context-subpanel').forEach(function (p) {
+        p.classList.remove('active');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      var panel = document.getElementById('context-' + target);
+      if (panel) panel.classList.add('active');
+    });
+  })();
+
+  /* Append user messages from the composer */
+  (function () {
+    var messagesEl = document.getElementById('chat-messages');
+    var input = document.getElementById('chat-input');
+    var sendBtn = document.getElementById('chat-send');
+    if (!messagesEl || !input || !sendBtn) return;
+
+    var userAvatarSrc =
+      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=faces&auto=format&q=85';
+
+    function appendUserMessage(text) {
+      var t = text.replace(/\r\n/g, '\n').trim();
+      if (!t) return;
+
+      var row = document.createElement('div');
+      row.className = 'msg-row user';
+      var av = document.createElement('div');
+      av.className = 'msg-avatar user';
+      var avImg = document.createElement('img');
+      avImg.src = userAvatarSrc;
+      avImg.width = 36;
+      avImg.height = 36;
+      avImg.alt = '';
+      av.appendChild(avImg);
+      var col = document.createElement('div');
+      var bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.textContent = t;
+      col.appendChild(bubble);
+      var toolbar = document.createElement('div');
+      toolbar.className = 'user-msg-toolbar';
+      toolbar.setAttribute('aria-label', 'Message actions');
+      toolbar.innerHTML =
+        '<button type="button" class="user-msg-tool" data-action="copy" title="Copy"><span class="material-symbols-outlined" aria-hidden="true">content_copy</span></button>' +
+        '<button type="button" class="user-msg-tool" data-action="edit" title="Edit"><span class="material-symbols-outlined" aria-hidden="true">edit</span></button>';
+      col.appendChild(toolbar);
+      row.appendChild(av);
+      row.appendChild(col);
+      messagesEl.appendChild(row);
+
+      input.value = '';
+      input.focus();
+      row.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+
+    function send() {
+      appendUserMessage(input.value);
+    }
+
+    sendBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      send();
+    });
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      if (e.shiftKey) return;
+      e.preventDefault();
+      send();
+    });
+  })();
+});
+</script>
+</body>
+</html>

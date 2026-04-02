@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TeachAI - Product Design by Shaun Herron</title>
+  <meta name="description" content="Unified product design case study: outcomes-first narrative, research, system design, process, and interactive TeachAI prototypes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #eef3f2; --surface: #ffffff; --surface2: #f4f8f7; --border: #dce8e6;
+      --brand: #007890; --brand-deep: #005f72; --brand-soft: rgba(0, 120, 144, 0.10);
+      --brand-line: rgba(0, 120, 144, 0.25); --green: #2f8f6e;
+      --red-soft: #fde8e8; --amber-soft: #fff4e0; --green-soft: #e6f5ef;
+      --text: #3d524f; --text-hi: #1a2c2a; --muted: #6b7f7c;
+      --shadow-card: 0 2px 12px rgba(0,90,108,0.09), 0 1px 3px rgba(0,90,108,0.06);
+      --nav-h: 64px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    .container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+    .nav .container { max-width: none; width: 100%; margin: 0; padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(24px, env(safe-area-inset-right)); }
+
+    .nav { position: sticky; top: 0; z-index: 100; height: var(--nav-h); background: rgba(255,255,255,0.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+    .nav-inner { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: 100%; gap: 12px; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; justify-self: start; }
+    .nav-logo-icon { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(155deg, #004a56 0%, var(--brand-deep) 48%, #003844 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(0, 30, 40, 0.45); }
+    .nav-logo-icon svg { width: 18px; height: 18px; }
+    .nav-logo-text { font-weight: 700; font-size: 16px; color: var(--brand); }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; justify-self: center; margin: 0; }
+    .nav-links > li { position: relative; }
+    /* Bridge the gap between trigger and flyout so the menu doesn’t close while moving the pointer */
+    .nav-links > li:has(.nav-dropdown)::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      height: 14px;
+      z-index: 150;
+    }
+    .nav-link { display: flex; align-items: center; gap: 4px; padding: 8px 11px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--text); transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-link:hover, .nav-link:focus { background: var(--brand-soft); color: var(--brand); outline: none; }
+    .nav-link.is-active { color: var(--brand-deep); background: var(--brand-soft); }
+    .nav-dropdown { position: absolute; top: calc(100% + 6px); right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); padding: 6px; min-width: 220px; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity 0.15s, transform 0.15s; z-index: 200; }
+    .nav-links > li:hover .nav-dropdown, .nav-links > li:focus-within .nav-dropdown { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .nav-dropdown-item { display: flex; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13px; }
+    .nav-dropdown-item:hover { background: var(--brand-soft); }
+    .dd-icon { width: 30px; height: 30px; border-radius: 8px; background: var(--brand-soft); border: 1px solid var(--brand-line); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .dd-label { font-weight: 700; color: var(--text-hi); }
+    .dd-sub { font-size: 11px; color: var(--muted); }
+    .nav-dropdown-sep { height: 1px; background: var(--border); margin: 4px 6px; }
+    .nav-right { display: flex; align-items: center; gap: 12px; justify-self: end; flex-wrap: wrap; }
+    .nav-credit { display: flex; align-items: baseline; gap: 6px; flex-shrink: 1; min-width: 0; justify-content: flex-end; }
+    .nav-author { font-size: 14px; font-weight: 700; color: var(--text-hi); white-space: nowrap; }
+    .nav-author:hover { color: var(--brand); text-decoration: underline; }
+    .nav-linkedin { width: 36px; height: 36px; border-radius: 8px; color: #0a66c2; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+    .nav-mobile-toggle { display: none; padding: 8px; border-radius: 8px; background: var(--surface2); }
+    .nav-mobile-menu { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0; background: var(--surface); padding: 16px; overflow-y: auto; z-index: 99; flex-direction: column; gap: 4px; }
+    .nav-mobile-menu.open { display: flex; }
+    .nav-mobile-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 10px; font-size: 15px; font-weight: 700; }
+    .nav-mobile-item:hover { background: var(--brand-soft); color: var(--brand); }
+    .nav-mobile-section { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 14px 4px; }
+    .nav-mobile-sep { height: 1px; background: var(--border); margin: 8px 0; }
+
+    .hero-v3 { background: linear-gradient(165deg, #001a22 0%, #004d5c 45%, #0a7a8f 100%); padding: 52px 0 40px; position: relative; overflow: hidden; }
+    .hero-v3::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 45% at 90% 0%, rgba(120,210,230,0.18), transparent); pointer-events: none; }
+    .hero-in { position: relative; max-width: 760px; margin: 0 auto; text-align: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; padding: 5px 14px; border-radius: 99px; font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.92); }
+    .h1 { font-size: clamp(26px, 4vw, 40px); font-weight: 900; color: #fff; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 14px; }
+    /* Product name — slightly brighter + soft glow (readable on dark gradient) */
+    .h1 .h1-product {
+      font-style: normal;
+      font-weight: 900;
+      color: #f4feff;
+      text-shadow: 0 0 32px rgba(142, 224, 245, 0.5);
+    }
+    /* Key phrases — icy accent (outcome + differentiator) */
+    .h1 em {
+      font-style: normal;
+      font-weight: 900;
+      color: #8ee0f5;
+      text-decoration: underline;
+      text-decoration-color: rgba(142, 224, 245, 0.45);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
+    .hero-lead { font-size: 17px; color: rgba(255,255,255,0.82); max-width: 640px; margin: 0 auto 22px; line-height: 1.65; }
+
+    /* Minto pyramid: outcomes first */
+    .outcome-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 720px; margin: 0 auto 22px; text-align: left; }
+    @media (max-width: 680px) { .outcome-strip { grid-template-columns: 1fr; } }
+    .outcome-card { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 14px 16px; }
+    .outcome-card .icon { font-size: 20px; color: #8ee0f5; margin-bottom: 6px; }
+    .outcome-card h3 { font-size: 12px; font-weight: 800; text-transform: none; letter-spacing: 0.02em; color: rgba(255,255,255,0.72); margin-bottom: 8px; }
+    .outcome-card p { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.45; }
+
+    /* In-page nav: pill chips */
+    .toc {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      max-width: 720px; margin: 0 auto; padding-top: 4px;
+    }
+    .toc a {
+      font-family: inherit;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.01em;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.22);
+      line-height: 1.25;
+    }
+    .toc a:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); }
+    .toc a:focus-visible { outline: 2px solid rgba(142, 224, 245, 0.9); outline-offset: 3px; }
+
+    .section { padding: 44px 0; scroll-margin-top: calc(var(--nav-h) + 12px); }
+    .section.alt { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .sec-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brand); margin-bottom: 6px; }
+    .sec-title { font-size: clamp(21px, 2.8vw, 28px); font-weight: 900; color: var(--text-hi); letter-spacing: -0.02em; margin-bottom: 10px; }
+    .sec-title--xl { font-size: clamp(26px, 3.6vw, 38px); font-weight: 900; line-height: 1.18; letter-spacing: -0.03em; margin-bottom: 28px; max-width: 920px; color: var(--text-hi); }
+    /* Plan & Tradeoffs: labeled pillars */
+    .plan-pillar {
+      margin-top: 28px;
+      padding: 22px 22px 24px 20px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      border-left: 4px solid var(--brand);
+    }
+    .plan-pillar-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin: 0 0 14px;
+    }
+    .plan-pillar-lead {
+      font-size: clamp(17px, 2.15vw, 21px);
+      font-weight: 800;
+      line-height: 1.38;
+      color: var(--text-hi);
+      margin: 0 0 12px;
+      letter-spacing: -0.025em;
+      max-width: 720px;
+    }
+    .plan-pillar-sub {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text-hi);
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+    .plan-pillar-text {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--muted);
+      margin: 0;
+      max-width: 720px;
+    }
+    .plan-pillar-text + .plan-pillar-text { margin-top: 12px; }
+    .plan-pillar .tradeoff { margin-top: 16px; margin-bottom: 0; background: var(--surface); }
+    .plan-pillar--key .decision-card { background: var(--surface); max-width: none; width: 100%; }
+    .plan-constraints-list {
+      margin: 0;
+      padding-left: 1.2em;
+      max-width: none;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+    .plan-constraints-list li { margin-bottom: 10px; }
+    .plan-constraints-list li:last-child { margin-bottom: 0; }
+    .plan-pillar--key .p-quote { margin-bottom: 0; }
+    .plan-pillar--key .p-quote.p-quote--plain { max-width: none; width: 100%; }
+    .sec-lead { font-size: 16px; color: var(--muted); max-width: 680px; line-height: 1.65; margin-bottom: 20px; }
+    .prose { font-size: 16px; color: var(--text); line-height: 1.75; max-width: 680px; }
+    .prose p + p { margin-top: 14px; }
+    .visual-design-block > .prose { max-width: 720px; }
+
+    /* Prototype screenshot carousel (shared with Overview pattern) */
+    .proto-carousel {
+      margin: 8px auto 28px;
+      width: 100%;
+      max-width: none;
+    }
+    .proto-carousel-viewport {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      background: #0d1f24;
+      position: relative;
+    }
+    .proto-carousel-window {
+      overflow: hidden;
+      touch-action: pan-y;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .proto-carousel-track {
+      display: flex;
+      flex-direction: row;
+      transform: translateX(0);
+      transition: transform 0.45s cubic-bezier(0.25, 0.85, 0.3, 1);
+      will-change: transform;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .proto-carousel-track { transition: none; }
+    }
+    .proto-carousel-slide {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .proto-carousel-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      pointer-events: none;
+    }
+    .proto-carousel-caption {
+      padding: 14px 16px 16px;
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+    }
+    .proto-carousel-caption h3 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-hi);
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .proto-carousel-caption p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0;
+    }
+    .proto-carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .proto-carousel-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--brand-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .proto-carousel-btn:hover {
+      background: var(--brand-soft);
+      border-color: var(--brand-line);
+      color: var(--brand);
+    }
+    .proto-carousel-btn:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+    .proto-carousel-btn svg { width: 20px; height: 20px; display: block; }
+    .proto-carousel-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proto-carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: none;
+      padding: 0;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .proto-carousel-dot[aria-current="true"] {
+      background: var(--brand);
+      transform: scale(1.15);
+    }
+    .proto-carousel-dot:hover { background: var(--brand-line); }
+    .proto-carousel-dot:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+    .proto-carousel-counter {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      min-width: 4.5em;
+      text-align: center;
+    }
+
+    /* Project facts */
+    .facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 8px; }
+    @media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }
+    .fact { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; background: var(--surface2); }
+    .fact dt { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--brand); margin-bottom: 4px; }
+    .fact dd { font-size: 14px; font-weight: 700; color: var(--text-hi); line-height: 1.45; }
+
+    .quad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border); border-radius: 14px; overflow: hidden; border: 1px solid var(--border); max-width: 100%; }
+    .quad-cell { background: var(--surface); padding: 18px 16px; min-height: 100px; }
+    .quad-cell h4 { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand); margin-bottom: 8px; }
+    .quad-cell p { font-size: 14px; font-weight: 700; color: var(--text-hi); line-height: 1.45; }
+    @media (max-width: 600px) { .quad-grid { grid-template-columns: 1fr; } }
+
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; margin-top: 16px; }
+    @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+
+    .ui-mock-wrap { border-radius: 14px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-card); }
+    .ui-mock-bar { height: 34px; background: #e8efed; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-bottom: 1px solid var(--border); }
+    .ui-mock-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .ui-mock-dot:nth-child(1) { background: #ff5f57; } .ui-mock-dot:nth-child(2) { background: #febc2e; } .ui-mock-dot:nth-child(3) { background: #28c840; }
+    .ui-mock-body { display: grid; grid-template-columns: 1fr 1.1fr; gap: 0; background: #f6faf9; min-height: 180px; }
+    @media (max-width: 520px) { .ui-mock-body { grid-template-columns: 1fr; } }
+    .ui-mock-left { padding: 14px; border-right: 1px solid var(--border); background: #fff; }
+    .ui-mock-metric { font-size: 26px; font-weight: 900; color: var(--brand-deep); }
+    .ui-mock-metric small { display: block; font-size: 11px; font-weight: 700; color: var(--muted); margin-top: 4px; }
+    .ui-mock-row { display: flex; justify-content: space-between; font-size: 12px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border); }
+    .ui-mock-right { padding: 12px; font-size: 12px; line-height: 1.5; }
+    .ai-tag { display: inline-block; font-size: 10px; font-weight: 800; color: var(--brand); background: var(--brand-soft); padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; }
+    .ui-mock-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .ui-chip { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--border); }
+
+    .diagram-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 20px; overflow-x: auto; margin-top: 12px; }
+    .sys-svg { width: 100%; min-width: 480px; height: auto; display: block; }
+    .stake-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    @media (max-width: 720px) { .stake-grid { grid-template-columns: 1fr; } }
+    .stake-card { border-radius: 10px; padding: 14px; border: 1px solid var(--border); text-align: center; }
+    .stake-card.core { background: var(--brand-soft); border-color: var(--brand-line); }
+    .stake-card h5 { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--brand); margin-bottom: 8px; }
+    .stake-card ul { list-style: none; padding: 0; margin: 0; font-size: 13px; font-weight: 700; color: var(--text-hi); line-height: 1.75; }
+
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+    .data-table th, .data-table td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    .data-table th { background: var(--surface2); font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .pain-low { background: var(--green-soft); }
+    .pain-med { background: var(--amber-soft); }
+    .pain-high { background: var(--red-soft); }
+
+    .heat-flow { margin-top: 14px; }
+    .heat-steps { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+    .heat-step { flex: 1; min-width: 72px; text-align: center; font-size: 11px; font-weight: 700; }
+    .heat-bars { display: flex; gap: 8px; align-items: flex-end; height: 68px; }
+    .heat-bar { flex: 1; min-width: 72px; border-radius: 8px 8px 4px 4px; }
+    .heat-bar.b1 { height: 28%; background: #c6ebd4; }
+    .heat-bar.b2 { height: 38%; background: #ffe8a8; }
+    .heat-bar.b3 { height: 55%; background: #ffd48a; }
+    .heat-bar.b4 { height: 95%; background: #f8a8a4; }
+    .heat-bar.b5 { height: 72%; background: #ffb38a; }
+
+    .persona-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+    @media (max-width: 640px) { .persona-row { grid-template-columns: 1fr; } }
+    .persona { border-radius: 14px; border: 1px solid var(--border); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-card); }
+    .persona-top { display: flex; align-items: center; gap: 12px; padding: 16px; background: linear-gradient(135deg, var(--surface2), #fff); border-bottom: 1px solid var(--border); }
+    .persona-photo {
+      width: 64px; height: 84px; border-radius: 12px; flex-shrink: 0; display: block;
+      object-fit: cover; object-position: center 15%;
+      box-shadow: 0 1px 4px rgba(0, 30, 40, 0.12);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    .persona-top h4 { font-size: 17px; font-weight: 900; color: var(--text-hi); }
+    .persona-top .role { font-size: 12px; font-weight: 700; color: var(--brand); margin-top: 2px; }
+    .persona-body { padding: 14px 16px; font-size: 14px; }
+    .persona-body dt { font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 10px; }
+    .persona-body dt:first-child { margin-top: 0; }
+    .persona-body dd { margin-top: 4px; color: var(--text); }
+    .p-quote { margin-top: 10px; padding: 10px 12px; border-left: 4px solid var(--brand); background: var(--brand-soft); font-style: italic; font-size: 13px; color: var(--text-hi); }
+    .p-quote.p-quote--plain { font-style: normal; margin-top: 14px; font-size: 15px; line-height: 1.6; max-width: 680px; }
+
+    .affinity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    @media (max-width: 640px) { .affinity-grid { grid-template-columns: 1fr; } }
+    .affinity-card { border-radius: 10px; padding: 14px; border: 1px solid var(--border); background: #fff; }
+    .affinity-card h5 { font-size: 12px; font-weight: 800; color: var(--brand); margin-bottom: 8px; }
+    .affinity-card ul { list-style: disc; margin-left: 1.1em; font-size: 13px; }
+    .affinity-card .affinity-decision { font-size: 13px; font-weight: 700; color: var(--text-hi); line-height: 1.5; margin: 0 0 10px; }
+    .affinity-card .affinity-decision strong { color: var(--brand); font-weight: 800; }
+    .affinity-card .affinity-foot { font-size: 12px; font-weight: 800; color: var(--brand-deep); margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border); line-height: 1.45; }
+
+    .edge-safeguards-intro { font-size: 15px; line-height: 1.65; color: var(--muted); margin: 0 0 20px; max-width: 720px; }
+    .edge-safeguards-groups { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
+    .edge-safeguards-group { border-radius: 12px; padding: 16px 18px; border: 1px solid var(--border); background: var(--surface); }
+    .edge-safeguards-group > h4 { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); margin: 0 0 14px; }
+    .edge-safeguard-item + .edge-safeguard-item { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .edge-safeguard-item h5 { font-size: 14px; font-weight: 800; color: var(--text-hi); margin: 0 0 8px; }
+    .edge-safeguard-item ul { list-style: disc; margin: 0 0 0 1.1em; font-size: 13px; color: var(--text); line-height: 1.55; }
+    .edge-safeguard-item li { margin: 5px 0; }
+
+    .insight-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 12px; }
+    .insight-card { padding: 14px; border-radius: 10px; background: linear-gradient(145deg, #fff, var(--surface2)); border: 1px solid var(--brand-line); }
+    .insight-card .n { font-size: 10px; font-weight: 800; color: var(--brand); letter-spacing: 0.06em; }
+    .insight-card p { font-size: 14px; font-weight: 800; color: var(--text-hi); margin-top: 6px; line-height: 1.4; }
+
+    .role-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+    @media (max-width: 720px) { .role-cols { grid-template-columns: 1fr; } }
+    .role-col { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--surface); }
+    .role-col h5 { font-size: 13px; font-weight: 900; color: var(--text-hi); margin-bottom: 8px; padding-bottom: 6px; border-bottom: 2px solid var(--brand); }
+    .role-col ul { list-style: none; font-size: 13px; line-height: 1.65; }
+    .role-col li::before { content: '✓ '; color: var(--green); font-weight: 800; }
+
+    .timeline { margin-top: 14px; padding-left: 18px; border-left: 3px solid var(--brand-line); }
+    .tl-item { position: relative; padding: 0 0 18px 14px; }
+    .tl-item::before { content: ''; position: absolute; left: -26px; top: 4px; width: 11px; height: 11px; border-radius: 50%; background: var(--brand); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--brand-line); }
+    .tl-item strong { display: block; font-size: 12px; color: var(--brand); margin-bottom: 4px; }
+    .tl-item p { font-size: 13px; color: var(--text); }
+
+    .tradeoff { margin-top: 12px; padding: 18px; border-radius: 12px; background: var(--surface2); border: 1px solid var(--border); }
+    .tradeoff-row { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 10px; }
+    .tradeoff-bar { height: 10px; border-radius: 99px; background: linear-gradient(90deg, #f79009, #007890, #2f8f6e); position: relative; }
+    .tradeoff-marker { position: absolute; top: 50%; left: 58%; transform: translate(-50%, -50%); width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 3px solid var(--brand-deep); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .tradeoff-cap { text-align: center; font-size: 13px; font-weight: 700; margin-top: 8px; color: var(--text-hi); }
+
+    .decision-card { border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; background: var(--surface); margin-top: 12px; max-width: 640px; }
+    .decision-card .row {
+      display: block;
+      font-size: 13px;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .decision-card .row:last-child { margin-bottom: 0; }
+    .decision-card .label {
+      display: block;
+      font-weight: 800;
+      color: var(--text-hi);
+      margin-bottom: 4px;
+    }
+    .decision-card .decision-value { display: block; min-width: 0; color: var(--text); }
+    .decision-card .decision-value .decision-option-list { margin: 0; padding-left: 1.15em; }
+    .decision-card .decision-value .decision-option-list li { margin: 3px 0; }
+    .decision-card-title {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text-hi);
+      margin: 0 0 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .plan-pillar--key .plan-pillar-text + .decision-card { margin-top: 0; }
+    .plan-pillar--key .decision-card + .decision-card { margin-top: 20px; }
+    .decision-card .row--key-decision {
+      margin: 14px 0;
+      padding: 14px 16px 16px;
+      background: linear-gradient(135deg, rgba(0, 120, 144, 0.1), rgba(47, 143, 110, 0.07));
+      border: 1px solid var(--brand-line);
+      border-radius: 10px;
+      border-left: 4px solid var(--brand);
+    }
+    .decision-card .row--key-decision .label {
+      display: inline-flex;
+      align-items: center;
+      font-size: 10px;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--brand-deep);
+      margin-bottom: 8px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: var(--brand-soft);
+      border: 1px solid var(--brand-line);
+      width: fit-content;
+    }
+    .decision-card .row--key-decision .decision-value {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--text-hi);
+    }
+
+    .steps { display: flex; flex-direction: column; gap: 16px; margin-top: 12px; max-width: 680px; }
+    .step { display: flex; gap: 12px; align-items: flex-start; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step--done .step-num { background: var(--green); border: 2px solid rgba(255,255,255,0.35); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); }
+    .step--done .step-num svg { width: 15px; height: 15px; display: block; }
+    .step h3 { font-size: 15px; font-weight: 800; color: var(--text-hi); margin-bottom: 4px; }
+    .step p { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+    .flow-line { font-family: ui-monospace, monospace; font-size: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-top: 8px; color: var(--text-hi); line-height: 1.75; overflow-x: auto; }
+
+    .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    @media (max-width: 560px) { .ba-grid { grid-template-columns: 1fr; } }
+    .ba-card { border-radius: 10px; padding: 14px; border: 1px solid var(--border); font-size: 13px; }
+    .ba-card.before { background: #faf5f5; border-color: #f0d6d6; }
+    .ba-card.after { background: var(--green-soft); border-color: #b8e0cc; }
+    .ba-card h5 { font-size: 11px; font-weight: 800; margin-bottom: 8px; }
+    .ba-card.before h5 { color: #b42318; }
+    .ba-card.after h5 { color: #067647; }
+    .ba-card ul { padding-left: 1.1em; }
+
+    .ia-tree { font-family: ui-monospace, monospace; font-size: 12px; background: #0d2a30; color: #b8e8f0; padding: 16px 18px; border-radius: 10px; line-height: 1.8; margin-top: 10px; overflow-x: auto; }
+
+    .sol-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+    @media (max-width: 640px) { .sol-grid { grid-template-columns: 1fr; } }
+    .sol-tile { border-radius: 12px; border: 1px solid var(--border); overflow: hidden; background: var(--surface); transition: transform 0.15s, box-shadow 0.15s; }
+    .sol-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); }
+    .sol-tile a { display: block; }
+    .sol-thumb { height: 100px; background: linear-gradient(160deg, #e8f4f2, #fff); border-bottom: 1px solid var(--border); padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .sol-thumb .mini { background: #fff; border: 1px solid var(--border); border-radius: 6px; min-height: 32px; }
+    .sol-thumb.plain { display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--brand); font-size: 14px; }
+    .sol-body { padding: 12px 14px; }
+    .sol-body h4 { font-size: 14px; font-weight: 800; color: var(--text-hi); margin-bottom: 4px; }
+    .sol-body p { font-size: 13px; color: var(--muted); }
+
+    .glow-grow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 0; align-items: start; }
+    @media (max-width: 720px) { .glow-grow-grid { grid-template-columns: 1fr; } }
+    .glow-grow-card { border-radius: 14px; padding: 18px 20px 20px; border: 1px solid; border-left-width: 5px; }
+    .glow-grow-card--glow { background: var(--green-soft); border-color: #c5e8d6; border-left-color: var(--green); }
+    .glow-grow-card--grow { background: var(--amber-soft); border-color: #f0dcc4; border-left-color: #e07800; }
+    .glow-grow-card .glow-grow-tag { font-size: 10px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; margin: 0 0 6px; }
+    .glow-grow-card--glow .glow-grow-tag { color: #067647; }
+    .glow-grow-card--grow .glow-grow-tag { color: #b54708; }
+    .glow-grow-card .glow-grow-title { font-size: 15px; font-weight: 800; color: var(--text-hi); margin: 0 0 14px; line-height: 1.35; }
+    .glow-grow-card ul { list-style: none; margin: 0; padding: 0; font-size: 14px; line-height: 1.55; color: var(--text); }
+    .glow-grow-card li { position: relative; padding-left: 1.05em; margin-bottom: 12px; }
+    .glow-grow-card li:last-child { margin-bottom: 0; }
+    .glow-grow-card li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 6px; height: 6px; border-radius: 50%; }
+    .glow-grow-card--glow li::before { background: var(--green); }
+    .glow-grow-card--grow li::before { background: #e07800; }
+    .glow-grow-role { font-weight: 700; color: var(--muted); font-size: 13px; white-space: nowrap; }
+
+    .hypothesis { border-left: 4px solid var(--brand); padding: 12px 16px; background: var(--brand-soft); border-radius: 0 10px 10px 0; margin-top: 12px; font-size: 14px; color: var(--text-hi); line-height: 1.55; }
+    .hypothesis strong { display: block; font-weight: 800; font-size: 13px; letter-spacing: 0.02em; }
+    .hypothesis p { margin: 8px 0 0; font-weight: 600; font-size: 14px; }
+
+    .learnings { list-style: none; margin-top: 12px; max-width: 680px; }
+    .learnings li { padding: 10px 0 10px 28px; position: relative; border-bottom: 1px solid var(--border); font-size: 15px; font-weight: 400; line-height: 1.55; color: var(--text); }
+    .learnings li strong { font-weight: 700; color: var(--text-hi); }
+    .learnings li:last-child { border-bottom: none; }
+    .learnings li::before { content: '→'; position: absolute; left: 0; color: var(--brand); font-weight: 900; }
+
+    .footer-v3 { background: #001e25; color: rgba(255,255,255,0.55); padding: 36px 0; font-size: 13px; }
+    .footer-v3 a { color: #9fd4e0; text-decoration: underline; }
+
+    .caveat { font-size: 13px; color: var(--muted); font-style: italic; margin-top: 12px; max-width: 680px; }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .nav-inner { display: flex; justify-content: space-between; }
+      .nav-mobile-toggle { display: flex; align-items: center; justify-content: center; }
+    }
+  </style>
+</head>
+<body id="top">
+<!-- material-symbols-sprite -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="mi-add" viewBox="0 -960 960 960"><path fill="currentColor" d="M450-450H200v-60h250v-250h60v250h250v60H510v250h-60v-250Z"/></symbol>
+    <symbol id="mi-analytics" viewBox="0 -960 960 960"><path fill="currentColor" d="M284-277h60v-205h-60v205Zm332 0h60v-420h-60v420Zm-166 0h60v-118h-60v118Zm0-205h60v-60h-60v60ZM180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm0-60h600v-600H180v600Zm0-600v600-600Z"/></symbol>
+    <symbol id="mi-arrow_downward" viewBox="0 -960 960 960"><path fill="currentColor" d="M450-800v526L202-522l-42 42 320 320 320-320-42-42-248 248v-526h-60Z"/></symbol>
+    <symbol id="mi-arrow_forward" viewBox="0 -960 960 960"><path fill="currentColor" d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"/></symbol>
+    <symbol id="mi-assignment_turned_in" viewBox="0 -960 960 960"><path fill="currentColor" d="m423-329 277-277-43-43-234 234-121-121-42 42 163 165ZM180-120q-24.75 0-42.37-17.63Q120-155.25 120-180v-600q0-24.75 17.63-42.38Q155.25-840 180-840h205q5-35 32-57.5t63-22.5q36 0 63 22.5t32 57.5h205q24.75 0 42.38 17.62Q840-804.75 840-780v600q0 24.75-17.62 42.37Q804.75-120 780-120H180Zm0-60h600v-600H180v600Zm324.5-627.5Q515-818 515-832t-10.5-24.5Q494-867 480-867t-24.5 10.5Q445-846 445-832t10.5 24.5Q466-797 480-797t24.5-10.5ZM180-180v-600 600Z"/></symbol>
+    <symbol id="mi-auto_awesome" viewBox="0 -960 960 960"><path fill="currentColor" d="m162-121-42-42 326-326-185-46 192-120-16-225 173 145 209-84-85 209 146 173-226-17-119 192-46-185-327 326Zm25-544-67-67 68-68 67 67-68 68Zm372 251 63-102 120 9-78-92 45-111-111 45-92-78 9 120-102 64 117 29 29 116Zm174 294-67-68 67-67 67 68-67 67ZM578-579Z"/></symbol>
+    <symbol id="mi-auto_stories" viewBox="0 -960 960 960"><path fill="currentColor" d="M480-160q-48-38-104-59t-116-21q-42 0-82.5 11T100-198q-21 11-40.5-1T40-234v-482q0-11 5.5-21T62-752q46-24 96-36t102-12q58 0 113.5 15T480-740v506q51-33 107-49.5T700-300q36 0 78.5 7t81.5 29v-505q9.89 3.75 19.44 7.87Q889-757 898-752q10 6 16 15.68 6 9.67 6 20.32v482q0 23-19.5 35t-40.5 1q-37-20-77.5-31T700-240q-60 0-116 21t-104 59Zm60-167v-353l260-260v387L540-327Zm-120 63v-439q-34-19-79-28t-81-9q-47 0-87.5 10T100-704.47V-264q35-17 75.5-26.5t85-9.5q44.5 0 84.5 9.5t75 26.5Zm0 0v-439 439Z"/></symbol>
+    <symbol id="mi-book_5" viewBox="0 -960 960 960"><path fill="currentColor" d="M270-80q-45 0-77.5-29.64Q160-139.27 160-183v-564q0-36.57 22.12-65.43Q204.24-841.3 240-849l380-79v620l-360 77q-17.14 3.69-28.57 17.54Q220-199.62 220-183q0 19 15 31t35 12h470v-660h60v720H270Zm70-228 220-47v-499l-220 45v501Zm-60 12.81V-796l-20 4q-17 4-28.5 15.83Q220-764.35 220-747v471q9.06-5.2 19.03-9.1Q249-289 260-291l20-4.19ZM220-787v511-511Z"/></symbol>
+    <symbol id="mi-build" viewBox="0 -960 960 960"><path fill="currentColor" d="M705-128 447-388q-23 8-46 13t-47 5q-97.08 0-165.04-67.67Q121-505.33 121-602q0-31 8.16-60.39T152-718l145 145 92-86-149-149q25.91-15.16 54.96-23.58Q324-840 354-840q99.17 0 168.58 69.42Q592-701.17 592-602q0 24-5 47t-13 46l259 258q11 10.96 11 26.48T833-198l-76 70q-10.7 11-25.85 11Q716-117 705-128Zm28-57 40-40-273-273q16-21 24-49.5t8-54.5q0-75-55.5-127T350-782l102 104q9 9 8.5 21.5T451-635L318-510q-9.27 8-21.64 8-12.36 0-20.36-8l-98-97q3 77 54.67 127T354-430q25 0 53-8t49-24l277 277ZM476-484Z"/></symbol>
+    <symbol id="mi-calendar_month" viewBox="0 -960 960 960"><path fill="currentColor" d="M180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Zm300 230q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-188.5-11.5Q280-423 280-440t11.5-28.5Q303-480 320-480t28.5 11.5Q360-457 360-440t-11.5 28.5Q337-400 320-400t-28.5-11.5ZM640-400q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-188.5-11.5Q280-263 280-280t11.5-28.5Q303-320 320-320t28.5 11.5Q360-297 360-280t-11.5 28.5Q337-240 320-240t-28.5-11.5ZM640-240q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z"/></symbol>
+    <symbol id="mi-campaign" viewBox="0 -960 960 960"><path fill="currentColor" d="M730-450v-60h150v60H730Zm50 290-121-90 36-48 121 90-36 48Zm-82-503-36-48 118-89 36 48-118 89ZM210-200v-160h-70q-24.75 0-42.37-17.63Q80-395.25 80-420v-120q0-24.75 17.63-42.38Q115.25-600 140-600h180l200-120v480L320-360h-50v160h-60Zm250-146v-268l-124 74H140v120h196l124 74Zm100 0v-268q27 24 43.5 58.5T620-480q0 41-16.5 75.5T560-346ZM300-480Z"/></symbol>
+    <symbol id="mi-casino" viewBox="0 -960 960 960"><path fill="currentColor" d="M335.5-264.62q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62Zm0-360q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62Zm180 180q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62Zm180 180q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62Zm0-360q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62ZM180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm0-60h600v-600H180v600Zm0-600v600-600Z"/></symbol>
+    <symbol id="mi-chat" viewBox="0 -960 960 960"><path fill="currentColor" d="M240-399h313v-60H240v60Zm0-130h480v-60H240v60Zm0-130h480v-60H240v60ZM80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></symbol>
+    <symbol id="mi-chat_bubble" viewBox="0 -960 960 960"><path fill="currentColor" d="M80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></symbol>
+    <symbol id="mi-check_circle" viewBox="0 -960 960 960"><path fill="currentColor" d="m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></symbol>
+    <symbol id="mi-chevron_left" viewBox="0 -960 960 960"><path fill="currentColor" d="M561-240 320-481l241-241 43 43-198 198 198 198-43 43Z"/></symbol>
+    <symbol id="mi-close" viewBox="0 -960 960 960"><path fill="currentColor" d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
+    <symbol id="mi-content_copy" viewBox="0 -960 960 960"><path fill="currentColor" d="M300-200q-24 0-42-18t-18-42v-560q0-24 18-42t42-18h440q24 0 42 18t18 42v560q0 24-18 42t-42 18H300Zm0-60h440v-560H300v560ZM180-80q-24 0-42-18t-18-42v-620h60v620h500v60H180Zm120-180v-560 560Z"/></symbol>
+    <symbol id="mi-dashboard" viewBox="0 -960 960 960"><path fill="currentColor" d="M510-570v-270h330v270H510ZM120-450v-390h330v390H120Zm390 330v-390h330v390H510Zm-390 0v-270h330v270H120Zm60-390h210v-270H180v270Zm390 330h210v-270H570v270Zm0-450h210v-150H570v150ZM180-180h210v-150H180v150Zm210-330Zm180-120Zm0 180ZM390-330Z"/></symbol>
+    <symbol id="mi-description" viewBox="0 -960 960 960"><path fill="currentColor" d="M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"/></symbol>
+    <symbol id="mi-directions_alt" viewBox="0 -960 960 960"><path fill="currentColor" d="M479.95-77Q468-77 456.5-81T437-93L93-437q-8-8-12-19.55t-4-23.5q0-11.95 4-23.45T93-523l344-344q8-8 19.55-12t23.5-4q11.95 0 23.45 4t19.5 12l344 344q8 8 12 19.55t4 23.5q0 11.95-4 23.45T867-437L523-93q-8 8-19.55 12t-23.5 4ZM308-308l172 172 344-344-344-344-344 344 172 172Zm172 25 197-197-197-197-43 43 124 124H283v60h278L437-326l43 43Zm0-197Z"/></symbol>
+    <symbol id="mi-download" viewBox="0 -960 960 960"><path fill="currentColor" d="M480-313 287-506l43-43 120 120v-371h60v371l120-120 43 43-193 193ZM220-160q-24 0-42-18t-18-42v-143h60v143h520v-143h60v143q0 24-18 42t-42 18H220Z"/></symbol>
+    <symbol id="mi-edit" viewBox="0 -960 960 960"><path fill="currentColor" d="M180-180h44l472-471-44-44-472 471v44Zm-60 60v-128l575-574q8-8 19-12.5t23-4.5q11 0 22 4.5t20 12.5l44 44q9 9 13 20t4 22q0 11-4.5 22.5T823-694L248-120H120Zm659-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></symbol>
+    <symbol id="mi-edit_note" viewBox="0 -960 960 960"><path fill="currentColor" d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z"/></symbol>
+    <symbol id="mi-event" viewBox="0 -960 960 960"><path fill="currentColor" d="M528-248.18q-28-28.19-28-69Q500-358 528.18-386q28.19-28 69-28Q638-414 666-385.82q28 28.19 28 69Q694-276 665.82-248q-28.19 28-69 28Q556-220 528-248.18ZM180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
+    <symbol id="mi-event_available" viewBox="0 -960 960 960"><path fill="currentColor" d="M433-228 295-365l42-42 96 94 184-184 42 43-226 226ZM180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
+    <symbol id="mi-event_busy" viewBox="0 -960 960 960"><path fill="currentColor" d="m381-218-43-43 100-99-100-99 43-43 99 100 99-100 43 43-100 99 100 99-43 43-99-100-99 100ZM180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
+    <symbol id="mi-expand_more" viewBox="0 -960 960 960"><path fill="currentColor" d="M480-344 240-584l43-43 197 197 197-197 43 43-240 240Z"/></symbol>
+    <symbol id="mi-feedback" viewBox="0 -960 960 960"><path fill="currentColor" d="M479.98-367q14.02 0 23.52-9.48t9.5-23.5q0-14.02-9.48-23.52t-23.5-9.5q-14.02 0-23.52 9.48t-9.5 23.5q0 14.02 9.48 23.52t23.5 9.5ZM450-509h60v-251h-60v251ZM80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></symbol>
+    <symbol id="mi-folder" viewBox="0 -960 960 960"><path fill="currentColor" d="M140-160q-24 0-42-18.5T80-220v-520q0-23 18-41.5t42-18.5h281l60 60h339q23 0 41.5 18.5T880-680v460q0 23-18.5 41.5T820-160H140Zm0-60h680v-460H456l-60-60H140v520Zm0 0v-520 520Z"/></symbol>
+    <symbol id="mi-format_quote" viewBox="0 -960 960 960"><path fill="currentColor" d="m248-240 94-162q-5 1-11 1.5t-11 .5q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 21-5.5 41T458-480L320-240h-72Zm360 0 94-162q-5 1-11 1.5t-11 .5q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 21-5.5 41T818-480L680-240h-72ZM376.5-503.5Q400-527 400-560t-23.5-56.5Q353-640 320-640t-56.5 23.5Q240-593 240-560t23.5 56.5Q287-480 320-480t56.5-23.5Zm360 0Q760-527 760-560t-23.5-56.5Q713-640 680-640t-56.5 23.5Q600-593 600-560t23.5 56.5Q647-480 680-480t56.5-23.5ZM680-560Zm-360 0Z"/></symbol>
+    <symbol id="mi-grass" viewBox="0 -960 960 960"><path fill="currentColor" d="M80-160v-60h240q-20-91-87.5-159.5T80-470q20-5 39.5-7.5T160-480q134 0 227 93t93 227H80Zm460 0q0-42-8-73.5T512-296q40-88 120-136t168-48q21 0 40.5 2.5T880-470q-85 22-154 91.5T640-220h240v60H540Zm-58-193q-9-76 13-142t64.5-115Q602-659 662-688t127-31q-56 35-105.5 95.5T621-494q-44 21-80 58.5T482-353Zm-61-76q-16-15-35-30t-32-23q3-12 4.5-26.5T360-532q0-76-24-144t-68-124q70 28 124 88.5T468-573q-18 32-30.5 69.5T421-429Z"/></symbol>
+    <symbol id="mi-group" viewBox="0 -960 960 960"><path fill="currentColor" d="M38-160v-94q0-35 18-63.5t50-42.5q73-32 131.5-46T358-420q62 0 120 14t131 46q32 14 50.5 42.5T678-254v94H38Zm700 0v-94q0-63-32-103.5T622-423q69 8 130 23.5t99 35.5q33 19 52 47t19 63v94H738ZM250-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm426 0q-42 42-108 42-11 0-24.5-1.5T519-488q24-25 36.5-61.5T568-631q0-45-12.5-79.5T519-774q11-3 24.5-5t24.5-2q66 0 108 42t42 108q0 66-42 108ZM98-220h520v-34q0-16-9.5-31T585-306q-72-32-121-43t-106-11q-57 0-106.5 11T130-306q-14 6-23 21t-9 31v34Zm324.5-346.5Q448-592 448-631t-25.5-64.5Q397-721 358-721t-64.5 25.5Q268-670 268-631t25.5 64.5Q319-541 358-541t64.5-25.5ZM358-220Zm0-411Z"/></symbol>
+    <symbol id="mi-hourglass_empty" viewBox="0 -960 960 960"><path fill="currentColor" d="M308-140h344v-127q0-72-50-121.5T480-438q-72 0-122 49.5T308-267v127Zm294-432q50-50 50-122v-126H308v126q0 72 50 122t122 50q72 0 122-50ZM160-80v-60h88v-127q0-71 40-129t106-84q-66-27-106-85t-40-129v-126h-88v-60h640v60h-88v126q0 71-40 129t-106 85q66 26 106 84t40 129v127h88v60H160Z"/></symbol>
+    <symbol id="mi-hourglass_top" viewBox="0 -960 960 960"><path fill="currentColor" d="M308-140h344v-127q0-72-50-121.5T480-438q-72 0-122 49.5T308-267v127ZM160-80v-60h88v-127q0-71 40-129t106-84q-66-27-106-85t-40-129v-126h-88v-60h640v60h-88v126q0 71-40 129t-106 85q66 26 106 84t40 129v127h88v60H160Z"/></symbol>
+    <symbol id="mi-hub" viewBox="0 -960 960 960"><path fill="currentColor" d="M153-73q-33-33-33-81t33.25-81q33.25-33 80.75-33 14 0 24.5 2.5T280-258l85-106q-19-23-29-52.5t-5-61.5l-121-41q-15 25-39.5 39T114-466q-47.5 0-80.75-33.25T0-580q0-47.5 33.25-80.75T114-694q47.5 0 80.75 33.25T228-580v4l122 42q18-32 43.5-49t56.5-24v-129q-39-11-61.5-43T366-846q0-47.5 33-80.75T480-960q48 0 81 33.25T594-846q0 35-23 67t-61 43v129q31 7 57 24t44 49l121-42v-4q0-47.5 33.25-80.75T846-694q47.5 0 80.75 33T960-580q0 48-33.25 81T846-466q-32 0-57-14t-39-39l-121 41q5 32-4.5 61.5T595-364l85 106q11-5 21.5-7.5t24.06-2.5Q774-268 807-235t33 81q0 48-33 81t-81 33q-48 0-81-33.25T612-154q0-20 5.5-36t15.5-31l-85-106q-32.13 17-68.56 17Q443-310 411-327l-84 107q10 15 15.5 30.5T348-154q0 47.5-33 80.75T234-40q-48 0-81-33Zm-38.96-453q22.96 0 38.46-15.54 15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5Q91-634 75.5-618.46 60-602.93 60-579.96 60-557 75.54-541.5q15.53 15.5 38.5 15.5ZM272.5-115.54q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54Zm246-692q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54ZM480.5-370q37.5 0 63.5-26.5t26-64q0-37.5-26.1-63.5T480-550q-37 0-63.5 26.1T390-460q0 37 26.5 63.5t64 26.5Zm284 254.46q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54Zm120-426q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54ZM480-846ZM114-580Zm366 120Zm366-120ZM234-154Zm492 0Z"/></symbol>
+    <symbol id="mi-info" viewBox="0 -960 960 960"><path fill="currentColor" d="M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Zm.23-60Q622-140 721-239.5t99-241Q820-622 721.19-721T480-820q-141 0-240.5 98.81T140-480q0 141 99.5 240.5t241 99.5Zm-.5-340Z"/></symbol>
+    <symbol id="mi-insights" viewBox="0 -960 960 960"><path fill="currentColor" d="m89-412-49-36 193-310 125 146 165-268 125 186 143-226 48 35-190 301-124-184-159 258-125-146L89-412Zm494 192q48 0 82.5-33.5T700-335q0-49-34-83t-83-34q-48 0-81.5 34.5T468-335q0 48 33.5 81.5T583-220ZM797-80 685-192q-22 15-47.5 23.5T583-160q-73 0-124-51t-51-124q0-73 51-125t124-52q74 0 125.5 51.5T760-335q0 29-8.5 54.5T727-233l112 111-42 42Z"/></symbol>
+    <symbol id="mi-inventory_2" viewBox="0 -960 960 960"><path fill="currentColor" d="M180-80q-24.75 0-42.37-17.63Q120-115.25 120-140v-483q-17-6-28.5-21.39T80-680v-140q0-24.75 17.63-42.38Q115.25-880 140-880h680q24.75 0 42.38 17.62Q880-844.75 880-820v140q0 20.22-11.5 35.61T840-623v483q0 24.75-17.62 42.37Q804.75-80 780-80H180Zm0-540v480h600v-480H180Zm-40-60h680v-140H140v140Zm220 260h240v-60H360v60Zm120 40Z"/></symbol>
+    <symbol id="mi-lightbulb" viewBox="0 -960 960 960"><path fill="currentColor" d="M422.5-103.5Q399-127 399-161h162q0 34-23.5 57.5T480-80q-34 0-57.5-23.5ZM318-223v-60h324v60H318Zm5-121q-66-43-104.5-107.5T180-597q0-122 89-211t211-89q122 0 211 89t89 211q0 81-38 145.5T637-344H323Zm22-60h271q48-32 76-83t28-110q0-99-70.5-169.5T480-837q-99 0-169.5 70.5T240-597q0 59 28 110t77 83Zm135 0Z"/></symbol>
+    <symbol id="mi-manage_accounts" viewBox="0 -960 960 960"><path fill="currentColor" d="M292-527q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM80-164v-94q0-35 17.5-63t50.5-43q72-32 133.5-46T400-424h23q-6 14-9 27.5t-5 32.5h-9q-58 0-113.5 12.5T172-310q-16 8-24 22.5t-8 29.5v34h269q5 18 12 32.5t17 27.5H80Zm587 44-10-66q-17-5-34.5-14.5T593-222l-55 12-25-42 47-44q-2-9-2-25t2-25l-47-44 25-42 55 12q12-12 29.5-21.5T657-456l10-66h54l10 66q17 5 34.5 14.5T795-420l55-12 25 42-47 44q2 9 2 25t-2 25l47 44-25 42-55-12q-12 12-29.5 21.5T731-186l-10 66h-54Zm85-143q22-22 22-58t-22-58q-22-22-58-22t-58 22q-22 22-22 58t22 58q22 22 58 22t58-22ZM464.5-570.5Q490-596 490-635t-25.5-64.5Q439-725 400-725t-64.5 25.5Q310-674 310-635t25.5 64.5Q361-545 400-545t64.5-25.5ZM400-635Zm9 411Z"/></symbol>
+    <symbol id="mi-mark_chat_read" viewBox="0 -960 960 960"><path fill="currentColor" d="M701-160 567-294l42-42 92 91 177-177 42 43-219 219ZM80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v310h-60v-310H140v600l74-80h276v60H240L80-80Zm60-220v-520 520Z"/></symbol>
+    <symbol id="mi-menu" viewBox="0 -960 960 960"><path fill="currentColor" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
+    <symbol id="mi-person" viewBox="0 -960 960 960"><path fill="currentColor" d="M372-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5T731-360q31 14 50 41t19 65v94H160Zm60-60h520v-34q0-16-9.5-30.5T707-306q-64-31-117-42.5T480-360q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm324.5-346.5Q570-592 570-631t-25.5-64.5Q519-721 480-721t-64.5 25.5Q390-670 390-631t25.5 64.5Q441-541 480-541t64.5-25.5ZM480-631Zm0 411Z"/></symbol>
+    <symbol id="mi-person_off" viewBox="0 -960 960 960"><path fill="currentColor" d="m813-61-99-99H160v-94q0-38 19-65t49-41q60-27 115.5-42T455-419L61-813l43-43 752 752-43 43ZM220-220h434L515-359q-8-1-17-1h-18q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm511-140q31 14 50 41t19 65v8L657-389q18 6 36.5 13.5T731-360ZM550-496l-48-48q30-7 49-31t19-56q0-38-26-64t-64-26q-32 0-56 19t-31 49l-48-48q19-38 55.5-59t79.5-21q63 0 106.5 43.5T630-631q0 43-21 79.5T550-496Zm104 276H220h434ZM448-599Z"/></symbol>
+    <symbol id="mi-play_circle" viewBox="0 -960 960 960"><path fill="currentColor" d="m383-310 267-170-267-170v340Zm97 230q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></symbol>
+    <symbol id="mi-priority_high" viewBox="0 -960 960 960"><path fill="currentColor" d="M479.91-120q-28.91 0-49.41-20.59-20.5-20.59-20.5-49.5t20.59-49.41q20.59-20.5 49.5-20.5t49.41 20.59q20.5 20.59 20.5 49.5t-20.59 49.41q-20.59 20.5-49.5 20.5ZM410-360v-480h140v480H410Z"/></symbol>
+    <symbol id="mi-quiz" viewBox="0 -960 960 960"><path fill="currentColor" d="M572-352q12-12 12-29t-12-29q-12-12-29-12t-29 12q-12 12-12 29t12 29q12 12 29 12t29-12Zm-54-114h47q2-29 8.5-43t32.5-39q27-26 37.5-45.4Q654-612.79 654-639q0-45.88-31.5-74.94Q591-743 540-743q-38 0-68 20.5T428-665l45 19q11-25 27.5-38t39.5-13q29.78 0 48.39 17T607-637q0 20-9 35t-32 32q-32 29-40 46.5t-8 57.5ZM260-200q-24 0-42-18t-18-42v-560q0-24 18-42t42-18h560q24 0 42 18t18 42v560q0 24-18 42t-42 18H260Zm0-60h560v-560H260v560ZM140-80q-24 0-42-18t-18-42v-620h60v620h620v60H140Zm120-740v560-560Z"/></symbol>
+    <symbol id="mi-schedule" viewBox="0 -960 960 960"><path fill="currentColor" d="m627-287 45-45-159-160v-201h-60v225l174 181ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-82 31.5-155t86-127.5Q252-817 325-848.5T480-880q82 0 155 31.5t127.5 86Q817-708 848.5-635T880-480q0 82-31.5 155t-86 127.5Q708-143 635-111.5T480-80Zm0-400Zm0 340q140 0 240-100t100-240q0-140-100-240T480-820q-140 0-240 100T140-480q0 140 100 240t240 100Z"/></symbol>
+    <symbol id="mi-school" viewBox="0 -960 960 960"><path fill="currentColor" d="M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z"/></symbol>
+    <symbol id="mi-search" viewBox="0 -960 960 960"><path fill="currentColor" d="M796-121 533-384q-30 26-70 40.5T378-329q-108 0-183-75t-75-181q0-106 75-181t182-75q106 0 180.5 75T632-585q0 43-14 83t-42 75l264 262-44 44ZM377-389q81 0 138-57.5T572-585q0-81-57-138.5T377-781q-82 0-139.5 57.5T180-585q0 81 57.5 138.5T377-389Z"/></symbol>
+    <symbol id="mi-send" viewBox="0 -960 960 960"><path fill="currentColor" d="M120-160v-640l760 320-760 320Zm60-93 544-227-544-230v168l242 62-242 60v167Zm0 0v-457 457Z"/></symbol>
+    <symbol id="mi-settings" viewBox="0 -960 960 960"><path fill="currentColor" d="m388-80-20-126q-19-7-40-19t-37-25l-118 54-93-164 108-79q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521L80-600l93-164 118 54q16-13 37-25t40-18l20-127h184l20 126q19 7 40.5 18.5T669-710l118-54 93 164-108 77q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l108 78-93 164-118-54q-16 13-36.5 25.5T592-206L572-80H388Zm48-60h88l14-112q33-8 62.5-25t53.5-41l106 46 40-72-94-69q4-17 6.5-33.5T715-480q0-17-2-33.5t-7-33.5l94-69-40-72-106 46q-23-26-52-43.5T538-708l-14-112h-88l-14 112q-34 7-63.5 24T306-642l-106-46-40 72 94 69q-4 17-6.5 33.5T245-480q0 17 2.5 33.5T254-413l-94 69 40 72 106-46q24 24 53.5 41t62.5 25l14 112Zm44-210q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Zm0-130Z"/></symbol>
+    <symbol id="mi-share" viewBox="0 -960 960 960"><path fill="currentColor" d="M686-80q-47.5 0-80.75-33.25T572-194q0-8 5-34L278-403q-16.28 17.34-37.64 27.17Q219-366 194-366q-47.5 0-80.75-33T80-480q0-48 33.25-81T194-594q24 0 45 9.3 21 9.29 37 25.7l301-173q-2-8-3.5-16.5T572-766q0-47.5 33.25-80.75T686-880q47.5 0 80.75 33.25T800-766q0 47.5-33.25 80.75T686-652q-23.27 0-43.64-9Q622-670 606-685L302-516q3 8 4.5 17.5t1.5 18q0 8.5-1 16t-3 15.5l303 173q16-15 36.09-23.5 20.1-8.5 43.07-8.5Q734-308 767-274.75T800-194q0 47.5-33.25 80.75T686-80Zm.04-60q22.96 0 38.46-15.54 15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5Zm-492-286q22.96 0 38.46-15.54 15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5ZM724.5-727.54q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54ZM686-194ZM194-480Zm492-286Z"/></symbol>
+    <symbol id="mi-show_chart" viewBox="0 -960 960 960"><path fill="currentColor" d="m126-220-46-46 300-300 160 161 298-335 42 41-340 384-160-159-254 254Z"/></symbol>
+    <symbol id="mi-star" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></symbol>
+    <symbol id="mi-supervisor_account" viewBox="0 -960 960 960"><path fill="currentColor" d="M617.5-408.5Q590-436 590-475t27.5-66.5Q645-569 684-569t66.5 27.5Q778-514 778-475t-27.5 66.5Q723-381 684-381t-66.5-27.5ZM488-160v-51q0-26 11-44.5t31-28.5q37-19 75-28t79-9q41 0 79 8.5t75 28.5q20 9 31 28t11 45v51H488ZM292-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm108-108ZM80-160v-94q0-34 17-62.5t51-43.5q67-30 128.5-45T400-420q32 0 57 3t54 9l-25.5 25.5L460-357q-13-2-28-2.5t-32-.5q-57 0-111 11.5T172-306q-14 7-23 22t-9 30v34h288v60H80Zm348-60Zm36.5-346.5Q490-592 490-631t-25.5-64.5Q439-721 400-721t-64.5 25.5Q310-670 310-631t25.5 64.5Q361-541 400-541t64.5-25.5Z"/></symbol>
+    <symbol id="mi-timer" viewBox="0 -960 960 960"><path fill="currentColor" d="M360-860v-60h240v60H360Zm90 447h60v-230h-60v230ZM340.5-109.5Q275-138 226-187t-77.5-114.5Q120-367 120-441t28.5-139.5Q177-646 226-695t114.5-77.5Q406-801 480-801q67 0 126 22.5T711-716l51-51 42 42-51 51q36 40 61.5 97T840-441q0 74-28.5 139.5T734-187q-49 49-114.5 77.5T480-81q-74 0-139.5-28.5Zm352-119Q780-316 780-441t-87.5-212.5Q605-741 480-741t-212.5 87.5Q180-566 180-441t87.5 212.5Q355-141 480-141t212.5-87.5ZM480-440Z"/></symbol>
+    <symbol id="mi-timer_off" viewBox="0 -960 960 960"><path fill="currentColor" d="m784-251-43-43q17-28 28-66t11-81q0-125-87.5-212.5T480-741q-42 0-80.5 10.5T333-702l-44-44q42-27 91.5-41t99.5-14q68 0 126.5 22.5T711-716l51-51 42 42-51 51q45 49 66 108.5T840-441q0 50-13.5 98.5T784-251ZM510-525v-118h-60v58l60 60ZM808-56 704-160q-48 38-103.5 58.5T480-81q-74 0-139.5-28.5T226-187q-49-49-77.5-114.5T120-441q0-61 18.5-116T199-665L57-807l43-43L851-99l-43 43Zm-328-85q52 0 98.5-16t85.5-47L243-625q-31 38-47 86t-16 98q0 125 87.5 212.5T480-141ZM360-860v-60h240v60H360Zm94 445Zm83-83Z"/></symbol>
+    <symbol id="mi-trending_up" viewBox="0 -960 960 960"><path fill="currentColor" d="m123-240-43-43 292-291 167 167 241-241H653v-60h227v227h-59v-123L538-321 371-488 123-240Z"/></symbol>
+    <symbol id="mi-video_camera_front" viewBox="0 -960 960 960"><path fill="currentColor" d="M232-318h336v-21q0-46-45-72.5T400-438q-78 0-123 26.5T232-339v21Zm168-175q35 0 57.5-22.5T480-573q0-35-22.5-57.5T400-653q-35 0-57.5 22.5T320-573q0 35 22.5 57.5T400-493ZM140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h520q24 0 42 18t18 42v215l160-160v410L720-435v215q0 24-18 42t-42 18H140Zm0-60h520v-520H140v520Zm0 0v-520 520Z"/></symbol>
+    <symbol id="mi-videocam" viewBox="0 -960 960 960"><path fill="currentColor" d="M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h520q24 0 42 18t18 42v215l160-160v410L720-435v215q0 24-18 42t-42 18H140Zm0-60h520v-520H140v520Zm0 0v-520 520Z"/></symbol>
+    <symbol id="mi-visibility" viewBox="0 -960 960 960"><path fill="currentColor" d="M600.5-379.5Q650-429 650-500t-49.5-120.5Q551-670 480-670t-120.5 49.5Q310-571 310-500t49.5 120.5Q409-330 480-330t120.5-49.5Zm-200-41Q368-453 368-500t32.5-79.5Q433-612 480-612t79.5 32.5Q592-547 592-500t-32.5 79.5Q527-388 480-388t-79.5-32.5ZM216-283Q98-366 40-500q58-134 176-217t264-83q146 0 264 83t176 217q-58 134-176 217t-264 83q-146 0-264-83Zm264-217Zm222.5 174.5Q804-391 857-500q-53-109-154.5-174.5T480-740q-121 0-222.5 65.5T102-500q54 109 155.5 174.5T480-260q121 0 222.5-65.5Z"/></symbol>
+    <symbol id="mi-visibility_off" viewBox="0 -960 960 960"><path fill="currentColor" d="m629-419-44-44q26-71-27-118t-115-24l-44-44q17-11 38-16t43-5q71 0 120.5 49.5T650-500q0 22-5.5 43.5T629-419Zm129 129-40-40q49-36 85.5-80.5T857-500q-50-111-150-175.5T490-740q-42 0-86 8t-69 19l-46-47q35-16 89.5-28T485-800q143 0 261.5 81.5T920-500q-26 64-67 117t-95 93Zm58 226L648-229q-35 14-79 21.5t-89 7.5q-146 0-265-81.5T40-500q20-52 55.5-101.5T182-696L56-822l42-43 757 757-39 44ZM223-654q-37 27-71.5 71T102-500q51 111 153.5 175.5T488-260q33 0 65-4t48-12l-64-64q-11 5-27 7.5t-30 2.5q-70 0-120-49t-50-121q0-15 2.5-30t7.5-27l-97-97Zm305 142Zm-116 58Z"/></symbol>
+    <symbol id="mi-warning" viewBox="0 -960 960 960"><path fill="currentColor" d="m40-120 440-760 440 760H40Zm104-60h672L480-760 144-180Zm361.5-65.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Zm26-122Z"/></symbol>
+  </defs>
+</svg>
+
+
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="TeachAI case study home">
+        <div class="nav-logo-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path fill="#fff" d="M3.2 19.8L8 15l2.1 2.1-4.8 4.8-1.4-1.4-.7-.7z"/><path fill="#fff" d="M8.2 15L11 4.5l1.3 1.3L9.5 14.2 8.2 15z" opacity=".92"/><path fill="#fff" d="M17.5 3.5l1.1 3.2L22 7.5l-3.4 1.2-1.1 3.4-1.1-3.4-3.4-1.2 3.4-1.2 1.1-3.2z"/></svg>
+        </div>
+        <span class="nav-logo-text">TeachAI</span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html" class="nav-link is-active" aria-current="page">Case Study</a></li>
+        <li><a href="landing-page.html#what-is-teachai" class="nav-link">What is TeachAI</a></li>
+        <li><a href="welcome-start.html" class="nav-link">Teacher Demo</a></li>
+        <li>
+          <button class="nav-link" type="button" aria-haspopup="true">Coach Demo <svg class="mi" style="font-size:14px" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false"><use href="#mi-expand_more"/></svg></button>
+          <div class="nav-dropdown">
+            <a href="coach-dashboard-v2.html" class="nav-dropdown-item"><div class="dd-icon"><svg class="mi" style="font-size:16px;color:var(--brand)" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false"><use href="#mi-auto_awesome"/></svg></div><div><div class="dd-label">Streamlined</div><div class="dd-sub">Reduced load</div></div></a>
+            <div class="nav-dropdown-sep"></div>
+            <a href="coach-dashboard.html" class="nav-dropdown-item"><div class="dd-icon"><svg class="mi" style="font-size:16px;color:var(--brand)" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false"><use href="#mi-dashboard"/></svg></div><div><div class="dd-label">Classic</div><div class="dd-sub">Full workspace</div></div></a>
+          </div>
+        </li>
+      </ul>
+      <div class="nav-right">
+        <div class="nav-credit">
+          <a href="https://www.linkedin.com/in/shaunrherron/" class="nav-author" target="_blank" rel="noopener noreferrer">Shaun Herron</a>
+        </div>
+        <a href="https://www.linkedin.com/in/shaunrherron/" class="nav-linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.07 2.07 0 11-.001 4.139 2.07 2.07 0 01.001-4.139zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <button class="nav-mobile-toggle" id="nav-toggle" type="button" aria-label="Menu"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false"><use href="#mi-menu"/></svg></button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
+  <a href="index.html" class="nav-mobile-item"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false"><use href="#mi-auto_stories"/></svg>Case Study</a>
+  <a href="landing-page.html#what-is-teachai" class="nav-mobile-item"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false"><use href="#mi-campaign"/></svg>What is TeachAI</a>
+  <a href="welcome-start.html" class="nav-mobile-item"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false"><use href="#mi-person"/></svg>Teacher Demo</a>
+  <div class="nav-mobile-section">Coach Demo</div>
+  <a href="coach-dashboard-v2.html" class="nav-mobile-item"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false"><use href="#mi-auto_awesome"/></svg>Streamlined</a>
+  <a href="coach-dashboard.html" class="nav-mobile-item"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false"><use href="#mi-dashboard"/></svg>Classic</a>
+</div>
+
+<header class="hero-v3" id="outcomes">
+  <div class="container hero-in">
+    <div class="eyebrow">Case study · AI-assisted feedback system</div>
+    <h1 class="h1">
+      <span class="h1-product">TeachAI</span>: Reducing feedback time from <em>days to minutes</em> with <em>AI + human review</em>
+    </h1>
+    <p class="hero-lead">
+      Teachers often wait days for feedback they can’t use in their next class. Coaches are stretched across dozens of teachers and can’t support everyone deeply.
+    </p>
+    <p class="hero-lead">
+      I designed a system where AI generates structured feedback in minutes, and coaches review, edit, and send it, reducing turnaround time while maintaining trust.<br />
+      Designed to reduce feedback turnaround from ~3 to 5 days to same-day.
+    </p>
+    <div class="outcome-strip" role="region" aria-label="Key outcomes">
+      <div class="outcome-card">
+        <h3>Problem</h3>
+        <p>Feedback is delayed, generic, and disconnected from upcoming lessons.</p>
+      </div>
+
+      <div class="outcome-card">
+        <h3>Approach</h3>
+        <p>AI-generated drafts + mandatory coach review to balance speed and trust.</p>
+      </div>
+
+      <div class="outcome-card">
+        <h3>My Role</h3>
+        <p>Partnered with product on research and synthesis; led product design, UX/UI, and built interactive prototypes.</p>
+      </div>
+    </div>
+    <nav class="toc" aria-label="Page sections">
+      <a href="#glance">Overview</a>
+      <a href="#challenge">The Problem</a>
+      <a href="#discovery">Users &amp; Research</a>
+      <a href="#participants">Participants</a>
+      <a href="#strategy">Plan &amp; Tradeoffs</a>
+      <a href="#process">How We Worked</a>
+      <a href="#solution">What We Built</a>
+      <a href="#impact">Results</a>
+      <a href="#reflection">Reflections</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section" id="glance">
+    <div class="container">
+      <p class="sec-kicker">Overview</p>
+      <h2 class="sec-title">AI product exploration for an existing platform</h2>
+      <p class="sec-lead">
+This work was an internal product exploration to identify how AI could be introduced into an existing education platform. It was initiated by company leadership to evaluate opportunities, risks, and potential product directions.
+</p>
+
+      <p class="sec-lead">
+The outcome is a set of product concepts, system designs, and interactive prototypes that demonstrate how AI-assisted feedback could reduce turnaround time while maintaining trust and quality.
+</p>
+      <dl class="facts">
+        <div class="fact"><dt>My Role</dt><dd>Senior Product Designer. Partnered with product leadership to explore AI opportunities, contributed to research and synthesis, defined product direction, designed end-to-end experiences, and built interactive prototypes to evaluate concepts.</dd></div>
+        <div class="fact"><dt>Who I worked with</dt><dd>Product leadership, a product manager, and engineering partners (for a future real build).</dd></div>
+        <div class="fact"><dt>How long</dt><dd>Several phases over a few weeks: learn the problem, sketch ideas, refine the design, get feedback, repeat. Exact dates are illustrative.</dd></div>
+        <div class="fact"><dt>What shipped here</dt><dd>Product concepts, system-level design explorations, and interactive prototypes used to evaluate how AI could be integrated into the platform.<div class="caveat">Exploration work intended to inform product direction; not all concepts were implemented.</div></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section alt" id="challenge">
+    <div class="container">
+      <p class="sec-kicker">The Problem</p>
+      <h2 class="sec-title">Feedback arrives too late to change what happens in the classroom</h2>
+
+      <p class="sec-lead">
+        Feedback cycles break when they are too slow to influence the next lesson. What should support real-time improvement instead becomes reflection after the fact.
+      </p>
+
+      <div class="prose">
+        <p>
+          Coaches can’t be in every classroom, and feedback depends on scheduling. As a result, feedback often arrives days later, missing the moment when it would be most useful.
+        </p>
+
+        <p>
+          Coaches are also responsible for many teachers at once, making it difficult to provide deep, consistent support. When tools introduce extra steps or complexity, they are quickly ignored in favor of speed.
+        </p>
+
+        <p>
+          This creates a gap: feedback is no longer actionable. Teachers receive general advice disconnected from their immediate context, limiting its impact on instruction.
+        </p>
+
+        <p>
+          The opportunity is not just to generate more feedback, but to make it usable in time. This requires balancing speed with trust, automating the heavy lifting while keeping coaches in control of what is ultimately shared.
+        </p>
+
+        <p>
+          Our approach is to use AI to generate structured feedback from lesson artifacts, while requiring coach review before anything is sent. This enables faster turnaround without sacrificing quality or professional judgment.
+        </p>
+      </div>
+      <div class="split" style="margin-top:22px">
+        <div>
+          <h3 class="sec-title" style="font-size:18px;margin-bottom:10px">In one screen</h3>
+          <div class="quad-grid" role="img" aria-label="Problem, users, solution, outcome">
+            <div class="quad-cell"><h4>Problem</h4><p>Slow, vague feedback that doesn’t match the next lesson.</p></div>
+            <div class="quad-cell"><h4>Who</h4><p>Teachers and coaches (plus school leaders who buy or approve tools).</p></div>
+            <div class="quad-cell"><h4>Idea</h4><p>AI drafts + coach review + simple screens for teachers.</p></div>
+            <div class="quad-cell"><h4>Goal</h4><p>Faster useful notes, clear next steps, nothing sent without coach buy-in.</p></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="sec-title" style="font-size:18px;margin-bottom:10px">Sample screen (mockup)</h3>
+          <p class="sec-lead" style="margin-bottom:10px;font-size:14px">Rough picture of the teacher view: numbers on the left, plain-language summary on the right.</p>
+          <figure class="ui-mock-wrap">
+            <div class="ui-mock-bar" aria-hidden="true"><span class="ui-mock-dot"></span><span class="ui-mock-dot"></span><span class="ui-mock-dot"></span></div>
+            <div class="ui-mock-body">
+              <div class="ui-mock-left">
+                <div class="ui-mock-metric">38% <small>Teacher talk time</small></div>
+                <div class="ui-mock-row"><span>Wait time</span><span style="font-weight:800;color:var(--brand)">2.1s</span></div>
+                <div class="ui-mock-row"><span>Checks for understanding</span><span style="font-weight:800">6</span></div>
+              </div>
+              <div class="ui-mock-right">
+                <span class="ai-tag">Lesson summary</span>
+                Students are doing most of the talking, which is good. Next step: call on a few students after partner talk so everyone takes part.
+                <div class="ui-mock-chips"><span class="ui-chip">Video</span><span class="ui-chip">Exit tickets</span><span class="ui-chip">Rubric</span></div>
+              </div>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="discovery">
+    <div class="container">
+      <p class="sec-kicker">Users &amp; Research</p>
+      <h2 class="sec-title">How feedback works today and where it breaks down.</h2>
+
+      <h3 class="sec-title" id="participants" style="font-size:17px;margin:28px 0 8px">Participants</h3>
+      <p class="prose" style="margin-bottom:8px">We interviewed 6 teachers, 6 instructional coaches, and 4 school leaders to understand workflows across the full coaching cycle.</p>
+      <p class="prose" style="margin-bottom:8px">Participants included both heavy users and low to mid adoption users. Heavy users regularly engaged with video feedback and coaching workflows, while lower adoption users revealed key friction points and barriers to use.</p>
+      <p class="prose" style="margin-bottom:12px">We reached saturation within each group, with consistent patterns around feedback timing, prioritization, and trust in AI-generated insights.</p>
+
+      <h3 class="sec-title" style="font-size:17px;margin:28px 0 8px">What we kept hearing</h3>
+      <div class="affinity-card" style="margin-bottom:12px">
+        <div style="font-size:13px;margin-bottom:8px"><strong>“By the time I get notes, I’m already on the next unit.”</strong></div>
+        <p style="font-size:14px;color:var(--muted)"><strong>So we focused on:</strong> feedback that fits the <em>next</em> lesson, not a pile of data.</p>
+      </div>
+      <div class="affinity-grid">
+        <div class="affinity-card"><h5>Time</h5><ul><li>“Too busy after school”</li><li>“Video takes too long”</li><li>“Give me the headline first”</li></ul></div>
+        <div class="affinity-card"><h5>Quality of advice</h5><ul><li>“Too generic”</li><li>“Not tied to what I’m teaching”</li><li>“I don’t know what to do Monday”</li></ul></div>
+      </div>
+      <h3 class="sec-title" style="font-size:17px;margin:28px 0 8px">Two people we designed for</h3>
+      <p class="prose" style="margin-bottom:12px">
+        These personas highlight a shared constraint: both teachers and coaches operate under time pressure, but with different responsibilities. This requires interfaces that surface priority quickly for coaches and actionable clarity for teachers.
+      </p>
+      <div class="persona-row">
+        <article class="persona">
+          <div class="persona-top">
+            <img class="persona-photo" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&amp;fit=crop&amp;w=128&amp;h=168&amp;q=80" alt="Illustrative portrait for the fictional teacher persona Jordan Martinez" width="64" height="84" loading="lazy" decoding="async" />
+            <div><h4>Jordan Martinez</h4><div class="role">Middle school math · Teacher</div></div>
+          </div>
+          <dl class="persona-body">
+            <dt>Wants</dt><dd>Clear steps for <em>this week’s</em> class, not a long rubric.</dd>
+            <dt>Frustrated by</dt><dd>Notes that arrive after the class has moved on.</dd>
+            <dt>In her words</dt><dd><blockquote class="p-quote">“I don’t even watch the full video. It’s too long after school.”</blockquote></dd>
+          </dl>
+        </article>
+        <article class="persona">
+          <div class="persona-top">
+            <img class="persona-photo" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&amp;fit=crop&amp;w=128&amp;h=168&amp;q=80" alt="Illustrative portrait for the fictional coach persona Alex Rivera" width="64" height="84" loading="lazy" decoding="async" />
+            <div><h4>Alex Rivera</h4><div class="role">District coach · 28 teachers</div></div>
+          </div>
+          <dl class="persona-body">
+            <dt>Wants</dt><dd>See who needs help first; still send quality messages.</dd>
+            <dt>Frustrated by</dt><dd>Cluttered dashboards; worry that auto-generated text could sound wrong or careless.</dd>
+            <dt>In his words</dt><dd><blockquote class="p-quote">“I’ll use anything that cuts prep time, but I have to trust every word I send.”</blockquote></dd>
+          </dl>
+        </article>
+      </div>
+      <table class="data-table" style="margin-top:16px">
+        <thead><tr><th></th><th>Teacher</th><th>Coach</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Main goal</strong></td><td>Teach better, soon</td><td>Help more teachers, safely</td></tr>
+          <tr><td><strong>Biggest pain</strong></td><td>Feedback comes too late</td><td>Too many people, not enough time</td></tr>
+          <tr><td><strong>So the UI should…</strong></td><td>Lead with the takeaway for <em>next</em> class</td><td>Show who to help first; let coaches edit AI text before send</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight-cards">
+        <div class="insight-card">
+          <span class="n">01</span>
+          <p>Feedback must lead with the most important takeaway, or it won’t be used.</p>
+        </div>
+
+        <div class="insight-card">
+          <span class="n">02</span>
+          <p>Coaches need prioritization, not more data: who to support matters more than what to analyze.</p>
+        </div>
+
+        <div class="insight-card">
+          <span class="n">03</span>
+          <p>AI requires visible human control to be trusted in professional feedback workflows.</p>
+        </div>
+      </div>
+      <h3 class="sec-title" style="font-size:17px;margin:32px 0 8px">Today’s process (where it stings)</h3>
+      <table class="data-table">
+        <thead><tr><th>Step</th><th>What happens</th><th>Why it’s hard</th></tr></thead>
+        <tbody>
+          <tr class="pain-low"><td>1</td><td>Record the lesson</td><td>Uncomfortable; easy to put off</td></tr>
+          <tr class="pain-med"><td>2</td><td>Upload or share video</td><td>Takes time; tools get in the way</td></tr>
+          <tr class="pain-high"><td>3</td><td>Watch yourself teach</td><td>Long; hard to spot patterns alone</td></tr>
+          <tr class="pain-high"><td>4</td><td>Wait for the coach</td><td><strong>Often days; scheduling is the bottleneck</strong></td></tr>
+          <tr class="pain-high"><td>5</td><td>Meet to debrief</td><td>Hard to book; advice can feel generic</td></tr>
+        </tbody>
+      </table>
+      <p class="prose" style="margin-top:12px">
+        The breakdown is not in analysis, but in timing. The longest delay occurs between observation and feedback, making speed the most critical design constraint.
+      </p>
+      <div class="heat-flow">
+        <div class="heat-steps">
+          <div class="heat-step">Record</div><div class="heat-step">Upload</div><div class="heat-step">Review</div><div class="heat-step">Wait</div><div class="heat-step">Feedback</div>
+        </div>
+        <div class="heat-bars" role="img" aria-label="Where pain is higher along the steps">
+          <div class="heat-bar b1"></div><div class="heat-bar b2"></div><div class="heat-bar b3"></div><div class="heat-bar b4"></div><div class="heat-bar b5"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section alt" id="strategy">
+    <div class="container">
+      <p class="sec-kicker">Plan &amp; Tradeoffs</p>
+      <h2 class="sec-title sec-title--xl">Constraints, tradeoffs, and the key decision that defined the product direction.</h2>
+
+      <h3 class="sec-title" style="font-size:17px;margin:8px 0 10px">Decision Makers</h3>
+      <div class="role-cols">
+        <div class="role-col"><h5>Me (design)</h5><ul><li>Interviewed users and synthesized findings</li><li>Maps and screen design</li><li>Shared buttons, colors, and patterns</li><li>Worked with PM on how the AI should sound</li><li>Built the web demos</li></ul></div>
+        <div class="role-col"><h5>Product manager</h5><ul><li>What to build first</li><li>Rules for what the AI should and shouldn’t say</li><li>Interviewed users and synthesized findings</li></ul></div>
+        <div class="role-col"><h5>Engineering</h5><ul><li>Hooking up real AI (when we ship)</li><li>Privacy and data</li><li>Turning designs into production code (later)</li></ul></div>
+      </div>
+
+      <h3 class="sec-title" style="font-size:17px;margin:22px 0 8px">Rough timeline</h3>
+      <div class="timeline">
+        <div class="tl-item"><strong>Weeks 1 to 2 · Learn</strong><p>Talk to people, look at old tools, draw the current flow with PM and leadership.</p></div>
+        <div class="tl-item"><strong>Weeks 3 to 4 · Sketch</strong><p>User flows and rough screens; agree that coaches must approve before send.</p></div>
+        <div class="tl-item"><strong>Weeks 5 to 6 · Build demos</strong><p>Polished screens and working HTML; tune wording with the PM.</p></div>
+        <div class="tl-item"><strong>After that · Listen</strong><p>Show drafts to stakeholders and coaches; simplify the coach dashboard where it felt crowded.</p></div>
+      </div>
+
+      <div class="plan-pillar">
+        <p class="plan-pillar-label">Constraints</p>
+        <ul class="plan-constraints-list">
+          <li>It had to fit into busy school schedules.</li>
+          <li>Feedback had to be available quickly enough to be used in the next lesson.</li>
+          <li>Coaches had to review and approve all feedback before it was shared.</li>
+          <li>The system had to work for both frequent users and low-adoption users.</li>
+          <li>The existing product was built around video and could not be removed entirely.</li>
+          <li>The system had to be fast, usable, and trustworthy to support teaching in the moment.</li>
+        </ul>
+      </div>
+
+      <div class="plan-pillar">
+        <p class="plan-pillar-label">Tradeoff</p>
+        <p class="plan-pillar-sub">Speed vs. depth</p>
+        <p class="plan-pillar-text">Fast, rough feedback can miss nuance. Slow, perfect feedback never ships. We leaned toward <strong>fast enough to use</strong>, with the coach as the safety check.</p>
+        <div class="tradeoff">
+          <div class="tradeoff-row"><span>Faster notes</span><span>More detail</span></div>
+          <div class="tradeoff-bar"><div class="tradeoff-marker" aria-hidden="true"></div></div>
+          <p class="plan-pillar-text" style="margin-top:14px;margin-bottom:10px">
+            The core product tension was between speed and depth. Faster feedback risks losing nuance, while deeper feedback risks arriving too late to be useful.
+          </p>
+          <p class="tradeoff-cap"><strong>Where we landed:</strong> show the summary and key takeaways first; video and details support that, not the other way around.</p>
+        </div>
+      </div>
+
+      <div class="plan-pillar plan-pillar--key">
+        <p class="plan-pillar-label">Key Decision</p>
+        <p class="plan-pillar-text" style="color:var(--text-hi);margin-bottom:20px">These insights directly informed a set of key product decisions that shaped how feedback is delivered, prioritized, and trusted within the system.</p>
+
+        <div class="decision-card">
+          <h4 class="decision-card-title">Summary-first feedback instead of video-first</h4>
+          <div class="row"><span class="label">Problem</span><span class="decision-value">Teachers were not engaging with full lesson recordings, limiting the effectiveness of video-based feedback.</span></div>
+          <div class="row">
+            <span class="label">Options</span>
+            <div class="decision-value">
+              <ul class="decision-option-list">
+                <li>Video-first interface</li>
+                <li>Enhanced video navigation</li>
+                <li>Summary-first approach</li>
+              </ul>
+            </div>
+          </div>
+          <div class="row row--key-decision"><span class="label">Decision</span><span class="decision-value">Lead with a structured summary, with video as supporting evidence.</span></div>
+          <div class="row"><span class="label">Why</span><span class="decision-value">Teachers need immediate, actionable insight due to time constraints and cognitive load.</span></div>
+          <div class="row"><span class="label">Result</span><span class="decision-value">Increased engagement with feedback and made it easier for teachers to apply insights in their next class.</span></div>
+        </div>
+
+        <div class="decision-card">
+          <h4 class="decision-card-title">Prioritization over visibility</h4>
+          <div class="row"><span class="label">Problem</span><span class="decision-value">Coaches had limited time and could not review all teachers equally.</span></div>
+          <div class="row">
+            <span class="label">Options</span>
+            <div class="decision-value">
+              <ul class="decision-option-list">
+                <li>Show all data equally</li>
+                <li>Allow manual filtering</li>
+                <li>Automatically prioritize teachers</li>
+              </ul>
+            </div>
+          </div>
+          <div class="row row--key-decision"><span class="label">Decision</span><span class="decision-value">Surface a prioritized list of teachers based on need.</span></div>
+          <div class="row"><span class="label">Why</span><span class="decision-value">Coaches needed help deciding where to focus more than accessing more data.</span></div>
+          <div class="row"><span class="label">Result</span><span class="decision-value">Reduced cognitive load and enabled faster, more effective coaching decisions.</span></div>
+        </div>
+
+        <div class="decision-card">
+          <h4 class="decision-card-title">Structured AI with human control</h4>
+          <div class="row"><span class="label">Problem</span><span class="decision-value">Early AI-generated feedback sounded generic and sometimes too formal, which reduced trust.</span></div>
+          <div class="row">
+            <span class="label">Options</span>
+            <div class="decision-value">
+              <ul class="decision-option-list">
+                <li>Keep AI output as-is</li>
+                <li>Let coaches fully rewrite everything</li>
+                <li>Constrain AI to structured, editable drafts</li>
+              </ul>
+            </div>
+          </div>
+          <div class="row row--key-decision"><span class="label">Decision</span><span class="decision-value">Use AI to generate structured, editable drafts with clear sections such as summary, strengths, and next steps.</span></div>
+          <div class="row"><span class="label">Why</span><span class="decision-value">Coaches needed speed without losing ownership or trust.</span></div>
+          <div class="row"><span class="label">Result</span><span class="decision-value">Feedback became more consistent, easier to review, and faster to deliver.</span></div>
+        </div>
+
+        <blockquote class="p-quote p-quote--plain" style="margin-top:24px">
+          This established a core principle: the system should accelerate decision-making while keeping coaches in control of what is ultimately shared.
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="process">
+    <div class="container">
+      <p class="sec-kicker">How We Worked</p>
+      <p class="sec-lead">
+        From problem to clickable demo, this work moved through rapid iteration, with decisions shaped by constraints, feedback, and evolving user understanding.
+      </p>
+
+      <div class="steps">
+        <div class="step step--done">
+          <div class="step-num" aria-label="Step 1, completed">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div><h3>Agree on the problem</h3><p>Worked with PM and leadership to define what “good feedback” means for coaches and teachers before designing screens.</p></div>
+        </div>
+        <div class="step step--done">
+          <div class="step-num" aria-label="Step 2, completed">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div><h3>Look at today’s reality</h3><p>Reviewed existing tools to ground decisions in how people actually work.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><h3>Define flows before interface</h3><p>Focused first on user flows and decision points to reduce time to insight.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div><h3>Create wireframes</h3><p>Translated flows into low-fidelity layouts to explore structure, hierarchy, and key interactions before visual design.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div><h3>Design the AI + review experience</h3><p>Defined feature priority, hierarchy, and layout to support fast decision-making, using rapid iteration to explore variations in structure, tone, and interaction. AI outputs were shaped to feel coach-like and easy to review and edit.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div><h3>Apply visual design and system</h3><p>Applied typography, color, and component patterns to create a consistent, scalable interface, refining the system through fast iteration across screens and states.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">7</div>
+          <div><h3>Refine based on usability feedback</h3><p>Early versions surfaced too many signals, making it hard for coaches to prioritize. This led to a redesign focused on highlighting which teachers needed attention first.</p></div>
+        </div>
+      </div>
+
+      <h3 class="sec-title" style="font-size:17px;margin:28px 0 8px">End-to-end flow</h3>
+      <p class="prose" style="margin-bottom:8px">The teacher adds lesson materials. The product analyzes them and suggests notes. The coach reviews, edits, and sends. The teacher sees feedback they can actually use, not one long chat that does everything.</p>
+      <div class="diagram-box">
+        <svg class="sys-svg" viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" aria-label="Teacher AI engine coach flow">
+          <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#007890"/></marker></defs>
+          <rect x="20" y="90" width="100" height="68" rx="12" fill="#e6f5f0" stroke="#007890" stroke-width="2"/>
+          <text x="70" y="118" text-anchor="middle" font-family="Nunito,sans-serif" font-size="13" font-weight="800" fill="#1a2c2a">Teacher</text>
+          <text x="70" y="138" text-anchor="middle" font-family="Nunito,sans-serif" font-size="10" fill="#6b7f7c">uploads evidence</text>
+          <line x1="120" y1="124" x2="200" y2="124" stroke="#007890" stroke-width="2" marker-end="url(#arr)"/>
+          <rect x="200" y="72" width="200" height="104" rx="14" fill="#fff" stroke="#007890" stroke-width="2"/>
+          <text x="300" y="100" text-anchor="middle" font-family="Nunito,sans-serif" font-size="14" font-weight="900" fill="#005f72">TeachAI</text>
+          <text x="300" y="122" text-anchor="middle" font-family="Nunito,sans-serif" font-size="10" fill="#6b7f7c">Turns materials into notes &amp; numbers</text>
+          <text x="300" y="148" text-anchor="middle" font-family="Nunito,sans-serif" font-size="11" fill="#1a2c2a">Draft notes for the coach to edit</text>
+          <line x1="400" y1="124" x2="520" y2="124" stroke="#007890" stroke-width="2" marker-end="url(#arr)"/>
+          <rect x="520" y="90" width="100" height="68" rx="12" fill="#e6f5f0" stroke="#2f8f6e" stroke-width="2"/>
+          <text x="570" y="118" text-anchor="middle" font-family="Nunito,sans-serif" font-size="13" font-weight="800" fill="#1a2c2a">Coach</text>
+          <text x="570" y="138" text-anchor="middle" font-family="Nunito,sans-serif" font-size="10" fill="#6b7f7c">review · edit · send</text>
+          <path d="M 570 90 Q 300 36 70 90" fill="none" stroke="#b8d4d0" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="300" y="28" text-anchor="middle" font-family="Nunito,sans-serif" font-size="11" font-weight="700" fill="#007890">Feedback returns to teacher</text>
+        </svg>
+      </div>
+      <div class="stake-grid" style="margin-top:14px">
+        <div class="stake-card core"><h5>Core</h5><ul><li>Teacher</li><li>Coach</li></ul></div>
+        <div class="stake-card"><h5>Also involved</h5><ul><li>School admin</li><li>District leaders</li></ul></div>
+        <div class="stake-card"><h5>Behind the scenes</h5><ul><li>AI analysis</li><li>Class lists / school systems (later)</li></ul></div>
+      </div>
+
+      <h3 class="sec-title" style="font-size:17px;margin:26px 0 8px">Happy paths (short)</h3>
+      <p style="font-size:14px;font-weight:700;color:var(--text-hi);margin-bottom:4px">Teacher</p>
+      <div class="flow-line">Add materials → Software analyzes → See summary &amp; numbers → Optional chat → Try something next class</div>
+      <p style="font-size:14px;font-weight:700;color:var(--text-hi);margin:14px 0 4px">Coach</p>
+      <div class="flow-line">See who needs attention → Open their materials → Read AI draft → Edit → Send or book a meeting → Follow up later</div>
+
+      <h3 class="sec-title" id="edge-cases" style="font-size:17px;margin:22px 0 8px;scroll-margin-top:calc(var(--nav-h) + 12px)">Edge Cases &amp; Safeguards</h3>
+      <p class="edge-safeguards-intro">Designed to handle uncertainty, time pressure, and varying levels of trust in AI.</p>
+
+      <div class="edge-safeguards-groups">
+        <section class="edge-safeguards-group" aria-labelledby="edge-group-ai">
+          <h4 id="edge-group-ai">AI trust and control</h4>
+          <div class="edge-safeguard-item">
+            <h5>If AI is wrong</h5>
+            <ul>
+              <li>Coach can fully edit or discard suggestions</li>
+              <li>Nothing is sent without human review</li>
+            </ul>
+          </div>
+          <div class="edge-safeguard-item">
+            <h5>If users trust AI too much</h5>
+            <ul>
+              <li>AI output is presented as a draft, not a final answer</li>
+              <li>Coach review remains required</li>
+            </ul>
+          </div>
+          <div class="edge-safeguard-item">
+            <h5>If users do not trust AI</h5>
+            <ul>
+              <li>Clear distinction between AI-generated and coach-approved feedback</li>
+              <li>Human review is visible in the workflow</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="edge-safeguards-group" aria-labelledby="edge-group-workflow">
+          <h4 id="edge-group-workflow">Workflow and time constraints</h4>
+          <div class="edge-safeguard-item">
+            <h5>If a coach has no time</h5>
+            <ul>
+              <li>Dashboard prioritizes highest-need teachers</li>
+              <li>Quick-edit flows reduce time to send feedback</li>
+            </ul>
+          </div>
+          <div class="edge-safeguard-item">
+            <h5>If a coach has too many teachers</h5>
+            <ul>
+              <li>The system surfaces who needs attention first</li>
+              <li>Lower-priority items do not compete for focus</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="edge-safeguards-group" aria-labelledby="edge-group-input">
+          <h4 id="edge-group-input">Input quality and context</h4>
+          <div class="edge-safeguard-item">
+            <h5>If context is missing</h5>
+            <ul>
+              <li>Artifacts such as lesson plans or student work are shown alongside feedback</li>
+              <li>AI output is framed as partial, not complete</li>
+            </ul>
+          </div>
+          <div class="edge-safeguard-item">
+            <h5>If the input is low quality</h5>
+            <ul>
+              <li>Coach can ignore or adjust suggestions</li>
+              <li>The system avoids overstating confidence</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="edge-safeguards-group" aria-labelledby="edge-group-adoption">
+          <h4 id="edge-group-adoption">Adoption and behavior</h4>
+          <div class="edge-safeguard-item">
+            <h5>If a teacher disagrees</h5>
+            <ul>
+              <li>Feedback is framed as suggestions, not evaluation</li>
+              <li>Encourages reflection and follow-up conversation</li>
+            </ul>
+          </div>
+          <div class="edge-safeguard-item">
+            <h5>If feedback is hard to act on</h5>
+            <ul>
+              <li>Next steps are clear, specific, and easy to apply</li>
+              <li>Designed to fit within a single lesson cycle</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <h3 class="sec-title" style="font-size:17px;margin:22px 0 8px">Wireframes (Sample)</h3>
+
+      <h3 class="sec-title" style="font-size:17px;margin:22px 0 8px">IA: What’s on each main screen (simple map)</h3>
+      <pre class="ia-tree">Coach workspace
+├── Overview (priorities)
+├── All teachers
+├── Trends
+└── Coaching log
+
+Teacher experience
+├── Analysis session (chat)
+├── Artifacts &amp; context
+└── Export / share</pre>
+
+      <h3 class="sec-title" style="font-size:17px;margin:22px 0 8px">Visual Design</h3>
+      <div class="visual-design-block">
+        <div class="prose" style="margin-bottom:0">
+          <p>With structure defined, we moved into high-fidelity design to establish a consistent visual system across the product.</p>
+          <p>Typography, color, and component patterns were applied to reinforce hierarchy, improve readability, and support fast decision-making.</p>
+          <p>This created a cohesive experience across teacher and coach workflows, making the system easier to scan and act on.</p>
+        </div>
+
+        <div class="proto-carousel" id="visual-design-carousel" role="region" aria-roledescription="carousel" aria-label="High-fidelity prototype screenshots. Swipe or use arrows to change slides." tabindex="0" style="margin-top:20px;margin-bottom:4px">
+          <div class="proto-carousel-viewport">
+            <div class="proto-carousel-window" id="visual-design-carousel-window">
+              <div class="proto-carousel-track" id="visual-design-carousel-track">
+                <article class="proto-carousel-slide" aria-roledescription="slide" aria-label="1 of 4">
+                  <img src="artifacts/ui/1-coach-1.png" alt="Coach dashboard prototype showing overview metrics and teacher list." decoding="async" fetchpriority="low" />
+                  <div class="proto-carousel-caption">
+                    <h3>Coach Dashboard</h3>
+                    <p>Overview of school-wide submissions, priority teachers, and coaching workload in one place.</p>
+                  </div>
+                </article>
+                <article class="proto-carousel-slide" aria-hidden="true" aria-roledescription="slide" aria-label="2 of 4">
+                  <img src="artifacts/ui/3-teacher-1.png" alt="Teacher-facing prototype with conversational AI and lesson materials." decoding="async" />
+                  <div class="proto-carousel-caption">
+                    <h3>Teacher Workspace</h3>
+                    <p>AI chat and lesson artifacts so teachers can explore feedback in context.</p>
+                  </div>
+                </article>
+                <article class="proto-carousel-slide" aria-hidden="true" aria-roledescription="slide" aria-label="3 of 4">
+                  <img src="artifacts/ui/2-coach-2.png" alt="Coach prototype showing trends and coaching insights." decoding="async" />
+                  <div class="proto-carousel-caption">
+                    <h3>Coach Insights</h3>
+                    <p>Deeper coach views for trends, sessions, and follow-up across the roster.</p>
+                  </div>
+                </article>
+                <article class="proto-carousel-slide" aria-hidden="true" aria-roledescription="slide" aria-label="4 of 4">
+                  <img src="artifacts/ui/4-coach-1.png" alt="Coach prototype with detail panels and workflow tools." decoding="async" />
+                  <div class="proto-carousel-caption">
+                    <h3>Coach Tools</h3>
+                    <p>Additional coach surface for reviewing detail, bulk actions, and handoff to teachers.</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+          <div class="proto-carousel-controls">
+            <button type="button" class="proto-carousel-btn" id="visual-design-carousel-prev" aria-label="Previous prototype screenshot">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+            </button>
+            <span class="proto-carousel-counter" id="visual-design-carousel-counter" aria-live="polite">1 / 4</span>
+            <div class="proto-carousel-dots" id="visual-design-carousel-dots" role="group" aria-label="Prototype screenshot slides"></div>
+            <button type="button" class="proto-carousel-btn" id="visual-design-carousel-next" aria-label="Next prototype screenshot">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section alt" id="solution">
+    <div class="container">
+      <p class="sec-kicker">What We Built</p>
+      <h2 class="sec-title">Prototypes and Feedback</h2>
+      <p class="sec-lead">
+        I developed high-fidelity, interactive prototypes that felt like a real product to make the experience concrete and testable. This allowed me to gather meaningful feedback from internal stakeholders, including leadership, sales, customer success, and marketing, as well as potential users.
+      </p>
+      <p class="sec-lead">Seeing the product in a realistic state helped validate key decisions around layout, prioritization, and AI interactions, and revealed areas that needed refinement before development.</p>
+
+      <h3 class="sec-title" style="font-size:17px;margin:28px 0 12px">Prototypes</h3>
+      <div class="sol-grid" style="margin-top:0">
+        <article class="sol-tile"><a href="welcome-start.html"><div class="sol-thumb"><div class="mini"></div><div class="mini"></div><div class="mini" style="grid-column:1/-1"></div></div><div class="sol-body"><h4>Teacher demo</h4><p>Feedback surfaces immediately, helping teachers focus on clear, actionable next steps.</p></div></a></article>
+        <article class="sol-tile"><a href="coach-dashboard-v2.html"><div class="sol-thumb"><div class="mini"></div><div class="mini"></div><div class="mini" style="grid-column:1/-1"></div></div><div class="sol-body"><h4>Coach demo (simpler layout)</h4><p>Prioritizes which teachers need attention first, reducing decision time and cognitive load.</p></div></a></article>
+        <article class="sol-tile"><a href="coach-dashboard.html"><div class="sol-thumb"><div class="mini"></div><div class="mini"></div><div class="mini" style="grid-column:1/-1"></div></div><div class="sol-body"><h4>Coach demo (full layout)</h4><p>Expanded view with deeper context, while maintaining clear prioritization of who needs attention.</p></div></a></article>
+        <article class="sol-tile"><a href="landing-page.html#what-is-teachai"><div class="sol-thumb plain">Product story</div><div class="sol-body"><h4>Product story</h4><p>Simple overview of how TeachAI works for new users.</p></div></a></article>
+      </div>
+
+      <h3 class="sec-title" style="font-size:17px;margin:28px 0 12px">Feedback</h3>
+      <div class="glow-grow-grid">
+        <div class="glow-grow-card glow-grow-card--glow">
+          <p class="glow-grow-tag" id="prototype-glows">GLOWS</p>
+          <h4 class="glow-grow-title">What people reacted to positively</h4>
+          <ul aria-labelledby="prototype-glows">
+            <li>“I like seeing the takeaway first instead of digging through video.” <span class="glow-grow-role">(Teacher)</span></li>
+            <li>“If I can edit before sending, I’d trust this.” <span class="glow-grow-role">(Coach)</span></li>
+            <li>“This would save me time deciding who to prioritize.” <span class="glow-grow-role">(Coach)</span></li>
+            <li>“This makes the workflow feel much faster and more focused.” <span class="glow-grow-role">(School leader)</span></li>
+            <li>“I can see how this would be easier to explain to schools.” <span class="glow-grow-role">(Sales)</span></li>
+            <li>“The structure makes the value really clear right away.” <span class="glow-grow-role">(Marketing)</span></li>
+            <li>“This feels like something teams could actually use day to day.” <span class="glow-grow-role">(Customer Success)</span></li>
+            <li>“This is much clearer than what we have today.” <span class="glow-grow-role">(Leadership)</span></li>
+          </ul>
+        </div>
+        <div class="glow-grow-card glow-grow-card--grow">
+          <p class="glow-grow-tag" id="prototype-grows">GROWS</p>
+          <h4 class="glow-grow-title">What confused or concerned them</h4>
+          <ul aria-labelledby="prototype-grows">
+            <li>“I can’t tell what the AI wrote versus what the coach approved.” <span class="glow-grow-role">(Coach)</span></li>
+            <li>“This could feel generic if the feedback isn’t specific enough.” <span class="glow-grow-role">(Teacher)</span></li>
+            <li>“I’d want to see more context before trusting the summary.” <span class="glow-grow-role">(Coach)</span></li>
+            <li>“What happens if the AI gets something wrong?” <span class="glow-grow-role">(School leader)</span></li>
+            <li>“We need to be careful about how this is positioned to customers.” <span class="glow-grow-role">(Sales)</span></li>
+            <li>“How do we explain the role of AI without losing trust?” <span class="glow-grow-role">(Marketing)</span></li>
+            <li>“Will coaches feel comfortable relying on this?” <span class="glow-grow-role">(Customer Success)</span></li>
+            <li>“We need clear boundaries between AI and human input.” <span class="glow-grow-role">(Leadership)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="sec-title" style="font-size:17px;margin:32px 0 12px">Iterating on Feedback</h3>
+      <div class="prose" style="max-width:720px;margin-bottom:0">
+        <p>We treated this as an iterative process, using feedback from users and stakeholders to refine the experience over time. Each round of input helped clarify priorities, improve usability, and strengthen trust in the AI-driven workflow.</p>
+        <p>This approach ensured the product evolved based on real needs rather than assumptions, leading to a more focused and effective experience.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section" id="impact">
+    <div class="container">
+      <p class="sec-kicker">Results</p>
+      <h3 class="sec-title" style="font-size:17px;margin:22px 0 8px">What we would measure</h3>
+
+      <p class="sec-lead">
+        Success is not just faster feedback. It is feedback that is trusted and acted on.
+      </p>
+
+      <p class="prose" style="margin-top:8px;margin-bottom:12px">
+        We measure success across three areas, each tied to a key product decision.
+      </p>
+
+      <div class="affinity-grid">
+
+        <div class="affinity-card">
+          <h5>Speed</h5>
+          <p class="affinity-decision"><strong>Decision:</strong> Deliver feedback immediately with AI instead of requiring full video review</p>
+          <ul>
+            <li>Time from lesson submission to feedback delivered</li>
+            <li>Time from feedback received to changes applied in the classroom</li>
+          </ul>
+          <p class="affinity-foot">↓ Target: same-day feedback cycle</p>
+        </div>
+
+        <div class="affinity-card">
+          <h5>Trust &amp; quality</h5>
+          <p class="affinity-decision"><strong>Decision:</strong> Ensure AI feedback is reviewed and edited by coaches before sharing</p>
+          <ul>
+            <li>% of AI feedback reviewed and edited by coaches</li>
+            <li>Average number of edits per feedback draft</li>
+          </ul>
+        </div>
+
+        <div class="affinity-card">
+          <h5>Adoption &amp; use</h5>
+          <p class="affinity-decision"><strong>Decision:</strong> Prioritize next steps and make feedback easy to access and act on</p>
+          <ul>
+            <li>% of feedback viewed within 24 to 48 hours</li>
+            <li>Teacher rating: Was this useful for your next lesson</li>
+          </ul>
+          <p class="affinity-foot">↓ Signal: most teachers act within one teaching cycle</p>
+        </div>
+
+      </div>
+
+      <p class="prose" style="margin-top:14px">
+        These metrics ensure the system is fast, trusted, and actionable within real teaching workflows.
+      </p>
+
+      <div class="hypothesis">
+        <strong>Theory we’re testing</strong>
+        <p>If feedback arrives quickly and feels specific, teachers apply it sooner, leading to faster improvement than traditional coaching cycles.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="reflection">
+    <div class="container">
+      <p class="sec-kicker">Reflections</p>
+      <h2 class="sec-title">Principles I Would Carry Forward</h2>
+
+      <ul class="learnings">
+        <li><strong>Speed only matters if people trust the output.</strong> AI can reduce effort, but without clear human control, it won’t be used.</li>
+
+        <li><strong>Prioritization is more valuable than more data.</strong> Coaches didn’t need more information. They needed to know where to act first.</li>
+
+        <li><strong>AI products require visible boundaries.</strong> It must be clear what AI generated vs. what a coach approved.</li>
+
+        <li><strong>Designing for real workflows beats ideal workflows.</strong> Teachers and coaches work under time pressure, so every extra step risks abandonment.</li>
+
+        <li><strong>AI outputs improve when inputs are well defined.</strong> Well-structured inputs and aligned goals lead to more useful and reliable results.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="footer-v3">
+  <div class="container">
+    <p><strong style="color:#fff">TeachAI</strong></p>
+    <p style="margin-top:10px;opacity:0.75;font-size:12px">© 2026 · Shaun Herron</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var t = document.getElementById('nav-toggle');
+  var m = document.getElementById('nav-mobile-menu');
+  var nav = document.querySelector('.nav');
+  function closeMenu() {
+    if (!m || !t) return;
+    m.classList.remove('open');
+    t.setAttribute('aria-expanded', 'false');
+    m.setAttribute('aria-hidden', 'true');
+    var u = t.querySelector('use');
+    if (u) u.setAttribute('href', '#mi-menu');
+    document.body.style.overflow = '';
+  }
+  if (t && m) {
+    t.addEventListener('click', function () {
+      var open = m.classList.toggle('open');
+      t.setAttribute('aria-expanded', open);
+      m.setAttribute('aria-hidden', !open);
+      var u = t.querySelector('use');
+      if (u) u.setAttribute('href', open ? '#mi-close' : '#mi-menu');
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    m.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', closeMenu); });
+  }
+  window.addEventListener('scroll', function () {
+    if (nav) nav.style.boxShadow = window.scrollY > 8 ? '0 2px 16px rgba(0,90,108,0.10)' : 'none';
+  }, { passive: true });
+})();
+
+(function () {
+  function initCarousel(idPrefix) {
+    var root = document.getElementById(idPrefix);
+    var track = document.getElementById(idPrefix + '-track');
+    var winEl = document.getElementById(idPrefix + '-window');
+    var prevBtn = document.getElementById(idPrefix + '-prev');
+    var nextBtn = document.getElementById(idPrefix + '-next');
+    var counter = document.getElementById(idPrefix + '-counter');
+    var dotsWrap = document.getElementById(idPrefix + '-dots');
+    if (!root || !track || !winEl) return;
+
+    var slideEls = track.querySelectorAll('.proto-carousel-slide');
+    var nSlides = slideEls.length;
+    if (!nSlides) return;
+
+    track.style.width = nSlides * 100 + '%';
+    slideEls.forEach(function (el) {
+      el.style.flex = '0 0 ' + 100 / nSlides + '%';
+    });
+
+    var i = 0;
+    var busy = false;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var SWIPE_PX = 56;
+
+    function setTransform() {
+      var pct = (100 / nSlides) * i;
+      track.style.transform = 'translateX(-' + pct + '%)';
+    }
+
+    function setSlideA11y() {
+      slideEls.forEach(function (el, idx) {
+        if (idx === i) {
+          el.removeAttribute('aria-hidden');
+          el.setAttribute('aria-label', idx + 1 + ' of ' + nSlides);
+        } else {
+          el.setAttribute('aria-hidden', 'true');
+        }
+      });
+    }
+
+    function renderDots() {
+      if (!dotsWrap) return;
+      dotsWrap.innerHTML = '';
+      for (var idx = 0; idx < nSlides; idx++) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'proto-carousel-dot';
+        b.setAttribute('aria-label', 'Go to slide ' + (idx + 1) + ' of ' + nSlides);
+        if (idx === i) b.setAttribute('aria-current', 'true');
+        (function (idx2) {
+          b.addEventListener('click', function () { go(idx2); });
+        })(idx);
+        dotsWrap.appendChild(b);
+      }
+    }
+
+    function go(nextIndex) {
+      if (busy) return;
+      var next = (nextIndex + nSlides) % nSlides;
+      if (next === i) return;
+      busy = true;
+      i = next;
+      setTransform();
+      setSlideA11y();
+      if (counter) counter.textContent = i + 1 + ' / ' + nSlides;
+      renderDots();
+      var ms = reduceMotion ? 0 : 460;
+      setTimeout(function () { busy = false; }, ms);
+    }
+
+    setTransform();
+    setSlideA11y();
+    renderDots();
+
+    if (prevBtn) prevBtn.addEventListener('click', function () { go(i - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { go(i + 1); });
+    root.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(i - 1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(i + 1); }
+    });
+
+    var tStartX = 0;
+    var tStartY = 0;
+    var tActive = false;
+    var tLockHoriz = false;
+
+    winEl.addEventListener('touchstart', function (e) {
+      if (e.touches.length !== 1 || busy) return;
+      tActive = true;
+      tLockHoriz = false;
+      tStartX = e.touches[0].clientX;
+      tStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    winEl.addEventListener('touchmove', function (e) {
+      if (!tActive || e.touches.length !== 1) return;
+      var dx = e.touches[0].clientX - tStartX;
+      var dy = e.touches[0].clientY - tStartY;
+      if (!tLockHoriz) {
+        if (Math.abs(dx) < 14 && Math.abs(dy) < 14) return;
+        tLockHoriz = Math.abs(dx) > Math.abs(dy);
+      }
+      if (tLockHoriz) e.preventDefault();
+    }, { passive: false });
+
+    winEl.addEventListener('touchend', function (e) {
+      if (!tActive) return;
+      tActive = false;
+      if (!tLockHoriz) return;
+      var dx = e.changedTouches[0].clientX - tStartX;
+      if (Math.abs(dx) < SWIPE_PX) return;
+      if (dx < 0) go(i + 1);
+      else go(i - 1);
+    }, { passive: true });
+
+    winEl.addEventListener('touchcancel', function () {
+      tActive = false;
+    }, { passive: true });
+  }
+
+  initCarousel('visual-design-carousel');
+})();
+</script>
+<script type="module" src="vercel-analytics.js"></script>
+</body>
+</html>

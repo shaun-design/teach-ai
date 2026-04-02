@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TeachAI - Product Design by Shaun Herron | What is TeachAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #eef3f2;
+      --surface:     #ffffff;
+      --surface2:    #f4f8f7;
+      --border:      #dce8e6;
+      --brand:       #007890;
+      --brand-deep:  #005f72;
+      --brand-soft:  rgba(0, 120, 144, 0.10);
+      --brand-line:  rgba(0, 120, 144, 0.25);
+      --green:       #2f8f6e;
+      --amber:       #b8860b;
+      --text:        #3d524f;
+      --text-hi:     #1a2c2a;
+      --muted:       #6b7f7c;
+      --radius:      12px;
+      --shadow-sm:   0 1px 2px rgba(0,90,108,0.07);
+      --shadow-card: 0 2px 12px rgba(0,90,108,0.09), 0 1px 3px rgba(0,90,108,0.06);
+      --nav-h:       64px;
+    }
+
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button { font-family: inherit; cursor: pointer; border: none; }
+
+    /* ── UTILITY ─────────────────────────────────────── */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    /* Full-width bar so the logo can sit at the viewport corner (not centered column) */
+    .nav .container {
+      max-width: none;
+      width: 100%;
+      margin: 0;
+      padding-left: max(12px, env(safe-area-inset-left, 0px));
+      padding-right: max(24px, env(safe-area-inset-right, 0px));
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 99px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .badge-brand { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--brand-line); }
+    .badge-green { background: rgba(47,143,110,0.10); color: var(--green); border: 1px solid rgba(47,143,110,0.25); }
+    .badge-amber { background: rgba(184,134,11,0.10); color: var(--amber); border: 1px solid rgba(184,134,11,0.25); }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 12px; border-radius: 99px; font-size: 13px; font-weight: 600;
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    }
+    .chip .mi { font-size: 14px; }
+
+    /* ── NAVIGATION ───────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      height: var(--nav-h);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    .nav-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      width: 100%;
+      gap: 12px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      flex-shrink: 0;
+      text-decoration: none;
+      justify-self: start;
+    }
+    .nav-credit {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      flex-shrink: 1;
+      min-width: 0;
+      justify-content: flex-end;
+    }
+    .nav-author {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-hi);
+      text-decoration: none;
+      white-space: nowrap;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+    .nav-author:hover,
+    .nav-author:focus {
+      color: var(--brand);
+      text-decoration: underline;
+      outline: none;
+    }
+    /* Matches .logo-icon on teacher-ai-chat + coach-dashboard */
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(155deg, #004a56 0%, var(--brand-deep) 48%, #003844 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 4px rgba(0, 30, 40, 0.45);
+    }
+    .nav-logo-icon svg { display: block; width: 18px; height: 18px; }
+    .nav-logo-text {
+      font-weight: 700; font-size: 16px; letter-spacing: -0.3px; color: var(--brand);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-self: start;
+      min-width: 0;
+    }
+    .nav-back-case-study {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand-deep);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .nav-back-case-study:hover,
+    .nav-back-case-study:focus {
+      background: var(--brand-soft);
+      color: var(--brand);
+      border-color: var(--brand-line);
+      outline: none;
+    }
+    .nav-back-case-study .mi { font-size: 16px; }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 2px;
+      list-style: none;
+      flex-shrink: 0;
+      justify-self: center;
+      margin: 0;
+    }
+    .nav-links > li { position: relative; }
+    .nav-links > li:has(.nav-dropdown)::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      height: 14px;
+      z-index: 150;
+    }
+    .nav-link {
+      display: flex; align-items: center; gap: 4px;
+      padding: 8px 14px; border-radius: 8px;
+      font-size: 14px; font-weight: 700; color: var(--text);
+      background: none; border: none;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .nav-link:hover, .nav-link:focus { background: var(--brand-soft); color: var(--brand); outline: none; }
+    .nav-link.is-active { color: var(--brand-deep); background: var(--brand-soft); }
+    .nav-link .mi { font-size: 14px; }
+
+    .nav-dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      padding: 6px;
+      min-width: 220px;
+      opacity: 0; pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 0.15s, transform 0.15s;
+      z-index: 200;
+    }
+    .nav-links > li:hover .nav-dropdown,
+    .nav-links > li:focus-within .nav-dropdown {
+      opacity: 1; pointer-events: auto; transform: translateY(0);
+    }
+    .nav-dropdown-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 12px; border-radius: 8px;
+      font-size: 13px; color: var(--text);
+      transition: background 0.12s;
+    }
+    .nav-dropdown-item:hover { background: var(--brand-soft); }
+    .nav-dropdown-item .dd-icon {
+      width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+      background: var(--brand-soft); border: 1px solid var(--brand-line);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-dropdown-item .dd-icon .mi { font-size: 16px; color: var(--brand); }
+    .nav-dropdown-item .dd-label { font-weight: 700; color: var(--text-hi); margin-bottom: 1px; }
+    .nav-dropdown-item .dd-sub { font-size: 11px; color: var(--muted); line-height: 1.4; }
+    .nav-dropdown-sep { height: 1px; background: var(--border); margin: 4px 6px; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      justify-self: end;
+      flex-wrap: wrap;
+    }
+    .nav-linkedin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: #0a66c2;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .nav-linkedin:hover {
+      background: rgba(10, 102, 194, 0.09);
+      border-color: rgba(10, 102, 194, 0.35);
+      color: #004182;
+    }
+    .nav-linkedin svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+    .nav-mobile-toggle {
+      display: none;
+      padding: 8px; border-radius: 8px; border: none;
+      background: var(--surface2); color: var(--text);
+      align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .nav-mobile-toggle .mi { font-size: 22px; }
+    .nav-mobile-menu {
+      display: none;
+      position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
+      background: var(--surface);
+      padding: 16px;
+      overflow-y: auto;
+      z-index: 99;
+      flex-direction: column; gap: 4px;
+    }
+    .nav-mobile-menu.open { display: flex; }
+    .nav-mobile-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px; border-radius: 10px;
+      font-size: 15px; font-weight: 700; color: var(--text);
+    }
+    .nav-mobile-item:hover { background: var(--brand-soft); color: var(--brand); }
+    .nav-mobile-item .mi { font-size: 18px; color: var(--brand); }
+    .nav-mobile-sep { height: 1px; background: var(--border); margin: 8px 0; }
+    .nav-mobile-section { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 14px 4px; }
+
+    /* ── HERO ─────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(160deg, #002e38 0%, #005f72 50%, #007890 100%);
+      padding: 96px 0 80px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 80% 20%, rgba(102,189,207,0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 10% 80%, rgba(0,120,144,0.2) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+      align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18);
+      padding: 4px 12px; border-radius: 99px;
+      font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.80); letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero-eyebrow .mi { font-size: 14px; color: #66bdcf; }
+    .hero-h1 {
+      font-size: clamp(32px, 5vw, 52px); font-weight: 900;
+      color: #ffffff; line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .hero-h1 em { font-style: normal; color: #66bdcf; }
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px); color: rgba(255,255,255,0.72);
+      line-height: 1.65; max-width: 480px; margin-bottom: 36px;
+    }
+    .hero-ctas {
+      display: flex; flex-wrap: wrap; gap: 12px;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 13px 24px; border-radius: 10px;
+      font-size: 15px; font-weight: 700; color: #fff;
+      background: var(--brand); border: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-primary:hover { background: #006880; transform: translateY(-1px); }
+    .btn-primary .mi { font-size: 18px; }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 13px 24px; border-radius: 10px;
+      font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.20);
+      transition: background 0.15s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.16); }
+    .btn-ghost .mi { font-size: 18px; }
+
+    .hero-stats {
+      display: flex; gap: 32px; margin-top: 40px; padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+    }
+    .hero-stat-value {
+      font-size: 28px; font-weight: 900; color: #fff; letter-spacing: -0.02em;
+    }
+    .hero-stat-label { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 2px; font-weight: 600; }
+
+    .hero-visual {
+      position: relative; display: flex; justify-content: center; align-items: center;
+    }
+    .hero-card-stack {
+      position: relative;
+      width: 408px; /* +20% vs 340 */
+      height: 456px; /* +20% vs 380 */
+    }
+    .hero-card {
+      position: absolute;
+      background: var(--surface);
+      border-radius: 19px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.12);
+      padding: 19px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .hc-back {
+      width: 360px; top: 38px; right: 0;
+      transform: rotate(4deg);
+      opacity: 0.7;
+      background: linear-gradient(135deg, #e8f6f8, #f0f9f8);
+    }
+    .hc-mid {
+      width: 372px; top: 19px; left: 19px;
+      transform: rotate(-2deg);
+      opacity: 0.85;
+    }
+    .hc-front {
+      width: 384px; top: 0; left: 0;
+    }
+    .hc-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .hc-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .hc-name { font-size: 16px; font-weight: 700; color: var(--text-hi); }
+    .hc-meta { font-size: 13px; color: var(--muted); }
+    .hc-metric-row { display: flex; gap: 10px; margin-bottom: 12px; }
+    .hc-metric {
+      flex: 1; background: var(--surface2); border-radius: 10px;
+      padding: 10px 12px; border: 1px solid var(--border);
+    }
+    .hc-metric-val { font-size: 22px; font-weight: 800; color: var(--brand-deep); }
+    .hc-metric-lbl { font-size: 12px; color: var(--muted); margin-top: 1px; }
+    .hc-metric-trend { font-size: 12px; color: var(--green); font-weight: 700; }
+    .hc-bar-label { font-size: 12px; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
+    .hc-bar-track { height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .hc-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--brand), #66bdcf); }
+    .hc-tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+    .hc-tag {
+      font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 99px;
+    }
+    .hc-tag-teal { background: #e3f3f5; color: #0a5c6a; }
+    .hc-tag-sage { background: #ecf6f0; color: #2d6b4f; }
+    .hc-tag-amber { background: #fdf6ea; color: #8a6a24; }
+
+    /* ── SECTION SHARED ──────────────────────────────── */
+    section { padding: 88px 0; }
+    .section-eyebrow {
+      font-size: 12px; font-weight: 700; color: var(--brand); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .section-eyebrow .mi { font-size: 14px; }
+    .section-h2 {
+      font-size: clamp(26px, 4vw, 40px); font-weight: 900;
+      color: var(--text-hi); line-height: 1.2; letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .section-h2 em { font-style: normal; color: var(--brand); }
+    .section-sub {
+      font-size: 17px; color: var(--muted); line-height: 1.65; max-width: 540px;
+    }
+    .section-header { margin-bottom: 56px; }
+    .section-header-centered { text-align: center; }
+    .section-header-centered .section-eyebrow { justify-content: center; }
+    .section-header-centered .section-sub { margin: 0 auto; }
+
+    /* ── PROBLEM SECTION ─────────────────────────────── */
+    .problem-section { background: var(--surface); }
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+    }
+    .problem-card {
+      padding: 28px; border-radius: 16px;
+      background: var(--bg); border: 1px solid var(--border);
+    }
+    .problem-icon {
+      width: 44px; height: 44px; border-radius: 12px; margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .problem-icon .mi { font-size: 22px; }
+    .problem-icon-red { background: rgba(192,57,43,0.10); }
+    .problem-icon-red .mi { color: #c0392b; }
+    .problem-icon-amber { background: rgba(184,134,11,0.10); }
+    .problem-icon-amber .mi { color: var(--amber); }
+    .problem-icon-muted { background: var(--surface2); }
+    .problem-icon-muted .mi { color: var(--muted); }
+    .problem-title { font-size: 16px; font-weight: 800; color: var(--text-hi); margin-bottom: 8px; }
+    .problem-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .problem-arrow {
+      margin-top: 48px; padding-top: 48px; border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .problem-arrow-text {
+      font-size: 20px; font-weight: 800; color: var(--text-hi);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .problem-arrow-text .mi { font-size: 26px; color: var(--brand); }
+
+    /* ── HOW IT WORKS ────────────────────────────────── */
+    .how-section { background: var(--bg); }
+    .how-tabs {
+      display: flex; gap: 6px; margin-bottom: 48px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 6px;
+    }
+    .how-tab {
+      flex: 1; padding: 10px 16px; border-radius: 8px;
+      font-size: 14px; font-weight: 700; color: var(--muted);
+      background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .how-tab .mi { font-size: 16px; }
+    .how-tab.active { background: var(--brand); color: #fff; }
+    .how-tab:not(.active):hover { background: var(--brand-soft); color: var(--brand); }
+
+    .how-panel { display: none; }
+    .how-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+
+    .how-steps { display: flex; flex-direction: column; gap: 28px; }
+    .how-step { display: flex; gap: 16px; }
+    .how-step-num {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: var(--brand); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+    }
+    .how-step-body { padding-top: 4px; }
+    .how-step-title { font-size: 15px; font-weight: 800; color: var(--text-hi); margin-bottom: 4px; }
+    .how-step-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .how-cta {
+      margin-top: 36px;
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 12px 22px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; color: #fff;
+      background: var(--brand); transition: background 0.15s;
+    }
+    .how-cta:hover { background: var(--brand-deep); }
+    .how-cta .mi { font-size: 16px; }
+
+    /* Mock UI panels */
+    .mock-panel {
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+    .mock-topbar {
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #002e38 0%, #005f72 100%);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .mock-topbar-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+    .mock-topbar-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); margin-left: 4px; }
+    .mock-topbar-badge {
+      margin-left: auto; padding: 2px 8px; border-radius: 99px;
+      background: rgba(102,189,207,0.25); border: 1px solid rgba(102,189,207,0.4);
+      font-size: 10px; font-weight: 700; color: #66bdcf;
+    }
+    .mock-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+
+    .mock-msg {
+      padding: 9px 13px; border-radius: 12px; font-size: 11px; line-height: 1.5;
+    }
+    .mock-msg-ai { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 12px 12px 12px 3px; max-width: 85%; }
+    .mock-msg-user { background: #e8f9fc; border: 1px solid rgba(0,120,144,0.20); color: var(--brand-deep); border-radius: 12px 12px 3px 12px; max-width: 80%; align-self: flex-end; }
+
+    .mock-chart { padding: 12px 14px; background: var(--surface2); border-radius: 10px; border: 1px solid var(--border); }
+    .mock-chart-title { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .mock-bars { display: flex; gap: 6px; align-items: flex-end; height: 56px; }
+    .mock-bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--brand-soft); border: 1px solid var(--brand-line); position: relative; }
+    .mock-bar.highlight { background: var(--brand); border-color: var(--brand); }
+
+    .mock-table-row {
+      display: flex; align-items: center; gap: 10px; padding: 8px 0;
+      border-bottom: 1px solid var(--border); font-size: 11px;
+    }
+    .mock-table-row:last-child { border-bottom: none; }
+    .mock-avatar-sm {
+      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff;
+    }
+    .mock-name { font-weight: 700; color: var(--text-hi); flex: 1; }
+    .mock-tag-sm {
+      padding: 2px 7px; border-radius: 99px; font-size: 10px; font-weight: 700;
+    }
+    .mock-attention { background: rgba(192,57,43,0.10); color: #c0392b; }
+    .mock-good { background: #ecf6f0; color: #2d6b4f; }
+    .mock-pending { background: #fdf6ea; color: #8a6a24; }
+
+    /* ── FEATURES SECTION ────────────────────────────── */
+    .features-section { background: var(--surface); }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .feature-card {
+      padding: 28px; border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      transition: box-shadow 0.18s, border-color 0.18s, transform 0.18s;
+    }
+    .feature-card:hover {
+      box-shadow: var(--shadow-card);
+      border-color: var(--brand-line);
+      transform: translateY(-2px);
+    }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 12px; margin-bottom: 16px;
+      background: var(--brand-soft); border: 1px solid var(--brand-line);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .feature-icon .mi { font-size: 22px; color: var(--brand); }
+    .feature-title { font-size: 16px; font-weight: 800; color: var(--text-hi); margin-bottom: 8px; }
+    .feature-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PERSONAS SECTION ────────────────────────────── */
+    .personas-section { background: var(--bg); }
+    .personas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+    .persona-card {
+      border-radius: 20px; overflow: hidden;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex; flex-direction: column;
+    }
+    .persona-header {
+      padding: 28px 28px 24px;
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .persona-header-teacher { background: linear-gradient(135deg, #f0f9f8 0%, #e3f3f5 100%); border-bottom: 1px solid var(--border); }
+    .persona-header-coach { background: linear-gradient(135deg, #002e38 0%, #005f72 100%); border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .persona-icon {
+      width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .persona-icon-teacher { background: var(--brand-soft); border: 1px solid var(--brand-line); }
+    .persona-icon-teacher .mi { font-size: 26px; color: var(--brand); }
+    .persona-icon-coach { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18); }
+    .persona-icon-coach .mi { font-size: 26px; color: rgba(255,255,255,0.9); }
+    .persona-role { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+    .persona-role-teacher { color: var(--brand); }
+    .persona-role-coach { color: rgba(102,189,207,0.9); }
+    .persona-name { font-size: 20px; font-weight: 900; margin-bottom: 6px; line-height: 1.2; }
+    .persona-name-teacher { color: var(--text-hi); }
+    .persona-name-coach { color: #fff; }
+    .persona-desc { font-size: 13px; line-height: 1.55; }
+    .persona-desc-teacher { color: var(--muted); }
+    .persona-desc-coach { color: rgba(255,255,255,0.62); }
+
+    .persona-body { padding: 24px 28px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
+    .persona-benefits { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .persona-benefit {
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .persona-benefit-icon {
+      width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--brand-soft); border: 1px solid var(--brand-line);
+    }
+    .persona-benefit-icon .mi { font-size: 12px; color: var(--brand); }
+    .persona-benefit-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+    .persona-benefit-text strong { color: var(--text-hi); }
+
+    .persona-cta {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding-top: 8px;
+    }
+    .btn-brand {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 18px; border-radius: 9px;
+      font-size: 13px; font-weight: 700; color: #fff;
+      background: var(--brand); border: none;
+      transition: background 0.15s;
+    }
+    .btn-brand:hover { background: var(--brand-deep); }
+    .btn-brand .mi { font-size: 15px; }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 18px; border-radius: 9px;
+      font-size: 13px; font-weight: 700; color: var(--brand);
+      background: var(--brand-soft); border: 1px solid var(--brand-line);
+      transition: background 0.15s;
+    }
+    .btn-outline:hover { background: rgba(0,120,144,0.15); }
+    .btn-outline .mi { font-size: 15px; }
+
+    /* ── METRICS BANNER ──────────────────────────────── */
+    .metrics-section {
+      background: linear-gradient(135deg, #002e38 0%, #005f72 60%, #007890 100%);
+      padding: 80px 0;
+    }
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+    .metric-item {
+      padding: 32px 24px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+    .metric-item:last-child { border-right: none; }
+    .metric-value { font-size: clamp(32px, 4vw, 48px); font-weight: 900; color: #fff; letter-spacing: -0.03em; }
+    .metric-value em { font-style: normal; color: #66bdcf; }
+    .metric-label { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 6px; line-height: 1.4; }
+    .metric-sublabel { font-size: 11px; color: rgba(255,255,255,0.30); margin-top: 2px; }
+
+    /* ── TESTIMONIAL ─────────────────────────────────── */
+    .quotes-section { background: var(--surface); }
+    .quotes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .quote-card {
+      padding: 28px; border-radius: 16px;
+      background: var(--bg); border: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .quote-stars { display: flex; gap: 3px; }
+    .quote-stars .mi { font-size: 14px; color: #e6a817; font-variation-settings: 'FILL' 1; }
+    .quote-text { font-size: 15px; color: var(--text); line-height: 1.65; font-style: italic; flex: 1; }
+    .quote-text::before { content: '\201C'; }
+    .quote-text::after  { content: '\201D'; }
+    .quote-author { display: flex; align-items: center; gap: 10px; }
+    .quote-avatar {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff;
+      background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+    }
+    .quote-name { font-size: 13px; font-weight: 700; color: var(--text-hi); }
+    .quote-role { font-size: 11px; color: var(--muted); }
+
+    /* ── CTA SECTION ─────────────────────────────────── */
+    .cta-section {
+      background: var(--bg); text-align: center; padding: 96px 0;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, #002e38 0%, #005f72 100%);
+      border-radius: 24px; padding: 72px 48px;
+      position: relative; overflow: hidden;
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 90% 10%, rgba(102,189,207,0.18) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .cta-h2 {
+      font-size: clamp(28px, 4vw, 42px); font-weight: 900; color: #fff;
+      letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; position: relative;
+    }
+    .cta-h2 em { font-style: normal; color: #66bdcf; }
+    .cta-sub { font-size: 17px; color: rgba(255,255,255,0.65); margin-bottom: 40px; position: relative; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; }
+    .btn-cta-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 10px;
+      font-size: 15px; font-weight: 700; color: var(--brand-deep);
+      background: #ffffff; border: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-cta-primary:hover { background: #e8f9fc; transform: translateY(-1px); }
+    .btn-cta-primary .mi { font-size: 18px; }
+    .btn-cta-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 10px;
+      font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.20);
+      transition: background 0.15s;
+    }
+    .btn-cta-ghost:hover { background: rgba(255,255,255,0.16); }
+    .btn-cta-ghost .mi { font-size: 18px; }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    .footer {
+      background: #001e25;
+      padding: 56px 0 32px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-brand-logo {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .footer-brand-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(155deg, #004a56 0%, var(--brand-deep) 48%, #003844 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 4px rgba(0, 30, 40, 0.45);
+    }
+    .footer-brand-icon svg { display: block; width: 18px; height: 18px; }
+    .footer-brand-name { font-size: 17px; font-weight: 800; color: #fff; }
+    .footer-brand-desc { font-size: 13px; color: rgba(255,255,255,0.40); line-height: 1.6; max-width: 260px; }
+    .footer-col-title { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.40); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+    .footer-links { display: flex; flex-direction: column; gap: 8px; }
+    .footer-link { font-size: 13px; color: rgba(255,255,255,0.55); transition: color 0.12s; }
+    .footer-link:hover { color: #fff; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 24px;
+    }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.28); }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual { display: none; }
+      .problem-grid { grid-template-columns: 1fr; gap: 16px; }
+      .how-panel.active { grid-template-columns: 1fr; gap: 40px; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .personas-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .metric-item:nth-child(2) { border-right: none; }
+      .metric-item:nth-child(3) { border-right: 1px solid rgba(255,255,255,0.08); }
+      .quotes-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .nav-links { display: none; }
+      .nav-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      .nav-mobile-toggle { display: flex; }
+    }
+    @media (max-width: 520px) {
+      .nav-back-case-study-label { display: none; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 60px 0; }
+      .hero { padding: 64px 0 56px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .cta-box { padding: 48px 24px; }
+      .how-tabs { flex-direction: column; }
+      .nav-author { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+<!-- material-symbols-sprite -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="mi-add" viewBox="0 -960 960 960"><path fill="currentColor" d="M450-450H200v-60h250v-250h60v250h250v60H510v250h-60v-250Z"/></symbol>
+    <symbol id="mi-analytics" viewBox="0 -960 960 960"><path fill="currentColor" d="M284-277h60v-205h-60v205Zm332 0h60v-420h-60v420Zm-166 0h60v-118h-60v118Zm0-205h60v-60h-60v60ZM180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm0-60h600v-600H180v600Zm0-600v600-600Z"/></symbol>
+    <symbol id="mi-arrow_downward" viewBox="0 -960 960 960"><path fill="currentColor" d="M450-800v526L202-522l-42 42 320 320 320-320-42-42-248 248v-526h-60Z"/></symbol>
+    <symbol id="mi-arrow_forward" viewBox="0 -960 960 960"><path fill="currentColor" d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"/></symbol>
+    <symbol id="mi-assignment_turned_in" viewBox="0 -960 960 960"><path fill="currentColor" d="m423-329 277-277-43-43-234 234-121-121-42 42 163 165ZM180-120q-24.75 0-42.37-17.63Q120-155.25 120-180v-600q0-24.75 17.63-42.38Q155.25-840 180-840h205q5-35 32-57.5t63-22.5q36 0 63 22.5t32 57.5h205q24.75 0 42.38 17.62Q840-804.75 840-780v600q0 24.75-17.62 42.37Q804.75-120 780-120H180Zm0-60h600v-600H180v600Zm324.5-627.5Q515-818 515-832t-10.5-24.5Q494-867 480-867t-24.5 10.5Q445-846 445-832t10.5 24.5Q466-797 480-797t24.5-10.5ZM180-180v-600 600Z"/></symbol>
+    <symbol id="mi-auto_awesome" viewBox="0 -960 960 960"><path fill="currentColor" d="m162-121-42-42 326-326-185-46 192-120-16-225 173 145 209-84-85 209 146 173-226-17-119 192-46-185-327 326Zm25-544-67-67 68-68 67 67-68 68Zm372 251 63-102 120 9-78-92 45-111-111 45-92-78 9 120-102 64 117 29 29 116Zm174 294-67-68 67-67 67 68-67 67ZM578-579Z"/></symbol>
+    <symbol id="mi-auto_stories" viewBox="0 -960 960 960"><path fill="currentColor" d="M480-160q-48-38-104-59t-116-21q-42 0-82.5 11T100-198q-21 11-40.5-1T40-234v-482q0-11 5.5-21T62-752q46-24 96-36t102-12q58 0 113.5 15T480-740v506q51-33 107-49.5T700-300q36 0 78.5 7t81.5 29v-505q9.89 3.75 19.44 7.87Q889-757 898-752q10 6 16 15.68 6 9.67 6 20.32v482q0 23-19.5 35t-40.5 1q-37-20-77.5-31T700-240q-60 0-116 21t-104 59Zm60-167v-353l260-260v387L540-327Zm-120 63v-439q-34-19-79-28t-81-9q-47 0-87.5 10T100-704.47V-264q35-17 75.5-26.5t85-9.5q44.5 0 84.5 9.5t75 26.5Zm0 0v-439 439Z"/></symbol>
+    <symbol id="mi-book_5" viewBox="0 -960 960 960"><path fill="currentColor" d="M270-80q-45 0-77.5-29.64Q160-139.27 160-183v-564q0-36.57 22.12-65.43Q204.24-841.3 240-849l380-79v620l-360 77q-17.14 3.69-28.57 17.54Q220-199.62 220-183q0 19 15 31t35 12h470v-660h60v720H270Zm70-228 220-47v-499l-220 45v501Zm-60 12.81V-796l-20 4q-17 4-28.5 15.83Q220-764.35 220-747v471q9.06-5.2 19.03-9.1Q249-289 260-291l20-4.19ZM220-787v511-511Z"/></symbol>
+    <symbol id="mi-build" viewBox="0 -960 960 960"><path fill="currentColor" d="M705-128 447-388q-23 8-46 13t-47 5q-97.08 0-165.04-67.67Q121-505.33 121-602q0-31 8.16-60.39T152-718l145 145 92-86-149-149q25.91-15.16 54.96-23.58Q324-840 354-840q99.17 0 168.58 69.42Q592-701.17 592-602q0 24-5 47t-13 46l259 258q11 10.96 11 26.48T833-198l-76 70q-10.7 11-25.85 11Q716-117 705-128Zm28-57 40-40-273-273q16-21 24-49.5t8-54.5q0-75-55.5-127T350-782l102 104q9 9 8.5 21.5T451-635L318-510q-9.27 8-21.64 8-12.36 0-20.36-8l-98-97q3 77 54.67 127T354-430q25 0 53-8t49-24l277 277ZM476-484Z"/></symbol>
+    <symbol id="mi-calendar_month" viewBox="0 -960 960 960"><path fill="currentColor" d="M180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Zm300 230q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-188.5-11.5Q280-423 280-440t11.5-28.5Q303-480 320-480t28.5 11.5Q360-457 360-440t-11.5 28.5Q337-400 320-400t-28.5-11.5ZM640-400q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-188.5-11.5Q280-263 280-280t11.5-28.5Q303-320 320-320t28.5 11.5Q360-297 360-280t-11.5 28.5Q337-240 320-240t-28.5-11.5ZM640-240q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z"/></symbol>
+    <symbol id="mi-campaign" viewBox="0 -960 960 960"><path fill="currentColor" d="M730-450v-60h150v60H730Zm50 290-121-90 36-48 121 90-36 48Zm-82-503-36-48 118-89 36 48-118 89ZM210-200v-160h-70q-24.75 0-42.37-17.63Q80-395.25 80-420v-120q0-24.75 17.63-42.38Q115.25-600 140-600h180l200-120v480L320-360h-50v160h-60Zm250-146v-268l-124 74H140v120h196l124 74Zm100 0v-268q27 24 43.5 58.5T620-480q0 41-16.5 75.5T560-346ZM300-480Z"/></symbol>
+    <symbol id="mi-casino" viewBox="0 -960 960 960"><path fill="currentColor" d="M335.5-264.62q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62Zm0-360q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62Zm180 180q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62Zm180 180q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62Zm0-360q14.5-14.62 14.5-35.5 0-20.88-14.62-35.38-14.62-14.5-35.5-14.5-20.88 0-35.38 14.62-14.5 14.62-14.5 35.5 0 20.88 14.62 35.38 14.62 14.5 35.5 14.5 20.88 0 35.38-14.62ZM180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm0-60h600v-600H180v600Zm0-600v600-600Z"/></symbol>
+    <symbol id="mi-chat" viewBox="0 -960 960 960"><path fill="currentColor" d="M240-399h313v-60H240v60Zm0-130h480v-60H240v60Zm0-130h480v-60H240v60ZM80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></symbol>
+    <symbol id="mi-chat_bubble" viewBox="0 -960 960 960"><path fill="currentColor" d="M80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></symbol>
+    <symbol id="mi-check_circle" viewBox="0 -960 960 960"><path fill="currentColor" d="m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></symbol>
+    <symbol id="mi-chevron_left" viewBox="0 -960 960 960"><path fill="currentColor" d="M561-240 320-481l241-241 43 43-198 198 198 198-43 43Z"/></symbol>
+    <symbol id="mi-close" viewBox="0 -960 960 960"><path fill="currentColor" d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
+    <symbol id="mi-content_copy" viewBox="0 -960 960 960"><path fill="currentColor" d="M300-200q-24 0-42-18t-18-42v-560q0-24 18-42t42-18h440q24 0 42 18t18 42v560q0 24-18 42t-42 18H300Zm0-60h440v-560H300v560ZM180-80q-24 0-42-18t-18-42v-620h60v620h500v60H180Zm120-180v-560 560Z"/></symbol>
+    <symbol id="mi-dashboard" viewBox="0 -960 960 960"><path fill="currentColor" d="M510-570v-270h330v270H510ZM120-450v-390h330v390H120Zm390 330v-390h330v390H510Zm-390 0v-270h330v270H120Zm60-390h210v-270H180v270Zm390 330h210v-270H570v270Zm0-450h210v-150H570v150ZM180-180h210v-150H180v150Zm210-330Zm180-120Zm0 180ZM390-330Z"/></symbol>
+    <symbol id="mi-description" viewBox="0 -960 960 960"><path fill="currentColor" d="M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"/></symbol>
+    <symbol id="mi-directions_alt" viewBox="0 -960 960 960"><path fill="currentColor" d="M479.95-77Q468-77 456.5-81T437-93L93-437q-8-8-12-19.55t-4-23.5q0-11.95 4-23.45T93-523l344-344q8-8 19.55-12t23.5-4q11.95 0 23.45 4t19.5 12l344 344q8 8 12 19.55t4 23.5q0 11.95-4 23.45T867-437L523-93q-8 8-19.55 12t-23.5 4ZM308-308l172 172 344-344-344-344-344 344 172 172Zm172 25 197-197-197-197-43 43 124 124H283v60h278L437-326l43 43Zm0-197Z"/></symbol>
+    <symbol id="mi-download" viewBox="0 -960 960 960"><path fill="currentColor" d="M480-313 287-506l43-43 120 120v-371h60v371l120-120 43 43-193 193ZM220-160q-24 0-42-18t-18-42v-143h60v143h520v-143h60v143q0 24-18 42t-42 18H220Z"/></symbol>
+    <symbol id="mi-edit" viewBox="0 -960 960 960"><path fill="currentColor" d="M180-180h44l472-471-44-44-472 471v44Zm-60 60v-128l575-574q8-8 19-12.5t23-4.5q11 0 22 4.5t20 12.5l44 44q9 9 13 20t4 22q0 11-4.5 22.5T823-694L248-120H120Zm659-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></symbol>
+    <symbol id="mi-edit_note" viewBox="0 -960 960 960"><path fill="currentColor" d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z"/></symbol>
+    <symbol id="mi-event" viewBox="0 -960 960 960"><path fill="currentColor" d="M528-248.18q-28-28.19-28-69Q500-358 528.18-386q28.19-28 69-28Q638-414 666-385.82q28 28.19 28 69Q694-276 665.82-248q-28.19 28-69 28Q556-220 528-248.18ZM180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
+    <symbol id="mi-event_available" viewBox="0 -960 960 960"><path fill="currentColor" d="M433-228 295-365l42-42 96 94 184-184 42 43-226 226ZM180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
+    <symbol id="mi-event_busy" viewBox="0 -960 960 960"><path fill="currentColor" d="m381-218-43-43 100-99-100-99 43-43 99 100 99-100 43 43-100 99 100 99-43 43-99-100-99 100ZM180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
+    <symbol id="mi-expand_more" viewBox="0 -960 960 960"><path fill="currentColor" d="M480-344 240-584l43-43 197 197 197-197 43 43-240 240Z"/></symbol>
+    <symbol id="mi-feedback" viewBox="0 -960 960 960"><path fill="currentColor" d="M479.98-367q14.02 0 23.52-9.48t9.5-23.5q0-14.02-9.48-23.52t-23.5-9.5q-14.02 0-23.52 9.48t-9.5 23.5q0 14.02 9.48 23.52t23.5 9.5ZM450-509h60v-251h-60v251ZM80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></symbol>
+    <symbol id="mi-folder" viewBox="0 -960 960 960"><path fill="currentColor" d="M140-160q-24 0-42-18.5T80-220v-520q0-23 18-41.5t42-18.5h281l60 60h339q23 0 41.5 18.5T880-680v460q0 23-18.5 41.5T820-160H140Zm0-60h680v-460H456l-60-60H140v520Zm0 0v-520 520Z"/></symbol>
+    <symbol id="mi-format_quote" viewBox="0 -960 960 960"><path fill="currentColor" d="m248-240 94-162q-5 1-11 1.5t-11 .5q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 21-5.5 41T458-480L320-240h-72Zm360 0 94-162q-5 1-11 1.5t-11 .5q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 21-5.5 41T818-480L680-240h-72ZM376.5-503.5Q400-527 400-560t-23.5-56.5Q353-640 320-640t-56.5 23.5Q240-593 240-560t23.5 56.5Q287-480 320-480t56.5-23.5Zm360 0Q760-527 760-560t-23.5-56.5Q713-640 680-640t-56.5 23.5Q600-593 600-560t23.5 56.5Q647-480 680-480t56.5-23.5ZM680-560Zm-360 0Z"/></symbol>
+    <symbol id="mi-grass" viewBox="0 -960 960 960"><path fill="currentColor" d="M80-160v-60h240q-20-91-87.5-159.5T80-470q20-5 39.5-7.5T160-480q134 0 227 93t93 227H80Zm460 0q0-42-8-73.5T512-296q40-88 120-136t168-48q21 0 40.5 2.5T880-470q-85 22-154 91.5T640-220h240v60H540Zm-58-193q-9-76 13-142t64.5-115Q602-659 662-688t127-31q-56 35-105.5 95.5T621-494q-44 21-80 58.5T482-353Zm-61-76q-16-15-35-30t-32-23q3-12 4.5-26.5T360-532q0-76-24-144t-68-124q70 28 124 88.5T468-573q-18 32-30.5 69.5T421-429Z"/></symbol>
+    <symbol id="mi-group" viewBox="0 -960 960 960"><path fill="currentColor" d="M38-160v-94q0-35 18-63.5t50-42.5q73-32 131.5-46T358-420q62 0 120 14t131 46q32 14 50.5 42.5T678-254v94H38Zm700 0v-94q0-63-32-103.5T622-423q69 8 130 23.5t99 35.5q33 19 52 47t19 63v94H738ZM250-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm426 0q-42 42-108 42-11 0-24.5-1.5T519-488q24-25 36.5-61.5T568-631q0-45-12.5-79.5T519-774q11-3 24.5-5t24.5-2q66 0 108 42t42 108q0 66-42 108ZM98-220h520v-34q0-16-9.5-31T585-306q-72-32-121-43t-106-11q-57 0-106.5 11T130-306q-14 6-23 21t-9 31v34Zm324.5-346.5Q448-592 448-631t-25.5-64.5Q397-721 358-721t-64.5 25.5Q268-670 268-631t25.5 64.5Q319-541 358-541t64.5-25.5ZM358-220Zm0-411Z"/></symbol>
+    <symbol id="mi-hourglass_empty" viewBox="0 -960 960 960"><path fill="currentColor" d="M308-140h344v-127q0-72-50-121.5T480-438q-72 0-122 49.5T308-267v127Zm294-432q50-50 50-122v-126H308v126q0 72 50 122t122 50q72 0 122-50ZM160-80v-60h88v-127q0-71 40-129t106-84q-66-27-106-85t-40-129v-126h-88v-60h640v60h-88v126q0 71-40 129t-106 85q66 26 106 84t40 129v127h88v60H160Z"/></symbol>
+    <symbol id="mi-hourglass_top" viewBox="0 -960 960 960"><path fill="currentColor" d="M308-140h344v-127q0-72-50-121.5T480-438q-72 0-122 49.5T308-267v127ZM160-80v-60h88v-127q0-71 40-129t106-84q-66-27-106-85t-40-129v-126h-88v-60h640v60h-88v126q0 71-40 129t-106 85q66 26 106 84t40 129v127h88v60H160Z"/></symbol>
+    <symbol id="mi-hub" viewBox="0 -960 960 960"><path fill="currentColor" d="M153-73q-33-33-33-81t33.25-81q33.25-33 80.75-33 14 0 24.5 2.5T280-258l85-106q-19-23-29-52.5t-5-61.5l-121-41q-15 25-39.5 39T114-466q-47.5 0-80.75-33.25T0-580q0-47.5 33.25-80.75T114-694q47.5 0 80.75 33.25T228-580v4l122 42q18-32 43.5-49t56.5-24v-129q-39-11-61.5-43T366-846q0-47.5 33-80.75T480-960q48 0 81 33.25T594-846q0 35-23 67t-61 43v129q31 7 57 24t44 49l121-42v-4q0-47.5 33.25-80.75T846-694q47.5 0 80.75 33T960-580q0 48-33.25 81T846-466q-32 0-57-14t-39-39l-121 41q5 32-4.5 61.5T595-364l85 106q11-5 21.5-7.5t24.06-2.5Q774-268 807-235t33 81q0 48-33 81t-81 33q-48 0-81-33.25T612-154q0-20 5.5-36t15.5-31l-85-106q-32.13 17-68.56 17Q443-310 411-327l-84 107q10 15 15.5 30.5T348-154q0 47.5-33 80.75T234-40q-48 0-81-33Zm-38.96-453q22.96 0 38.46-15.54 15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5Q91-634 75.5-618.46 60-602.93 60-579.96 60-557 75.54-541.5q15.53 15.5 38.5 15.5ZM272.5-115.54q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54Zm246-692q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54ZM480.5-370q37.5 0 63.5-26.5t26-64q0-37.5-26.1-63.5T480-550q-37 0-63.5 26.1T390-460q0 37 26.5 63.5t64 26.5Zm284 254.46q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54Zm120-426q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54ZM480-846ZM114-580Zm366 120Zm366-120ZM234-154Zm492 0Z"/></symbol>
+    <symbol id="mi-info" viewBox="0 -960 960 960"><path fill="currentColor" d="M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Zm.23-60Q622-140 721-239.5t99-241Q820-622 721.19-721T480-820q-141 0-240.5 98.81T140-480q0 141 99.5 240.5t241 99.5Zm-.5-340Z"/></symbol>
+    <symbol id="mi-insights" viewBox="0 -960 960 960"><path fill="currentColor" d="m89-412-49-36 193-310 125 146 165-268 125 186 143-226 48 35-190 301-124-184-159 258-125-146L89-412Zm494 192q48 0 82.5-33.5T700-335q0-49-34-83t-83-34q-48 0-81.5 34.5T468-335q0 48 33.5 81.5T583-220ZM797-80 685-192q-22 15-47.5 23.5T583-160q-73 0-124-51t-51-124q0-73 51-125t124-52q74 0 125.5 51.5T760-335q0 29-8.5 54.5T727-233l112 111-42 42Z"/></symbol>
+    <symbol id="mi-inventory_2" viewBox="0 -960 960 960"><path fill="currentColor" d="M180-80q-24.75 0-42.37-17.63Q120-115.25 120-140v-483q-17-6-28.5-21.39T80-680v-140q0-24.75 17.63-42.38Q115.25-880 140-880h680q24.75 0 42.38 17.62Q880-844.75 880-820v140q0 20.22-11.5 35.61T840-623v483q0 24.75-17.62 42.37Q804.75-80 780-80H180Zm0-540v480h600v-480H180Zm-40-60h680v-140H140v140Zm220 260h240v-60H360v60Zm120 40Z"/></symbol>
+    <symbol id="mi-lightbulb" viewBox="0 -960 960 960"><path fill="currentColor" d="M422.5-103.5Q399-127 399-161h162q0 34-23.5 57.5T480-80q-34 0-57.5-23.5ZM318-223v-60h324v60H318Zm5-121q-66-43-104.5-107.5T180-597q0-122 89-211t211-89q122 0 211 89t89 211q0 81-38 145.5T637-344H323Zm22-60h271q48-32 76-83t28-110q0-99-70.5-169.5T480-837q-99 0-169.5 70.5T240-597q0 59 28 110t77 83Zm135 0Z"/></symbol>
+    <symbol id="mi-manage_accounts" viewBox="0 -960 960 960"><path fill="currentColor" d="M292-527q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM80-164v-94q0-35 17.5-63t50.5-43q72-32 133.5-46T400-424h23q-6 14-9 27.5t-5 32.5h-9q-58 0-113.5 12.5T172-310q-16 8-24 22.5t-8 29.5v34h269q5 18 12 32.5t17 27.5H80Zm587 44-10-66q-17-5-34.5-14.5T593-222l-55 12-25-42 47-44q-2-9-2-25t2-25l-47-44 25-42 55 12q12-12 29.5-21.5T657-456l10-66h54l10 66q17 5 34.5 14.5T795-420l55-12 25 42-47 44q2 9 2 25t-2 25l47 44-25 42-55-12q-12 12-29.5 21.5T731-186l-10 66h-54Zm85-143q22-22 22-58t-22-58q-22-22-58-22t-58 22q-22 22-22 58t22 58q22 22 58 22t58-22ZM464.5-570.5Q490-596 490-635t-25.5-64.5Q439-725 400-725t-64.5 25.5Q310-674 310-635t25.5 64.5Q361-545 400-545t64.5-25.5ZM400-635Zm9 411Z"/></symbol>
+    <symbol id="mi-mark_chat_read" viewBox="0 -960 960 960"><path fill="currentColor" d="M701-160 567-294l42-42 92 91 177-177 42 43-219 219ZM80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v310h-60v-310H140v600l74-80h276v60H240L80-80Zm60-220v-520 520Z"/></symbol>
+    <symbol id="mi-menu" viewBox="0 -960 960 960"><path fill="currentColor" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
+    <symbol id="mi-person" viewBox="0 -960 960 960"><path fill="currentColor" d="M372-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5T731-360q31 14 50 41t19 65v94H160Zm60-60h520v-34q0-16-9.5-30.5T707-306q-64-31-117-42.5T480-360q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm324.5-346.5Q570-592 570-631t-25.5-64.5Q519-721 480-721t-64.5 25.5Q390-670 390-631t25.5 64.5Q441-541 480-541t64.5-25.5ZM480-631Zm0 411Z"/></symbol>
+    <symbol id="mi-person_off" viewBox="0 -960 960 960"><path fill="currentColor" d="m813-61-99-99H160v-94q0-38 19-65t49-41q60-27 115.5-42T455-419L61-813l43-43 752 752-43 43ZM220-220h434L515-359q-8-1-17-1h-18q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm511-140q31 14 50 41t19 65v8L657-389q18 6 36.5 13.5T731-360ZM550-496l-48-48q30-7 49-31t19-56q0-38-26-64t-64-26q-32 0-56 19t-31 49l-48-48q19-38 55.5-59t79.5-21q63 0 106.5 43.5T630-631q0 43-21 79.5T550-496Zm104 276H220h434ZM448-599Z"/></symbol>
+    <symbol id="mi-play_circle" viewBox="0 -960 960 960"><path fill="currentColor" d="m383-310 267-170-267-170v340Zm97 230q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></symbol>
+    <symbol id="mi-priority_high" viewBox="0 -960 960 960"><path fill="currentColor" d="M479.91-120q-28.91 0-49.41-20.59-20.5-20.59-20.5-49.5t20.59-49.41q20.59-20.5 49.5-20.5t49.41 20.59q20.5 20.59 20.5 49.5t-20.59 49.41q-20.59 20.5-49.5 20.5ZM410-360v-480h140v480H410Z"/></symbol>
+    <symbol id="mi-quiz" viewBox="0 -960 960 960"><path fill="currentColor" d="M572-352q12-12 12-29t-12-29q-12-12-29-12t-29 12q-12 12-12 29t12 29q12 12 29 12t29-12Zm-54-114h47q2-29 8.5-43t32.5-39q27-26 37.5-45.4Q654-612.79 654-639q0-45.88-31.5-74.94Q591-743 540-743q-38 0-68 20.5T428-665l45 19q11-25 27.5-38t39.5-13q29.78 0 48.39 17T607-637q0 20-9 35t-32 32q-32 29-40 46.5t-8 57.5ZM260-200q-24 0-42-18t-18-42v-560q0-24 18-42t42-18h560q24 0 42 18t18 42v560q0 24-18 42t-42 18H260Zm0-60h560v-560H260v560ZM140-80q-24 0-42-18t-18-42v-620h60v620h620v60H140Zm120-740v560-560Z"/></symbol>
+    <symbol id="mi-schedule" viewBox="0 -960 960 960"><path fill="currentColor" d="m627-287 45-45-159-160v-201h-60v225l174 181ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-82 31.5-155t86-127.5Q252-817 325-848.5T480-880q82 0 155 31.5t127.5 86Q817-708 848.5-635T880-480q0 82-31.5 155t-86 127.5Q708-143 635-111.5T480-80Zm0-400Zm0 340q140 0 240-100t100-240q0-140-100-240T480-820q-140 0-240 100T140-480q0 140 100 240t240 100Z"/></symbol>
+    <symbol id="mi-school" viewBox="0 -960 960 960"><path fill="currentColor" d="M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z"/></symbol>
+    <symbol id="mi-search" viewBox="0 -960 960 960"><path fill="currentColor" d="M796-121 533-384q-30 26-70 40.5T378-329q-108 0-183-75t-75-181q0-106 75-181t182-75q106 0 180.5 75T632-585q0 43-14 83t-42 75l264 262-44 44ZM377-389q81 0 138-57.5T572-585q0-81-57-138.5T377-781q-82 0-139.5 57.5T180-585q0 81 57.5 138.5T377-389Z"/></symbol>
+    <symbol id="mi-send" viewBox="0 -960 960 960"><path fill="currentColor" d="M120-160v-640l760 320-760 320Zm60-93 544-227-544-230v168l242 62-242 60v167Zm0 0v-457 457Z"/></symbol>
+    <symbol id="mi-settings" viewBox="0 -960 960 960"><path fill="currentColor" d="m388-80-20-126q-19-7-40-19t-37-25l-118 54-93-164 108-79q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521L80-600l93-164 118 54q16-13 37-25t40-18l20-127h184l20 126q19 7 40.5 18.5T669-710l118-54 93 164-108 77q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l108 78-93 164-118-54q-16 13-36.5 25.5T592-206L572-80H388Zm48-60h88l14-112q33-8 62.5-25t53.5-41l106 46 40-72-94-69q4-17 6.5-33.5T715-480q0-17-2-33.5t-7-33.5l94-69-40-72-106 46q-23-26-52-43.5T538-708l-14-112h-88l-14 112q-34 7-63.5 24T306-642l-106-46-40 72 94 69q-4 17-6.5 33.5T245-480q0 17 2.5 33.5T254-413l-94 69 40 72 106-46q24 24 53.5 41t62.5 25l14 112Zm44-210q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Zm0-130Z"/></symbol>
+    <symbol id="mi-share" viewBox="0 -960 960 960"><path fill="currentColor" d="M686-80q-47.5 0-80.75-33.25T572-194q0-8 5-34L278-403q-16.28 17.34-37.64 27.17Q219-366 194-366q-47.5 0-80.75-33T80-480q0-48 33.25-81T194-594q24 0 45 9.3 21 9.29 37 25.7l301-173q-2-8-3.5-16.5T572-766q0-47.5 33.25-80.75T686-880q47.5 0 80.75 33.25T800-766q0 47.5-33.25 80.75T686-652q-23.27 0-43.64-9Q622-670 606-685L302-516q3 8 4.5 17.5t1.5 18q0 8.5-1 16t-3 15.5l303 173q16-15 36.09-23.5 20.1-8.5 43.07-8.5Q734-308 767-274.75T800-194q0 47.5-33.25 80.75T686-80Zm.04-60q22.96 0 38.46-15.54 15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5Zm-492-286q22.96 0 38.46-15.54 15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5ZM724.5-727.54q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54ZM686-194ZM194-480Zm492-286Z"/></symbol>
+    <symbol id="mi-show_chart" viewBox="0 -960 960 960"><path fill="currentColor" d="m126-220-46-46 300-300 160 161 298-335 42 41-340 384-160-159-254 254Z"/></symbol>
+    <symbol id="mi-star" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></symbol>
+    <symbol id="mi-supervisor_account" viewBox="0 -960 960 960"><path fill="currentColor" d="M617.5-408.5Q590-436 590-475t27.5-66.5Q645-569 684-569t66.5 27.5Q778-514 778-475t-27.5 66.5Q723-381 684-381t-66.5-27.5ZM488-160v-51q0-26 11-44.5t31-28.5q37-19 75-28t79-9q41 0 79 8.5t75 28.5q20 9 31 28t11 45v51H488ZM292-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm108-108ZM80-160v-94q0-34 17-62.5t51-43.5q67-30 128.5-45T400-420q32 0 57 3t54 9l-25.5 25.5L460-357q-13-2-28-2.5t-32-.5q-57 0-111 11.5T172-306q-14 7-23 22t-9 30v34h288v60H80Zm348-60Zm36.5-346.5Q490-592 490-631t-25.5-64.5Q439-721 400-721t-64.5 25.5Q310-670 310-631t25.5 64.5Q361-541 400-541t64.5-25.5Z"/></symbol>
+    <symbol id="mi-timer" viewBox="0 -960 960 960"><path fill="currentColor" d="M360-860v-60h240v60H360Zm90 447h60v-230h-60v230ZM340.5-109.5Q275-138 226-187t-77.5-114.5Q120-367 120-441t28.5-139.5Q177-646 226-695t114.5-77.5Q406-801 480-801q67 0 126 22.5T711-716l51-51 42 42-51 51q36 40 61.5 97T840-441q0 74-28.5 139.5T734-187q-49 49-114.5 77.5T480-81q-74 0-139.5-28.5Zm352-119Q780-316 780-441t-87.5-212.5Q605-741 480-741t-212.5 87.5Q180-566 180-441t87.5 212.5Q355-141 480-141t212.5-87.5ZM480-440Z"/></symbol>
+    <symbol id="mi-timer_off" viewBox="0 -960 960 960"><path fill="currentColor" d="m784-251-43-43q17-28 28-66t11-81q0-125-87.5-212.5T480-741q-42 0-80.5 10.5T333-702l-44-44q42-27 91.5-41t99.5-14q68 0 126.5 22.5T711-716l51-51 42 42-51 51q45 49 66 108.5T840-441q0 50-13.5 98.5T784-251ZM510-525v-118h-60v58l60 60ZM808-56 704-160q-48 38-103.5 58.5T480-81q-74 0-139.5-28.5T226-187q-49-49-77.5-114.5T120-441q0-61 18.5-116T199-665L57-807l43-43L851-99l-43 43Zm-328-85q52 0 98.5-16t85.5-47L243-625q-31 38-47 86t-16 98q0 125 87.5 212.5T480-141ZM360-860v-60h240v60H360Zm94 445Zm83-83Z"/></symbol>
+    <symbol id="mi-trending_up" viewBox="0 -960 960 960"><path fill="currentColor" d="m123-240-43-43 292-291 167 167 241-241H653v-60h227v227h-59v-123L538-321 371-488 123-240Z"/></symbol>
+    <symbol id="mi-video_camera_front" viewBox="0 -960 960 960"><path fill="currentColor" d="M232-318h336v-21q0-46-45-72.5T400-438q-78 0-123 26.5T232-339v21Zm168-175q35 0 57.5-22.5T480-573q0-35-22.5-57.5T400-653q-35 0-57.5 22.5T320-573q0 35 22.5 57.5T400-493ZM140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h520q24 0 42 18t18 42v215l160-160v410L720-435v215q0 24-18 42t-42 18H140Zm0-60h520v-520H140v520Zm0 0v-520 520Z"/></symbol>
+    <symbol id="mi-videocam" viewBox="0 -960 960 960"><path fill="currentColor" d="M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h520q24 0 42 18t18 42v215l160-160v410L720-435v215q0 24-18 42t-42 18H140Zm0-60h520v-520H140v520Zm0 0v-520 520Z"/></symbol>
+    <symbol id="mi-visibility" viewBox="0 -960 960 960"><path fill="currentColor" d="M600.5-379.5Q650-429 650-500t-49.5-120.5Q551-670 480-670t-120.5 49.5Q310-571 310-500t49.5 120.5Q409-330 480-330t120.5-49.5Zm-200-41Q368-453 368-500t32.5-79.5Q433-612 480-612t79.5 32.5Q592-547 592-500t-32.5 79.5Q527-388 480-388t-79.5-32.5ZM216-283Q98-366 40-500q58-134 176-217t264-83q146 0 264 83t176 217q-58 134-176 217t-264 83q-146 0-264-83Zm264-217Zm222.5 174.5Q804-391 857-500q-53-109-154.5-174.5T480-740q-121 0-222.5 65.5T102-500q54 109 155.5 174.5T480-260q121 0 222.5-65.5Z"/></symbol>
+    <symbol id="mi-visibility_off" viewBox="0 -960 960 960"><path fill="currentColor" d="m629-419-44-44q26-71-27-118t-115-24l-44-44q17-11 38-16t43-5q71 0 120.5 49.5T650-500q0 22-5.5 43.5T629-419Zm129 129-40-40q49-36 85.5-80.5T857-500q-50-111-150-175.5T490-740q-42 0-86 8t-69 19l-46-47q35-16 89.5-28T485-800q143 0 261.5 81.5T920-500q-26 64-67 117t-95 93Zm58 226L648-229q-35 14-79 21.5t-89 7.5q-146 0-265-81.5T40-500q20-52 55.5-101.5T182-696L56-822l42-43 757 757-39 44ZM223-654q-37 27-71.5 71T102-500q51 111 153.5 175.5T488-260q33 0 65-4t48-12l-64-64q-11 5-27 7.5t-30 2.5q-70 0-120-49t-50-121q0-15 2.5-30t7.5-27l-97-97Zm305 142Zm-116 58Z"/></symbol>
+    <symbol id="mi-warning" viewBox="0 -960 960 960"><path fill="currentColor" d="m40-120 440-760 440 760H40Zm104-60h672L480-760 144-180Zm361.5-65.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Zm26-122Z"/></symbol>
+  </defs>
+</svg>
+
+
+<!-- ══ NAVIGATION ══════════════════════════════════════════════════ -->
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-logo" aria-label="TeachAI case study home">
+          <div class="nav-logo-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path fill="#ffffff" d="M3.2 19.8L8 15l2.1 2.1-4.8 4.8-1.4-1.4-.7-.7z"/>
+              <path fill="#ffffff" d="M8.2 15L11 4.5l1.3 1.3L9.5 14.2 8.2 15z" opacity=".92"/>
+              <path fill="#ffffff" d="M17.5 3.5l1.1 3.2L22 7.5l-3.4 1.2-1.1 3.4-1.1-3.4-3.4-1.2 3.4-1.2 1.1-3.2z"/>
+              <path fill="#ffffff" d="M6 8.5l.7 2L8.8 11 6.7 11.5 6 13.5l-.7-2-2-1.5 2-1 .7-2z" opacity=".88"/>
+              <circle cx="19" cy="16" r="1.1" fill="#ffffff"/>
+              <circle cx="14" cy="19" r="0.75" fill="#ffffff"/>
+              <circle cx="4.5" cy="12" r="0.65" fill="#ffffff"/>
+            </svg>
+          </div>
+          <span class="nav-logo-text">TeachAI</span>
+        </a>
+        <a href="index.html" class="nav-back-case-study" title="Back to Case Study">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M270-80q-45 0-77.5-29.64Q160-139.27 160-183v-564q0-36.57 22.12-65.43Q204.24-841.3 240-849l380-79v620l-360 77q-17.14 3.69-28.57 17.54Q220-199.62 220-183q0 19 15 31t35 12h470v-660h60v720H270Zm70-228 220-47v-499l-220 45v501Zm-60 12.81V-796l-20 4q-17 4-28.5 15.83Q220-764.35 220-747v471q9.06-5.2 19.03-9.1Q249-289 260-291l20-4.19ZM220-787v511-511Z"/></svg>
+          <span class="nav-back-case-study-label">Back to Case Study</span>
+        </a>
+      </div>
+
+      <ul class="nav-links" role="list">
+        <li><a href="index.html" class="nav-link">Case Study</a></li>
+        <li><a href="landing-page.html#what-is-teachai" class="nav-link is-active" aria-current="page">What is TeachAI</a></li>
+        <li><a href="welcome-start.html" class="nav-link">Teacher Demo</a></li>
+        <li>
+          <button class="nav-link" aria-haspopup="true" aria-expanded="false" aria-label="Coach demo options">
+            Coach Demo
+            <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M480-344 240-584l43-43 197 197 197-197 43 43-240 240Z"/></svg>
+          </button>
+          <div class="nav-dropdown" role="menu">
+            <a href="coach-dashboard-v2.html" class="nav-dropdown-item" role="menuitem">
+              <div class="dd-icon">
+                <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m162-121-42-42 326-326-185-46 192-120-16-225 173 145 209-84-85 209 146 173-226-17-119 192-46-185-327 326Zm25-544-67-67 68-68 67 67-68 68Zm372 251 63-102 120 9-78-92 45-111-111 45-92-78 9 120-102 64 117 29 29 116Zm174 294-67-68 67-67 67 68-67 67ZM578-579Z"/></svg>
+              </div>
+              <div>
+                <div class="dd-label">Streamlined coach demo</div>
+                <div class="dd-sub">Reduced cognitive load</div>
+              </div>
+            </a>
+            <div class="nav-dropdown-sep"></div>
+            <a href="coach-dashboard.html" class="nav-dropdown-item" role="menuitem">
+              <div class="dd-icon">
+                <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M510-570v-270h330v270H510ZM120-450v-390h330v390H120Zm390 330v-390h330v390H510Zm-390 0v-270h330v270H120Zm60-390h210v-270H180v270Zm390 330h210v-270H570v270Zm0-450h210v-150H570v150ZM180-180h210v-150H180v150Zm210-330Zm180-120Zm0 180ZM390-330Z"/></svg>
+              </div>
+              <div>
+                <div class="dd-label">Classic coach demo</div>
+                <div class="dd-sub">Full-featured coaching workspace</div>
+              </div>
+            </a>
+          </div>
+        </li>
+      </ul>
+
+      <div class="nav-right">
+        <div class="nav-credit">
+          <a
+            href="https://www.linkedin.com/in/shaunrherron/"
+            class="nav-author"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Shaun Herron on LinkedIn"
+          >Shaun Herron</a>
+        </div>
+        <a
+          href="https://www.linkedin.com/in/shaunrherron/"
+          class="nav-linkedin"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn profile"
+          title="LinkedIn profile"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+        <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false" type="button">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><g class="nav-toggle-menu" fill="currentColor"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></g><g class="nav-toggle-close" fill="currentColor" style="display:none"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></g></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="nav-mobile-menu" id="nav-mobile-menu" aria-hidden="true">
+  <a href="index.html" class="nav-mobile-item">
+    <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M480-160q-48-38-104-59t-116-21q-42 0-82.5 11T100-198q-21 11-40.5-1T40-234v-482q0-11 5.5-21T62-752q46-24 96-36t102-12q58 0 113.5 15T480-740v506q51-33 107-49.5T700-300q36 0 78.5 7t81.5 29v-505q9.89 3.75 19.44 7.87Q889-757 898-752q10 6 16 15.68 6 9.67 6 20.32v482q0 23-19.5 35t-40.5 1q-37-20-77.5-31T700-240q-60 0-116 21t-104 59Zm60-167v-353l260-260v387L540-327Zm-120 63v-439q-34-19-79-28t-81-9q-47 0-87.5 10T100-704.47V-264q35-17 75.5-26.5t85-9.5q44.5 0 84.5 9.5t75 26.5Zm0 0v-439 439Z"/></svg>
+    Case Study
+  </a>
+  <a href="landing-page.html#what-is-teachai" class="nav-mobile-item">
+    <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M730-450v-60h150v60H730Zm50 290-121-90 36-48 121 90-36 48Zm-82-503-36-48 118-89 36 48-118 89ZM210-200v-160h-70q-24.75 0-42.37-17.63Q80-395.25 80-420v-120q0-24.75 17.63-42.38Q115.25-600 140-600h180l200-120v480L320-360h-50v160h-60Zm250-146v-268l-124 74H140v120h196l124 74Zm100 0v-268q27 24 43.5 58.5T620-480q0 41-16.5 75.5T560-346ZM300-480Z"/></svg>
+    What is TeachAI
+  </a>
+  <a href="welcome-start.html" class="nav-mobile-item">
+    <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M372-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5T731-360q31 14 50 41t19 65v94H160Zm60-60h520v-34q0-16-9.5-30.5T707-306q-64-31-117-42.5T480-360q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm324.5-346.5Q570-592 570-631t-25.5-64.5Q519-721 480-721t-64.5 25.5Q390-670 390-631t25.5 64.5Q441-541 480-541t64.5-25.5ZM480-631Zm0 411Z"/></svg>
+    Teacher Demo
+  </a>
+  <div class="nav-mobile-section">Coach Demo</div>
+  <a href="coach-dashboard-v2.html" class="nav-mobile-item">
+    <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m162-121-42-42 326-326-185-46 192-120-16-225 173 145 209-84-85 209 146 173-226-17-119 192-46-185-327 326Zm25-544-67-67 68-68 67 67-68 68Zm372 251 63-102 120 9-78-92 45-111-111 45-92-78 9 120-102 64 117 29 29 116Zm174 294-67-68 67-67 67 68-67 67ZM578-579Z"/></svg>
+    Streamlined coach demo
+  </a>
+  <a href="coach-dashboard.html" class="nav-mobile-item">
+    <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M510-570v-270h330v270H510ZM120-450v-390h330v390H120Zm390 330v-390h330v390H510Zm-390 0v-270h330v270H120Zm60-390h210v-270H180v270Zm390 330h210v-270H570v270Zm0-450h210v-150H570v150ZM180-180h210v-150H180v150Zm210-330Zm180-120Zm0 180ZM390-330Z"/></svg>
+    Classic coach demo
+  </a>
+  <div class="nav-mobile-sep"></div>
+  <div class="nav-mobile-section">On this page</div>
+  <a href="#features" class="nav-mobile-item" id="nav-mobile-features">
+    <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+    Features
+  </a>
+  <a href="#about" class="nav-mobile-item">
+    <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Zm.23-60Q622-140 721-239.5t99-241Q820-622 721.19-721T480-820q-141 0-240.5 98.81T140-480q0 141 99.5 240.5t241 99.5Zm-.5-340Z"/></svg>
+    About
+  </a>
+</div>
+
+
+<!-- ══ HERO ═════════════════════════════════════════════════════════ -->
+<section class="hero" id="what-is-teachai">
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m162-121-42-42 326-326-185-46 192-120-16-225 173 145 209-84-85 209 146 173-226-17-119 192-46-185-327 326Zm25-544-67-67 68-68 67 67-68 68Zm372 251 63-102 120 9-78-92 45-111-111 45-92-78 9 120-102 64 117 29 29 116Zm174 294-67-68 67-67 67 68-67 67ZM578-579Z"/></svg>
+          AI-Powered Professional Learning
+        </div>
+        <h1 class="hero-h1">
+          Every teacher deserves a <em>great coach</em>. Every coach deserves great <em>tools</em>.
+        </h1>
+        <p class="hero-sub">
+          TeachAI analyzes classroom practice, generates personalized feedback, and helps coaches scale their impact, so every student benefits from better teaching.
+        </p>
+        <div class="hero-ctas">
+          <a href="welcome-start.html" class="btn-primary">
+            <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z"/></svg>
+            Teacher Experience
+          </a>
+          <a href="coach-dashboard-v2.html" class="btn-ghost">
+            <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M292-527q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM80-164v-94q0-35 17.5-63t50.5-43q72-32 133.5-46T400-424h23q-6 14-9 27.5t-5 32.5h-9q-58 0-113.5 12.5T172-310q-16 8-24 22.5t-8 29.5v34h269q5 18 12 32.5t17 27.5H80Zm587 44-10-66q-17-5-34.5-14.5T593-222l-55 12-25-42 47-44q-2-9-2-25t2-25l-47-44 25-42 55 12q12-12 29.5-21.5T657-456l10-66h54l10 66q17 5 34.5 14.5T795-420l55-12 25 42-47 44q2 9 2 25t-2 25l47 44-25 42-55-12q-12 12-29.5 21.5T731-186l-10 66h-54Zm85-143q22-22 22-58t-22-58q-22-22-58-22t-58 22q-22 22-22 58t22 58q22 22 58 22t58-22ZM464.5-570.5Q490-596 490-635t-25.5-64.5Q439-725 400-725t-64.5 25.5Q310-674 310-635t25.5 64.5Q361-545 400-545t64.5-25.5ZM400-635Zm9 411Z"/></svg>
+            Coach Dashboard
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-value">&lt;15 min</div>
+            <div class="hero-stat-label">Typical time from submit<br>to AI feedback for teachers</div>
+          </div>
+          <div>
+            <div class="hero-stat-value">3 min</div>
+            <div class="hero-stat-label">Avg. time to review<br>AI-drafted feedback</div>
+          </div>
+          <div>
+            <div class="hero-stat-value">4×</div>
+            <div class="hero-stat-label">More coaching<br>touchpoints per cycle</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-card-stack">
+          <!-- Back card -->
+          <div class="hero-card hc-back">
+            <div class="hc-metric-row">
+              <div class="hc-metric"><div class="hc-metric-val">76%</div><div class="hc-metric-lbl">Student Talk</div></div>
+              <div class="hc-metric"><div class="hc-metric-val">4.2s</div><div class="hc-metric-lbl">Wait Time</div></div>
+            </div>
+          </div>
+          <!-- Mid card -->
+          <div class="hero-card hc-mid">
+            <div class="hc-chart-title" style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Growth This Quarter</div>
+            <div style="display:flex;gap:6px;align-items:flex-end;height:60px">
+              <div style="flex:1;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:4px 4px 0 0;height:55%"></div>
+              <div style="flex:1;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:4px 4px 0 0;height:62%"></div>
+              <div style="flex:1;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:4px 4px 0 0;height:70%"></div>
+              <div style="flex:1;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:4px 4px 0 0;height:74%"></div>
+              <div style="flex:1;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:4px 4px 0 0;height:80%"></div>
+              <div style="flex:1;background:var(--brand);border-color:var(--brand);border-radius:4px 4px 0 0;height:88%"></div>
+            </div>
+          </div>
+          <!-- Front card -->
+          <div class="hero-card hc-front">
+            <div class="hc-header">
+              <div class="hc-avatar">AJ</div>
+              <div>
+                <div class="hc-name">Aisha Johnson</div>
+                <div class="hc-meta">7th Grade ELA · Nov 18</div>
+              </div>
+              <div style="margin-left:auto"><span class="hc-tag hc-tag-teal">AI Feedback Ready</span></div>
+            </div>
+            <div class="hc-metric-row">
+              <div class="hc-metric">
+                <div class="hc-metric-val">68%</div>
+                <div class="hc-metric-lbl">Student Talk</div>
+                <div class="hc-metric-trend">↑ +8% vs last</div>
+              </div>
+              <div class="hc-metric">
+                <div class="hc-metric-val">42%</div>
+                <div class="hc-metric-lbl">Deeper questions</div>
+                <div class="hc-metric-trend">↑ +5% vs last</div>
+              </div>
+              <div class="hc-metric">
+                <div class="hc-metric-val">3.8s</div>
+                <div class="hc-metric-lbl">Wait Time</div>
+                <div class="hc-metric-trend">↑ Good range</div>
+              </div>
+            </div>
+            <div class="hc-bar-label">Lesson quality score</div>
+            <div class="hc-bar-track"><div class="hc-bar-fill" style="width:82%"></div></div>
+            <div class="hc-tag-row">
+              <span class="hc-tag hc-tag-sage">Student-led discussion</span>
+              <span class="hc-tag hc-tag-teal">Scaffolded questioning</span>
+              <span class="hc-tag hc-tag-amber">Extend wait time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ PROBLEM SECTION ══════════════════════════════════════════════ -->
+<section class="problem-section" id="problem">
+  <div class="container">
+    <div class="section-header section-header-centered">
+      <div class="section-eyebrow">
+        <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m40-120 440-760 440 760H40Zm104-60h672L480-760 144-180Zm361.5-65.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Zm26-122Z"/></svg>
+        The problem we solve
+      </div>
+      <h2 class="section-h2">Professional learning is broken.<br>TeachAI <em>fixes it</em>.</h2>
+      <p class="section-sub">Most professional development is generic, infrequent, and disconnected from what's actually happening in classrooms.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-icon problem-icon-red">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m629-419-44-44q26-71-27-118t-115-24l-44-44q17-11 38-16t43-5q71 0 120.5 49.5T650-500q0 22-5.5 43.5T629-419Zm129 129-40-40q49-36 85.5-80.5T857-500q-50-111-150-175.5T490-740q-42 0-86 8t-69 19l-46-47q35-16 89.5-28T485-800q143 0 261.5 81.5T920-500q-26 64-67 117t-95 93Zm58 226L648-229q-35 14-79 21.5t-89 7.5q-146 0-265-81.5T40-500q20-52 55.5-101.5T182-696L56-822l42-43 757 757-39 44ZM223-654q-37 27-71.5 71T102-500q51 111 153.5 175.5T488-260q33 0 65-4t48-12l-64-64q-11 5-27 7.5t-30 2.5q-70 0-120-49t-50-121q0-15 2.5-30t7.5-27l-97-97Zm305 142Zm-116 58Z"/></svg>
+        </div>
+        <div class="problem-title">Coaches can't be everywhere</div>
+        <p class="problem-text">A single instructional coach supports 20 to 30 teachers. Formal observations happen 2 to 3 times a year, leaving months of teaching invisible to coaching support.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon problem-icon-amber">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m784-251-43-43q17-28 28-66t11-81q0-125-87.5-212.5T480-741q-42 0-80.5 10.5T333-702l-44-44q42-27 91.5-41t99.5-14q68 0 126.5 22.5T711-716l51-51 42 42-51 51q45 49 66 108.5T840-441q0 50-13.5 98.5T784-251ZM510-525v-118h-60v58l60 60ZM808-56 704-160q-48 38-103.5 58.5T480-81q-74 0-139.5-28.5T226-187q-49-49-77.5-114.5T120-441q0-61 18.5-116T199-665L57-807l43-43L851-99l-43 43Zm-328-85q52 0 98.5-16t85.5-47L243-625q-31 38-47 86t-16 98q0 125 87.5 212.5T480-141ZM360-860v-60h240v60H360Zm94 445Zm83-83Z"/></svg>
+        </div>
+        <div class="problem-title">Feedback arrives too late</div>
+        <p class="problem-text">By the time a coach observes and writes feedback, teachers have already taught the same lesson patterns dozens of times. Real-time insight is the only way to change habits.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon problem-icon-muted">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m813-61-99-99H160v-94q0-38 19-65t49-41q60-27 115.5-42T455-419L61-813l43-43 752 752-43 43ZM220-220h434L515-359q-8-1-17-1h-18q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm511-140q31 14 50 41t19 65v8L657-389q18 6 36.5 13.5T731-360ZM550-496l-48-48q30-7 49-31t19-56q0-38-26-64t-64-26q-32 0-56 19t-31 49l-48-48q19-38 55.5-59t79.5-21q63 0 106.5 43.5T630-631q0 43-21 79.5T550-496Zm104 276H220h434ZM448-599Z"/></svg>
+        </div>
+        <div class="problem-title">Generic PD doesn't stick</div>
+        <p class="problem-text">One-size-fits-all professional development misses what each teacher actually needs. Teachers deserve feedback tied to their own practice, not someone else's.</p>
+      </div>
+    </div>
+    <div class="problem-arrow">
+      <div class="problem-arrow-text">
+        <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M450-800v526L202-522l-42 42 320 320 320-320-42-42-248 248v-526h-60Z"/></svg>
+        TeachAI gives every teacher a coaching feedback loop every single week
+        <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M450-800v526L202-522l-42 42 320 320 320-320-42-42-248 248v-526h-60Z"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ HOW IT WORKS ══════════════════════════════════════════════════ -->
+<section class="how-section" id="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">
+        <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M705-128 447-388q-23 8-46 13t-47 5q-97.08 0-165.04-67.67Q121-505.33 121-602q0-31 8.16-60.39T152-718l145 145 92-86-149-149q25.91-15.16 54.96-23.58Q324-840 354-840q99.17 0 168.58 69.42Q592-701.17 592-602q0 24-5 47t-13 46l259 258q11 10.96 11 26.48T833-198l-76 70q-10.7 11-25.85 11Q716-117 705-128Zm28-57 40-40-273-273q16-21 24-49.5t8-54.5q0-75-55.5-127T350-782l102 104q9 9 8.5 21.5T451-635L318-510q-9.27 8-21.64 8-12.36 0-20.36-8l-98-97q3 77 54.67 127T354-430q25 0 53-8t49-24l277 277ZM476-484Z"/></svg>
+        How it works
+      </div>
+      <h2 class="section-h2">Built for <em>teachers</em> and <em>coaches</em></h2>
+      <p class="section-sub">Two purpose-built experiences that work together: teachers get real-time AI guidance, and coaches get the signal to focus where it matters most.</p>
+    </div>
+
+    <div class="how-tabs" role="tablist">
+      <button class="how-tab active" id="tab-teacher" role="tab" aria-selected="true" aria-controls="panel-teacher" onclick="switchHowTab('teacher')">
+        <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z"/></svg>
+        For Teachers
+      </button>
+      <button class="how-tab" id="tab-coach" role="tab" aria-selected="false" aria-controls="panel-coach" onclick="switchHowTab('coach')">
+        <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M292-527q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM80-164v-94q0-35 17.5-63t50.5-43q72-32 133.5-46T400-424h23q-6 14-9 27.5t-5 32.5h-9q-58 0-113.5 12.5T172-310q-16 8-24 22.5t-8 29.5v34h269q5 18 12 32.5t17 27.5H80Zm587 44-10-66q-17-5-34.5-14.5T593-222l-55 12-25-42 47-44q-2-9-2-25t2-25l-47-44 25-42 55 12q12-12 29.5-21.5T657-456l10-66h54l10 66q17 5 34.5 14.5T795-420l55-12 25 42-47 44q2 9 2 25t-2 25l47 44-25 42-55-12q-12 12-29.5 21.5T731-186l-10 66h-54Zm85-143q22-22 22-58t-22-58q-22-22-58-22t-58 22q-22 22-22 58t22 58q22 22 58 22t58-22ZM464.5-570.5Q490-596 490-635t-25.5-64.5Q439-725 400-725t-64.5 25.5Q310-674 310-635t25.5 64.5Q361-545 400-545t64.5-25.5ZM400-635Zm9 411Z"/></svg>
+        For Coaches
+      </button>
+    </div>
+
+    <!-- Teacher panel -->
+    <div class="how-panel active" id="panel-teacher" role="tabpanel" aria-labelledby="tab-teacher">
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">1</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Submit your lesson</div>
+            <p class="how-step-text">Upload a video, lesson plan, exit tickets, or student work samples. TeachAI accepts the artifacts that actually capture your teaching practice.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">2</div>
+          <div class="how-step-body">
+            <div class="how-step-title">AI analyzes your classroom</div>
+            <p class="how-step-text">TeachAI measures student talk time, wait time, how often you ask deeper questions (analysis and reasoning, not just recall), and a dozen other research-backed indicators, automatically and without manual input.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">3</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Get personalized feedback</div>
+            <p class="how-step-text">Receive specific, actionable feedback tied to your lesson, not generic tips. Your coach reviews and approves it before it reaches you.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">4</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Chat with your AI coaching assistant</div>
+            <p class="how-step-text">Ask follow-up questions, explore strategies, and plan for your next lesson in a conversation that knows your complete teaching history.</p>
+          </div>
+        </div>
+        <a href="welcome-start.html" class="how-cta">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"/></svg>
+          See the teacher experience
+        </a>
+      </div>
+      <div>
+        <div class="mock-panel">
+          <div class="mock-topbar">
+            <div class="mock-topbar-dot"></div>
+            <div class="mock-topbar-dot"></div>
+            <div class="mock-topbar-dot"></div>
+            <div class="mock-topbar-title">TeachAI: My Feedback</div>
+            <div class="mock-topbar-badge">AI Ready</div>
+          </div>
+          <div class="mock-body">
+            <div class="mock-msg mock-msg-ai">
+              Your student talk time jumped to <strong>68%</strong> this lesson, which is 8 points higher than your baseline. The turn-and-talk you added in the first 10 minutes made a big difference. One area to explore: 3 students didn't speak at all. Here's a strategy for drawing quieter voices in...
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin:4px 0">
+              <div class="chip"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M232-318h336v-21q0-46-45-72.5T400-438q-78 0-123 26.5T232-339v21Zm168-175q35 0 57.5-22.5T480-573q0-35-22.5-57.5T400-653q-35 0-57.5 22.5T320-573q0 35 22.5 57.5T400-493ZM140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h520q24 0 42 18t18 42v215l160-160v410L720-435v215q0 24-18 42t-42 18H140Zm0-60h520v-520H140v520Zm0 0v-520 520Z"/></svg> View key moments</div>
+              <div class="chip"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m123-240-43-43 292-291 167 167 241-241H653v-60h227v227h-59v-123L538-321 371-488 123-240Z"/></svg> See my growth</div>
+            </div>
+            <div class="mock-msg mock-msg-user">
+              What's the best way to get reluctant speakers more involved during discussions?
+            </div>
+            <div class="mock-msg mock-msg-ai">
+              Great question. For your classroom context, I'd suggest trying "cold call with a lifeline": give students 60 seconds to write before you call on anyone, then pair them so they can share their partner's idea instead of their own. This removes the performance pressure while keeping everyone accountable...
+            </div>
+            <div class="mock-chart">
+              <div class="mock-chart-title">Student talk time, last 6 lessons</div>
+              <div class="mock-bars">
+                <div class="mock-bar" style="height:52%"></div>
+                <div class="mock-bar" style="height:55%"></div>
+                <div class="mock-bar" style="height:58%"></div>
+                <div class="mock-bar" style="height:60%"></div>
+                <div class="mock-bar" style="height:62%"></div>
+                <div class="mock-bar highlight" style="height:68%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coach panel -->
+    <div class="how-panel" id="panel-coach" role="tabpanel" aria-labelledby="tab-coach">
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">1</div>
+          <div class="how-step-body">
+            <div class="how-step-title">See your caseload at a glance</div>
+            <p class="how-step-text">Your dashboard surfaces who has submitted, who needs feedback, and who is trending up or down, without reading every submission yourself.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">2</div>
+          <div class="how-step-body">
+            <div class="how-step-title">AI drafts feedback for you</div>
+            <p class="how-step-text">For every submission, TeachAI generates a first-draft feedback letter. Your job is to review, personalize, and approve, not start from a blank page.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">3</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Spot school-wide patterns</div>
+            <p class="how-step-text">TeachAI identifies trends across your entire caseload: which practices are spreading, which teachers share similar struggles, and where a group session would have the highest impact.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">4</div>
+          <div class="how-step-body">
+            <div class="how-step-title">Ask the AI Coaching Copilot</div>
+            <p class="how-step-text">Get instant answers to coaching decisions like "Who should I prioritize today?" or "Which three teachers would benefit most from a group session?", answered with data, not hunches.</p>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:36px">
+          <a href="coach-dashboard.html" class="how-cta">
+            <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M510-570v-270h330v270H510ZM120-450v-390h330v390H120Zm390 330v-390h330v390H510Zm-390 0v-270h330v270H120Zm60-390h210v-270H180v270Zm390 330h210v-270H570v270Zm0-450h210v-150H570v150ZM180-180h210v-150H180v150Zm210-330Zm180-120Zm0 180ZM390-330Z"/></svg>
+            Classic Dashboard
+          </a>
+          <a href="coach-dashboard-v2.html" class="how-cta" style="background:var(--brand-deep)">
+            <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m162-121-42-42 326-326-185-46 192-120-16-225 173 145 209-84-85 209 146 173-226-17-119 192-46-185-327 326Zm25-544-67-67 68-68 67 67-68 68Zm372 251 63-102 120 9-78-92 45-111-111 45-92-78 9 120-102 64 117 29 29 116Zm174 294-67-68 67-67 67 68-67 67ZM578-579Z"/></svg>
+            Streamlined v2
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="mock-panel">
+          <div class="mock-topbar">
+            <div class="mock-topbar-dot"></div>
+            <div class="mock-topbar-dot"></div>
+            <div class="mock-topbar-dot"></div>
+            <div class="mock-topbar-title">Coach Dashboard: All Teachers</div>
+            <div class="mock-topbar-badge">9 need feedback</div>
+          </div>
+          <div class="mock-body">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">
+              <div class="chip" style="background:rgba(192,57,43,0.08);border-color:rgba(192,57,43,0.2);color:#c0392b"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M479.91-120q-28.91 0-49.41-20.59-20.5-20.59-20.5-49.5t20.59-49.41q20.59-20.5 49.5-20.5t49.41 20.59q20.5 20.59 20.5 49.5t-20.59 49.41q-20.59 20.5-49.5 20.5ZM410-360v-480h140v480H410Z"/></svg>Needs attention (4)</div>
+              <div class="chip"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M308-140h344v-127q0-72-50-121.5T480-438q-72 0-122 49.5T308-267v127Zm294-432q50-50 50-122v-126H308v126q0 72 50 122t122 50q72 0 122-50ZM160-80v-60h88v-127q0-71 40-129t106-84q-66-27-106-85t-40-129v-126h-88v-60h640v60h-88v126q0 71-40 129t-106 85q66 26 106 84t40 129v127h88v60H160Z"/></svg>Feedback pending (9)</div>
+            </div>
+            <div class="mock-table-row">
+              <div class="mock-avatar-sm" style="background:linear-gradient(135deg,#c0392b,#922b21)">MJ</div>
+              <div class="mock-name">Marcus Johnson</div>
+              <div class="mock-tag-sm mock-attention">Needs attention</div>
+              <div class="mock-tag-sm mock-pending">Draft ready</div>
+            </div>
+            <div class="mock-table-row">
+              <div class="mock-avatar-sm" style="background:linear-gradient(135deg,#007890,#005f72)">AP</div>
+              <div class="mock-name">Aisha Patel</div>
+              <div class="mock-tag-sm mock-pending">5 days late</div>
+              <div class="mock-tag-sm" style="background:var(--brand-soft);color:var(--brand)">Review →</div>
+            </div>
+            <div class="mock-table-row">
+              <div class="mock-avatar-sm" style="background:linear-gradient(135deg,#2f8f6e,#1f6b50)">DK</div>
+              <div class="mock-name">David Kim</div>
+              <div class="mock-tag-sm mock-attention">Declining</div>
+              <div class="mock-tag-sm mock-pending">Draft ready</div>
+            </div>
+            <div class="mock-table-row">
+              <div class="mock-avatar-sm" style="background:linear-gradient(135deg,#7d6bba,#5a4d8c)">MT</div>
+              <div class="mock-name">Maya Thompson</div>
+              <div class="mock-tag-sm mock-good">Excelling ↑</div>
+              <div class="mock-tag-sm mock-good">Sent ✓</div>
+            </div>
+            <div style="margin-top:10px;padding:10px 12px;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:10px;font-size:11px;color:var(--brand)">
+              <strong>AI Copilot:</strong> Marcus and David both need support with deeper questioning. A group session this week could address both.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══ FEATURES SECTION ══════════════════════════════════════════════ -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="section-header section-header-centered">
+      <div class="section-eyebrow">
+        <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+        Platform capabilities
+      </div>
+      <h2 class="section-h2">Everything you need to <em>grow great teachers</em></h2>
+      <p class="section-sub">TeachAI combines classroom analytics, AI-generated feedback, and coaching workflow tools in one integrated platform.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h520q24 0 42 18t18 42v215l160-160v410L720-435v215q0 24-18 42t-42 18H140Zm0-60h520v-520H140v520Zm0 0v-520 520Z"/></svg></div>
+        <div class="feature-title">Video lesson analysis</div>
+        <p class="feature-text">Upload classroom videos and let TeachAI automatically measure student talk time, questioning techniques, wait time, and more, frame by frame.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"/></svg></div>
+        <div class="feature-title">Artifact review</div>
+        <p class="feature-text">Lesson plans, exit tickets, and student work are analyzed alongside video to give a complete picture of instructional quality.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M240-399h313v-60H240v60Zm0-130h480v-60H240v60Zm0-130h480v-60H240v60ZM80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></svg></div>
+        <div class="feature-title">AI coaching conversations</div>
+        <p class="feature-text">An always-available AI assistant that knows every lesson, every piece of feedback, and every goal, so teachers get personalized guidance anytime.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z"/></svg></div>
+        <div class="feature-title">AI-drafted feedback</div>
+        <p class="feature-text">Coaches approve high-quality, data-backed feedback drafts instead of writing from scratch, cutting feedback time from hours to minutes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m123-240-43-43 292-291 167 167 241-241H653v-60h227v227h-59v-123L538-321 371-488 123-240Z"/></svg></div>
+        <div class="feature-title">Growth tracking</div>
+        <p class="feature-text">Every teacher has a longitudinal record of indicators, feedback, and milestones. Spot growth, celebrate wins, and identify when someone needs extra support.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M153-73q-33-33-33-81t33.25-81q33.25-33 80.75-33 14 0 24.5 2.5T280-258l85-106q-19-23-29-52.5t-5-61.5l-121-41q-15 25-39.5 39T114-466q-47.5 0-80.75-33.25T0-580q0-47.5 33.25-80.75T114-694q47.5 0 80.75 33.25T228-580v4l122 42q18-32 43.5-49t56.5-24v-129q-39-11-61.5-43T366-846q0-47.5 33-80.75T480-960q48 0 81 33.25T594-846q0 35-23 67t-61 43v129q31 7 57 24t44 49l121-42v-4q0-47.5 33.25-80.75T846-694q47.5 0 80.75 33T960-580q0 48-33.25 81T846-466q-32 0-57-14t-39-39l-121 41q5 32-4.5 61.5T595-364l85 106q11-5 21.5-7.5t24.06-2.5Q774-268 807-235t33 81q0 48-33 81t-81 33q-48 0-81-33.25T612-154q0-20 5.5-36t15.5-31l-85-106q-32.13 17-68.56 17Q443-310 411-327l-84 107q10 15 15.5 30.5T348-154q0 47.5-33 80.75T234-40q-48 0-81-33Zm-38.96-453q22.96 0 38.46-15.54 15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5Q91-634 75.5-618.46 60-602.93 60-579.96 60-557 75.54-541.5q15.53 15.5 38.5 15.5ZM272.5-115.54q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54Zm246-692q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54ZM480.5-370q37.5 0 63.5-26.5t26-64q0-37.5-26.1-63.5T480-550q-37 0-63.5 26.1T390-460q0 37 26.5 63.5t64 26.5Zm284 254.46q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54Zm120-426q15.5-15.53 15.5-38.5 0-22.96-15.54-38.46-15.53-15.5-38.5-15.5-22.96 0-38.46 15.54-15.5 15.53-15.5 38.5 0 22.96 15.54 38.46 15.53 15.5 38.5 15.5 22.96 0 38.46-15.54ZM480-846ZM114-580Zm366 120Zm366-120ZM234-154Zm492 0Z"/></svg></div>
+        <div class="feature-title">School-wide pattern recognition</div>
+        <p class="feature-text">TeachAI identifies clusters of shared challenges and emerging strengths, helping coaches decide when to schedule group sessions and what to present at PD.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ PERSONA CARDS ═════════════════════════════════════════════════ -->
+<section class="personas-section" id="about">
+  <div class="container">
+    <div class="section-header section-header-centered">
+      <div class="section-eyebrow">
+        <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M38-160v-94q0-35 18-63.5t50-42.5q73-32 131.5-46T358-420q62 0 120 14t131 46q32 14 50.5 42.5T678-254v94H38Zm700 0v-94q0-63-32-103.5T622-423q69 8 130 23.5t99 35.5q33 19 52 47t19 63v94H738ZM250-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm426 0q-42 42-108 42-11 0-24.5-1.5T519-488q24-25 36.5-61.5T568-631q0-45-12.5-79.5T519-774q11-3 24.5-5t24.5-2q66 0 108 42t42 108q0 66-42 108ZM98-220h520v-34q0-16-9.5-31T585-306q-72-32-121-43t-106-11q-57 0-106.5 11T130-306q-14 6-23 21t-9 31v34Zm324.5-346.5Q448-592 448-631t-25.5-64.5Q397-721 358-721t-64.5 25.5Q268-670 268-631t25.5 64.5Q319-541 358-541t64.5-25.5ZM358-220Zm0-411Z"/></svg>
+        Who it's for
+      </div>
+      <h2 class="section-h2">Designed for the people <em>inside the classroom</em></h2>
+      <p class="section-sub">TeachAI respects how hard teaching and coaching already are. Every feature is built to reduce burden, not add to it.</p>
+    </div>
+    <div class="personas-grid">
+
+      <!-- Teacher card -->
+      <div class="persona-card">
+        <div class="persona-header persona-header-teacher">
+          <div class="persona-icon persona-icon-teacher">
+            <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z"/></svg>
+          </div>
+          <div>
+            <div class="persona-role persona-role-teacher">For Teachers</div>
+            <div class="persona-name persona-name-teacher">Your personal AI coach</div>
+            <div class="persona-desc persona-desc-teacher">Get the feedback frequency you've always deserved: on your terms, after every lesson, tied to your actual practice.</div>
+          </div>
+        </div>
+        <div class="persona-body">
+          <div class="persona-benefits">
+            <div class="persona-benefit">
+              <div class="persona-benefit-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m89-412-49-36 193-310 125 146 165-268 125 186 143-226 48 35-190 301-124-184-159 258-125-146L89-412Zm494 192q48 0 82.5-33.5T700-335q0-49-34-83t-83-34q-48 0-81.5 34.5T468-335q0 48 33.5 81.5T583-220ZM797-80 685-192q-22 15-47.5 23.5T583-160q-73 0-124-51t-51-124q0-73 51-125t124-52q74 0 125.5 51.5T760-335q0 29-8.5 54.5T727-233l112 111-42 42Z"/></svg></div>
+              <div class="persona-benefit-text"><strong>Know exactly what's happening</strong> in your classroom with objective data on student engagement, not just gut feel.</div>
+            </div>
+            <div class="persona-benefit">
+              <div class="persona-benefit-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M479.98-367q14.02 0 23.52-9.48t9.5-23.5q0-14.02-9.48-23.52t-23.5-9.5q-14.02 0-23.52 9.48t-9.5 23.5q0 14.02 9.48 23.52t23.5 9.5ZM450-509h60v-251h-60v251ZM80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></svg></div>
+              <div class="persona-benefit-text"><strong>Receive specific, actionable feedback</strong> connected to your videos and lesson plans, not generic teaching tips.</div>
+            </div>
+            <div class="persona-benefit">
+              <div class="persona-benefit-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M80-80v-740q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"/></svg></div>
+              <div class="persona-benefit-text"><strong>Ask anything, anytime.</strong> Your AI coaching assistant remembers your entire teaching history and helps you plan ahead.</div>
+            </div>
+            <div class="persona-benefit">
+              <div class="persona-benefit-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m126-220-46-46 300-300 160 161 298-335 42 41-340 384-160-159-254 254Z"/></svg></div>
+              <div class="persona-benefit-text"><strong>See your growth visually</strong> with timelines and trend charts that show how far you've come each cycle.</div>
+            </div>
+          </div>
+          <div class="persona-cta">
+            <a href="welcome-start.html" class="btn-brand">
+              <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"/></svg>
+              Open teacher experience
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coach card -->
+      <div class="persona-card">
+        <div class="persona-header persona-header-coach">
+          <div class="persona-icon persona-icon-coach">
+            <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M292-527q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM80-164v-94q0-35 17.5-63t50.5-43q72-32 133.5-46T400-424h23q-6 14-9 27.5t-5 32.5h-9q-58 0-113.5 12.5T172-310q-16 8-24 22.5t-8 29.5v34h269q5 18 12 32.5t17 27.5H80Zm587 44-10-66q-17-5-34.5-14.5T593-222l-55 12-25-42 47-44q-2-9-2-25t2-25l-47-44 25-42 55 12q12-12 29.5-21.5T657-456l10-66h54l10 66q17 5 34.5 14.5T795-420l55-12 25 42-47 44q2 9 2 25t-2 25l47 44-25 42-55-12q-12 12-29.5 21.5T731-186l-10 66h-54Zm85-143q22-22 22-58t-22-58q-22-22-58-22t-58 22q-22 22-22 58t22 58q22 22 58 22t58-22ZM464.5-570.5Q490-596 490-635t-25.5-64.5Q439-725 400-725t-64.5 25.5Q310-674 310-635t25.5 64.5Q361-545 400-545t64.5-25.5ZM400-635Zm9 411Z"/></svg>
+          </div>
+          <div>
+            <div class="persona-role persona-role-coach">For Instructional Coaches</div>
+            <div class="persona-name persona-name-coach">Your coaching command center</div>
+            <div class="persona-desc persona-desc-coach">Stop drowning in submissions and feedback queues. TeachAI tells you who needs what and when, so you can focus on coaching, not logistics.</div>
+          </div>
+        </div>
+        <div class="persona-body">
+          <div class="persona-benefits">
+            <div class="persona-benefit">
+              <div class="persona-benefit-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M600.5-379.5Q650-429 650-500t-49.5-120.5Q551-670 480-670t-120.5 49.5Q310-571 310-500t49.5 120.5Q409-330 480-330t120.5-49.5Zm-200-41Q368-453 368-500t32.5-79.5Q433-612 480-612t79.5 32.5Q592-547 592-500t-32.5 79.5Q527-388 480-388t-79.5-32.5ZM216-283Q98-366 40-500q58-134 176-217t264-83q146 0 264 83t176 217q-58 134-176 217t-264 83q-146 0-264-83Zm264-217Zm222.5 174.5Q804-391 857-500q-53-109-154.5-174.5T480-740q-121 0-222.5 65.5T102-500q54 109 155.5 174.5T480-260q121 0 222.5-65.5Z"/></svg></div>
+              <div class="persona-benefit-text"><strong>See your full caseload at once</strong> with priority signals, submission status, and feedback queues in one view.</div>
+            </div>
+            <div class="persona-benefit">
+              <div class="persona-benefit-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m162-121-42-42 326-326-185-46 192-120-16-225 173 145 209-84-85 209 146 173-226-17-119 192-46-185-327 326Zm25-544-67-67 68-68 67 67-68 68Zm372 251 63-102 120 9-78-92 45-111-111 45-92-78 9 120-102 64 117 29 29 116Zm174 294-67-68 67-67 67 68-67 67ZM578-579Z"/></svg></div>
+              <div class="persona-benefit-text"><strong>AI drafts feedback for every teacher.</strong> You review and personalize in minutes instead of hours.</div>
+            </div>
+            <div class="persona-benefit">
+              <div class="persona-benefit-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M284-277h60v-205h-60v205Zm332 0h60v-420h-60v420Zm-166 0h60v-118h-60v118Zm0-205h60v-60h-60v60ZM180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm0-60h600v-600H180v600Zm0-600v600-600Z"/></svg></div>
+              <div class="persona-benefit-text"><strong>Spot school-wide patterns</strong> and get AI recommendations for group sessions and targeted PD.</div>
+            </div>
+            <div class="persona-benefit">
+              <div class="persona-benefit-icon"><svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Zm300 230q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-188.5-11.5Q280-423 280-440t11.5-28.5Q303-480 320-480t28.5 11.5Q360-457 360-440t-11.5 28.5Q337-400 320-400t-28.5-11.5ZM640-400q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-188.5-11.5Q280-263 280-280t11.5-28.5Q303-320 320-320t28.5 11.5Q360-297 360-280t-11.5 28.5Q337-240 320-240t-28.5-11.5ZM640-240q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z"/></svg></div>
+              <div class="persona-benefit-text"><strong>Schedule sessions and send feedback in bulk</strong> so one decision multiplies impact across your whole caseload.</div>
+            </div>
+          </div>
+          <div class="persona-cta">
+            <a href="coach-dashboard-v2.html" class="btn-brand">
+              <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m162-121-42-42 326-326-185-46 192-120-16-225 173 145 209-84-85 209 146 173-226-17-119 192-46-185-327 326Zm25-544-67-67 68-68 67 67-68 68Zm372 251 63-102 120 9-78-92 45-111-111 45-92-78 9 120-102 64 117 29 29 116Zm174 294-67-68 67-67 67 68-67 67ZM578-579Z"/></svg>
+              Open Coach Dashboard v2
+            </a>
+            <a href="coach-dashboard.html" class="btn-outline">
+              Classic
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ METRICS BANNER ═══════════════════════════════════════════════ -->
+<section class="metrics-section" aria-label="Impact metrics">
+  <div class="container">
+    <div class="metrics-grid">
+      <div class="metric-item">
+        <div class="metric-value"><em>68%</em></div>
+        <div class="metric-label">Average student talk time<br>in coached classrooms</div>
+        <div class="metric-sublabel">vs. 42% national average</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value">3 min</div>
+        <div class="metric-label">Average time to approve<br>AI-drafted feedback</div>
+        <div class="metric-sublabel">down from 45 min manual</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value"><em>4×</em></div>
+        <div class="metric-label">More coaching touchpoints<br>per teacher per cycle</div>
+        <div class="metric-sublabel">vs. traditional observation model</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value"><em>&lt;15</em> min</div>
+        <div class="metric-label">Typical wait for lesson-specific<br>AI feedback after you submit</div>
+        <div class="metric-sublabel">minutes, not days until the next observation</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ QUOTES ════════════════════════════════════════════════════════ -->
+<section class="quotes-section">
+  <div class="container">
+    <div class="section-header section-header-centered">
+      <div class="section-eyebrow">
+        <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m248-240 94-162q-5 1-11 1.5t-11 .5q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 21-5.5 41T458-480L320-240h-72Zm360 0 94-162q-5 1-11 1.5t-11 .5q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 21-5.5 41T818-480L680-240h-72ZM376.5-503.5Q400-527 400-560t-23.5-56.5Q353-640 320-640t-56.5 23.5Q240-593 240-560t23.5 56.5Q287-480 320-480t56.5-23.5Zm360 0Q760-527 760-560t-23.5-56.5Q713-640 680-640t-56.5 23.5Q600-593 600-560t23.5 56.5Q647-480 680-480t56.5-23.5ZM680-560Zm-360 0Z"/></svg>
+        From educators
+      </div>
+      <h2 class="section-h2">Trusted by teachers and coaches who <em>care deeply</em></h2>
+    </div>
+    <div class="quotes-grid">
+      <div class="quote-card">
+        <div class="quote-stars">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+        </div>
+        <p class="quote-text">I used to wait weeks for feedback on a lesson. Now I have it the next morning, and I can actually ask follow-up questions. It's changed how I prepare for the next week.</p>
+        <div class="quote-author">
+          <div class="quote-avatar">SM</div>
+          <div>
+            <div class="quote-name">Sarah Martinez</div>
+            <div class="quote-role">8th Grade Science Teacher</div>
+          </div>
+        </div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-stars">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+        </div>
+        <p class="quote-text">TeachAI tells me who needs my attention before I even open my email. I'm spending my coaching time actually coaching, not sorting through submissions to figure out where to start.</p>
+        <div class="quote-author">
+          <div class="quote-avatar">DJ</div>
+          <div>
+            <div class="quote-name">Dr. Denise Johnson</div>
+            <div class="quote-role">Instructional Coach, Lincoln Middle School</div>
+          </div>
+        </div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-stars">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"/></svg>
+        </div>
+        <p class="quote-text">The growth charts are motivating in a way I didn't expect. Seeing my student talk time trend upward over 7 weeks makes the work feel real. I'm sharing them with my principal now.</p>
+        <div class="quote-author">
+          <div class="quote-avatar">JL</div>
+          <div>
+            <div class="quote-name">James Liu</div>
+            <div class="quote-role">5th Grade Math &amp; ELA Teacher</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CTA SECTION ══════════════════════════════════════════════════ -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box">
+      <h2 class="cta-h2">Ready to see what <em>great coaching</em> looks like at scale?</h2>
+      <p class="cta-sub">Explore the teacher and coach experiences: fully interactive prototypes, ready to click through.</p>
+      <div class="cta-btns">
+        <a href="welcome-start.html" class="btn-cta-primary">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z"/></svg>
+          Explore as a Teacher
+        </a>
+        <a href="coach-dashboard-v2.html" class="btn-cta-ghost">
+          <svg class="mi" aria-hidden="true" width="1em" height="1em" fill="currentColor" focusable="false" viewBox="0 -960 960 960"><path fill="currentColor" d="M292-527q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM80-164v-94q0-35 17.5-63t50.5-43q72-32 133.5-46T400-424h23q-6 14-9 27.5t-5 32.5h-9q-58 0-113.5 12.5T172-310q-16 8-24 22.5t-8 29.5v34h269q5 18 12 32.5t17 27.5H80Zm587 44-10-66q-17-5-34.5-14.5T593-222l-55 12-25-42 47-44q-2-9-2-25t2-25l-47-44 25-42 55 12q12-12 29.5-21.5T657-456l10-66h54l10 66q17 5 34.5 14.5T795-420l55-12 25 42-47 44q2 9 2 25t-2 25l47 44-25 42-55-12q-12 12-29.5 21.5T731-186l-10 66h-54Zm85-143q22-22 22-58t-22-58q-22-22-58-22t-58 22q-22 22-22 58t22 58q22 22 58 22t58-22ZM464.5-570.5Q490-596 490-635t-25.5-64.5Q439-725 400-725t-64.5 25.5Q310-674 310-635t25.5 64.5Q361-545 400-545t64.5-25.5ZM400-635Zm9 411Z"/></svg>
+          Explore as a Coach
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-logo">
+          <div class="footer-brand-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path fill="#ffffff" d="M3.2 19.8L8 15l2.1 2.1-4.8 4.8-1.4-1.4-.7-.7z"/>
+              <path fill="#ffffff" d="M8.2 15L11 4.5l1.3 1.3L9.5 14.2 8.2 15z" opacity=".92"/>
+              <path fill="#ffffff" d="M17.5 3.5l1.1 3.2L22 7.5l-3.4 1.2-1.1 3.4-1.1-3.4-3.4-1.2 3.4-1.2 1.1-3.2z"/>
+              <path fill="#ffffff" d="M6 8.5l.7 2L8.8 11 6.7 11.5 6 13.5l-.7-2-2-1.5 2-1 .7-2z" opacity=".88"/>
+              <circle cx="19" cy="16" r="1.1" fill="#ffffff"/>
+              <circle cx="14" cy="19" r="0.75" fill="#ffffff"/>
+              <circle cx="4.5" cy="12" r="0.65" fill="#ffffff"/>
+            </svg>
+          </div>
+          <span class="footer-brand-name">TeachAI</span>
+        </div>
+        <p class="footer-brand-desc">AI-powered professional learning for teachers and the coaches who support them. Every student benefits when every teacher grows.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Explore</div>
+        <div class="footer-links">
+          <a href="index.html" class="footer-link">Case Study</a>
+          <a href="_archive/index.html" class="footer-link">Case Study (concise · archived)</a>
+          <a href="index-v2.html" class="footer-link">Case Study (artifacts)</a>
+          <a href="landing-page.html#what-is-teachai" class="footer-link">What is TeachAI</a>
+          <a href="welcome-start.html" class="footer-link">Teacher Demo</a>
+          <a href="coach-dashboard-v2.html" class="footer-link">Coach Demo (streamlined)</a>
+          <a href="#features" class="footer-link">Features (this page)</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">For Educators</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link">How it works</a>
+          <a href="#" class="footer-link">Research backing</a>
+          <a href="#" class="footer-link">Case studies</a>
+          <a href="#" class="footer-link">PD alignment</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <div class="footer-links">
+          <a href="#about" class="footer-link">About</a>
+          <a href="#" class="footer-link">Careers</a>
+          <a href="#" class="footer-link">Privacy</a>
+          <a href="#" class="footer-link">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 TeachAI. Built for educators, by educators.</div>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  /* ── How-it-works tab switcher ────────────────────── */
+  function switchHowTab(which) {
+    document.querySelectorAll('.how-tab').forEach(t => {
+      t.classList.toggle('active', t.id === 'tab-' + which);
+      t.setAttribute('aria-selected', t.id === 'tab-' + which);
+    });
+    document.querySelectorAll('.how-panel').forEach(p => {
+      p.classList.toggle('active', p.id === 'panel-' + which);
+    });
+  }
+
+  /* ── Mobile nav toggle ───────────────────────────── */
+  const navToggle = document.getElementById('nav-toggle');
+  const mobileMenu = document.getElementById('nav-mobile-menu');
+  function setNavMenuIcon(open) {
+    const menuG = navToggle.querySelector('.nav-toggle-menu');
+    const closeG = navToggle.querySelector('.nav-toggle-close');
+    if (menuG && closeG) {
+      menuG.style.display = open ? 'none' : '';
+      closeG.style.display = open ? '' : 'none';
+    }
+  }
+  navToggle.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+    mobileMenu.setAttribute('aria-hidden', !isOpen);
+    setNavMenuIcon(isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  /* Close mobile menu when a link inside it is clicked */
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', false);
+      mobileMenu.setAttribute('aria-hidden', true);
+      setNavMenuIcon(false);
+      document.body.style.overflow = '';
+    });
+  });
+
+  /* ── Subtle scroll shadow on nav ────────────────── */
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.style.boxShadow = window.scrollY > 8
+      ? '0 2px 16px rgba(0,90,108,0.10)'
+      : 'none';
+  }, { passive: true });
+
+  /* ── Animate elements into view ──────────────────── */
+  if ('IntersectionObserver' in window) {
+    const style = document.createElement('style');
+    style.textContent = `
+      .anim-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+      .anim-up.visible { opacity: 1; transform: translateY(0); }
+    `;
+    document.head.appendChild(style);
+
+    const targets = document.querySelectorAll(
+      '.problem-card, .feature-card, .persona-card, .quote-card, .how-step, .metric-item'
+    );
+    targets.forEach((el, i) => {
+      el.classList.add('anim-up');
+      el.style.transitionDelay = (i % 3) * 80 + 'ms';
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+
+    targets.forEach(el => io.observe(el));
+  }
+</script>
+<script type="module" src="vercel-analytics.js"></script>
+</body>
+</html>
