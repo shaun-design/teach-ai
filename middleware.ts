@@ -1,58 +1,51 @@
-import { next } from '@vercel/functions';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import {
+  PROTOTYPE_SESSION_COOKIE,
+  requirePrototypeEnv,
+  verifySessionToken,
+} from '@/lib/prototype-session';
 
-/** Set BASIC_AUTH_USER and BASIC_AUTH_PASSWORD in the Vercel project (all relevant environments). */
-const REALM = 'TeachAI Case Study';
-
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) {
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return diff === 0;
+function isPublicPath(pathname: string): boolean {
+  if (pathname === '/prototype-login') return true;
+  if (pathname.startsWith('/api/prototype-auth')) return true;
+  if (pathname === '/logout') return true;
+  return false;
 }
 
-function parseBasicAuth(header: string | null): { user: string; pass: string } | null {
-  if (!header) return null;
-  const prefix = 'basic ';
-  const lower = header.slice(0, 6).toLowerCase();
-  if (lower !== prefix) return null;
-  let decoded: string;
-  try {
-    decoded = atob(header.slice(6).trim());
-  } catch {
-    return null;
-  }
-  const colon = decoded.indexOf(':');
-  if (colon === -1) return null;
-  return { user: decoded.slice(0, colon), pass: decoded.slice(colon + 1) };
+function withPathnameHeader(request: NextRequest, pathname: string) {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-prototype-pathname', pathname);
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
-export default function middleware(request: Request) {
-  const expectedUser = process.env.BASIC_AUTH_USER?.trim();
-  const expectedPass = process.env.BASIC_AUTH_PASSWORD?.trim();
-
-  if (!expectedUser || !expectedPass) {
-    return new Response('Authentication is not configured.', {
+export async function middleware(request: NextRequest) {
+  const env = requirePrototypeEnv();
+  if (!env) {
+    return new NextResponse('Prototype authentication is not configured.', {
       status: 503,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   }
 
-  const creds = parseBasicAuth(request.headers.get('authorization'));
-  if (
-    creds &&
-    timingSafeEqual(creds.user, expectedUser) &&
-    timingSafeEqual(creds.pass, expectedPass)
-  ) {
-    return next();
+  const pathname = request.nextUrl.pathname;
+
+  if (isPublicPath(pathname)) {
+    return withPathnameHeader(request, pathname);
   }
 
-  return new Response('Authentication required.', {
-    status: 401,
-    headers: {
-      'WWW-Authenticate': `Basic realm="${REALM}"`,
-      'Content-Type': 'text/plain; charset=utf-8',
-    },
-  });
+  const token = request.cookies.get(PROTOTYPE_SESSION_COOKIE)?.value;
+  const ok = await verifySessionToken(token, env.secret);
+  if (!ok) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/prototype-login';
+    url.searchParams.set('from', pathname + request.nextUrl.search);
+    return NextResponse.redirect(url);
+  }
+
+  return withPathnameHeader(request, pathname);
 }
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image).*)'],
+};
