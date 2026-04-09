@@ -26,8 +26,17 @@ function isPublicPath(pathname: string): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Always forward the pathname — app/layout.tsx reads x-prototype-pathname to
+  // decide whether to run the auth check. Without this header on public paths,
+  // the layout sees '' instead of '/prototype-login' and redirects again → loop.
+  function pass() {
+    const h = new Headers(request.headers);
+    h.set('x-prototype-pathname', pathname);
+    return NextResponse.next({ request: { headers: h } });
+  }
+
   if (isPublicPath(pathname)) {
-    return NextResponse.next();
+    return pass();
   }
 
   // No session cookie → fast redirect to login.
@@ -40,10 +49,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Pass the pathname to the layout so it can verify without reading headers twice.
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-prototype-pathname', pathname);
-  return NextResponse.next({ request: { headers: requestHeaders } });
+  return pass();
 }
 
 export const config = {
