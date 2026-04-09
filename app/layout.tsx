@@ -31,9 +31,14 @@ export default async function RootLayout({
   if (!env) {
     return (
       <html lang="en">
-        <body style={{ fontFamily: 'system-ui, sans-serif', padding: 24 }}>
-          Prototype authentication is not configured. Set PROTOTYPE_AUTH_USER,
-          PROTOTYPE_AUTH_PASSWORD, and PROTOTYPE_AUTH_SECRET.
+        <body style={{ fontFamily: 'system-ui, sans-serif', padding: 24, lineHeight: 1.6 }}>
+          <strong>Prototype authentication is not configured.</strong>
+          <p>
+            In the Vercel dashboard: <strong>Project → Settings → Environment Variables</strong>.
+            Add <code>PROTOTYPE_AUTH_USER</code>, <code>PROTOTYPE_AUTH_PASSWORD</code>, and{' '}
+            <code>PROTOTYPE_AUTH_SECRET</code> (for Production and Preview), then{' '}
+            <strong>Redeploy</strong>. Local <code>.env.local</code> is not used in production.
+          </p>
         </body>
       </html>
     );

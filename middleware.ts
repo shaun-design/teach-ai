@@ -22,10 +22,20 @@ function withPathnameHeader(request: NextRequest, pathname: string) {
 export async function middleware(request: NextRequest) {
   const env = requirePrototypeEnv();
   if (!env) {
-    return new NextResponse('Prototype authentication is not configured.', {
-      status: 503,
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-    });
+    return new NextResponse(
+      [
+        'Prototype authentication is not configured.',
+        '',
+        'On Vercel: Project → Settings → Environment Variables',
+        'Add PROTOTYPE_AUTH_USER, PROTOTYPE_AUTH_PASSWORD, PROTOTYPE_AUTH_SECRET',
+        '(non-empty values; enable for Production and Preview).',
+        'Then redeploy — .env.local is not used on Vercel.',
+      ].join('\n'),
+      {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      },
+    );
   }
 
   const pathname = request.nextUrl.pathname;
