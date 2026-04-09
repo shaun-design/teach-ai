@@ -4,6 +4,7 @@
  * rejects those resolutions in the middleware bundle).
  */
 
+/** Keep identical to `middleware.ts` (middleware inlines this; no shared import on Edge). */
 export const PROTOTYPE_SESSION_COOKIE = 'prototype_session';
 
 export const SESSION_MAX_AGE_SEC = 60 * 60 * 24 * 7; // 7 days

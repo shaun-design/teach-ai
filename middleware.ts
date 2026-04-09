@@ -1,10 +1,72 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import {
-  PROTOTYPE_SESSION_COOKIE,
-  requirePrototypeEnv,
-  verifySessionToken,
-} from './prototype-session-core';
+
+/**
+ * Middleware must not import local project modules (no @/, no ./lib/).
+ * Vercel Edge flags those as unsupported; keep auth checks self-contained here.
+ * Cookie name + token format must stay aligned with `prototype-session-core.ts`.
+ */
+const PROTOTYPE_SESSION_COOKIE = 'prototype_session';
+
+function requirePrototypeEnv():
+  | { user: string; password: string; secret: string }
+  | null {
+  const user = process.env.PROTOTYPE_AUTH_USER?.trim();
+  const password = process.env.PROTOTYPE_AUTH_PASSWORD?.trim();
+  const secret = process.env.PROTOTYPE_AUTH_SECRET?.trim();
+  if (!user || !password || !secret) return null;
+  return { user, password, secret };
+}
+
+async function importHmacKey(secret: string): Promise<CryptoKey> {
+  const raw = new TextEncoder().encode(secret);
+  return crypto.subtle.importKey(
+    'raw',
+    raw as BufferSource,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign', 'verify'],
+  );
+}
+
+function base64UrlToUint8(s: string): Uint8Array {
+  const pad = s.length % 4 === 0 ? '' : '='.repeat(4 - (s.length % 4));
+  const base64 = s.replace(/-/g, '+').replace(/_/g, '/') + pad;
+  const bin = atob(base64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function verifySessionToken(
+  token: string | undefined,
+  secret: string,
+): Promise<boolean> {
+  if (!token) return false;
+  const dot = token.indexOf('.');
+  if (dot === -1) return false;
+  const payloadB64 = token.slice(0, dot);
+  const sigB64 = token.slice(dot + 1);
+  let payload: Uint8Array;
+  let sig: Uint8Array;
+  try {
+    payload = base64UrlToUint8(payloadB64);
+    sig = base64UrlToUint8(sigB64);
+  } catch {
+    return false;
+  }
+  const exp = Number(new TextDecoder().decode(payload));
+  if (!Number.isFinite(exp) || exp * 1000 <= Date.now()) return false;
+
+  const key = await importHmacKey(secret);
+  const expected = new Uint8Array(
+    await crypto.subtle.sign('HMAC', key, payload as BufferSource),
+  );
+  if (expected.length !== sig.length) return false;
+  let diff = 0;
+  for (let i = 0; i < sig.length; i++) diff |= expected[i]! ^ sig[i]!;
+  return diff === 0;
+}
 
 function isPublicPath(pathname: string): boolean {
   if (pathname === '/prototype-login') return true;
