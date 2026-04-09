@@ -4,7 +4,7 @@ import {
   PROTOTYPE_SESSION_COOKIE,
   requirePrototypeEnv,
   verifySessionToken,
-} from './lib/prototype-session';
+} from './prototype-session-core';
 
 function isPublicPath(pathname: string): boolean {
   if (pathname === '/prototype-login') return true;
