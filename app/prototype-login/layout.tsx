@@ -36,38 +36,30 @@ export default function PrototypeLoginLayout({
         >
           <div
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
+              width: 32,
+              height: 32,
+              borderRadius: 8,
               background:
-                'linear-gradient(145deg, #0e7490 0%, #0891b2 45%, #155e75 100%)',
+                'linear-gradient(155deg, #004a56 0%, #005f72 48%, #003844 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(14, 116, 144, 0.35)',
+              boxShadow: '0 1px 4px rgba(0, 30, 40, 0.45)',
               flexShrink: 0,
             }}
             aria-hidden
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path
-                d="M12 3 2 8.5l3 1.64v5.5L12 21l7-5.36v-5.5L22 8.5 12 3Z"
-                fill="white"
-                fillOpacity={0.95}
-              />
-              <path
-                d="M12 6.2 6.5 9.2v4.2L12 16.5l5.5-3.1V9.2L12 6.2Z"
-                fill="#cffafe"
-                fillOpacity={0.35}
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path fill="#fff" d="M3.2 19.8L8 15l2.1 2.1-4.8 4.8-1.4-1.4-.7-.7z"/>
+              <path fill="#fff" d="M8.2 15L11 4.5l1.3 1.3L9.5 14.2 8.2 15z" opacity=".92"/>
+              <path fill="#fff" d="M17.5 3.5l1.1 3.2L22 7.5l-3.4 1.2-1.1 3.4-1.1-3.4-3.4-1.2 3.4-1.2 1.1-3.2z"/>
             </svg>
           </div>
           <span
             style={{
               fontWeight: 700,
-              fontSize: 'clamp(17px, 4vw, 20px)',
-              letterSpacing: '-0.02em',
-              color: '#0c4a6e',
+              fontSize: 16,
+              color: '#007890',
             }}
           >
             TeachAI
