@@ -49,13 +49,12 @@ export async function verifySessionToken(
 }
 
 export function requirePrototypeEnv():
-  | { user: string; password: string; secret: string }
+  | { password: string; secret: string }
   | null {
-  const user = process.env.PROTOTYPE_AUTH_USER?.trim();
   const password = process.env.PROTOTYPE_AUTH_PASSWORD?.trim();
   const secret = process.env.PROTOTYPE_AUTH_SECRET?.trim();
-  if (!user || !password || !secret) return null;
-  return { user, password, secret };
+  if (!password || !secret) return null;
+  return { password, secret };
 }
 
 export function timingSafeEqualStr(a: string, b: string): boolean {

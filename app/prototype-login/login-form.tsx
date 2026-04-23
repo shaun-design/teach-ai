@@ -58,10 +58,8 @@ function EyeIcon({ open }: { open: boolean }) {
 export function LoginForm() {
   const searchParams = useSearchParams();
   const from = safeRedirectTarget(searchParams.get('from'));
-  const userId = useId();
   const passId = useId();
 
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -75,7 +73,7 @@ export function LoginForm() {
       const res = await fetch('/api/prototype-auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ password }),
       });
       if (!res.ok) {
         setError('Invalid credentials.');
@@ -115,20 +113,6 @@ export function LoginForm() {
       </h1>
 
       <div style={{ marginBottom: 0 }}>
-        <label htmlFor={userId} style={{ display: 'block' }}>
-          <span style={fieldLabelText}>Username</span>
-          <input
-            id={userId}
-            name="username"
-            autoComplete="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            style={{ ...inputStyle, display: 'block' }}
-          />
-        </label>
-      </div>
-
-      <div style={{ marginTop: 20 }}>
         <label htmlFor={passId} style={{ display: 'block' }}>
           <span style={fieldLabelText}>Password</span>
           <div style={{ position: 'relative' }}>

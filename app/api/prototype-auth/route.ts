@@ -32,13 +32,9 @@ export async function POST(request: Request) {
     return res;
   }
 
-  const username = typeof rec.username === 'string' ? rec.username : '';
   const password = typeof rec.password === 'string' ? rec.password : '';
 
-  if (
-    !timingSafeEqualStr(username, env.user) ||
-    !timingSafeEqualStr(password, env.password)
-  ) {
+  if (!timingSafeEqualStr(password, env.password)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
