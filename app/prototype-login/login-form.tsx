@@ -173,12 +173,12 @@ export function LoginForm() {
           padding: '14px 18px',
           borderRadius: 10,
           border: 'none',
-          background: pending ? '#93c5fd' : '#2563eb',
+          background: pending ? '#66b8c8' : '#007890',
           color: '#fff',
           fontSize: 16,
           fontWeight: 600,
           cursor: pending ? 'default' : 'pointer',
-          boxShadow: pending ? 'none' : '0 1px 2px rgba(37, 99, 235, 0.25)',
+          boxShadow: pending ? 'none' : '0 1px 2px rgba(0, 120, 144, 0.25)',
         }}
       >
         {pending ? 'Signing in…' : 'Sign in'}
